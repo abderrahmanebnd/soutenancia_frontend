@@ -1,13 +1,14 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
-import Login from "./Auth/Login";
+import Login from "./Pages/Auth/Login";
 import AdminLayout from "./modules/admin/pages/AdminLayout";
 import StudentLayout from "./modules/student/pages/StudentLayout";
 import TeacherLayout from "./modules/teacher/pages/TeacherLayout";
 import EnterpriseLayout from "./modules/enterprise/pages/EnterpriseLayout";
+import PageNotFound from "./Pages/PageNotFound";
 
 function Router() {
   return (
-    <div>
+    <>
       <BrowserRouter>
         <Routes>
           <Route path="/">
@@ -39,9 +40,10 @@ function Router() {
               element={<div>content of the enterprise dashboard</div>}
             />
           </Route>
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </>
   );
 }
 
