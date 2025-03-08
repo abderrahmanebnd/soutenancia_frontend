@@ -1,31 +1,20 @@
-import LoginForm from "./LoginForm";
+import { Outlet } from "react-router";
 
 export default function Login() {
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      <div className="flex-1 flex items-center justify-center p-6 md:p-10">
-        <div className="w-full max-w-md space-y-8">
-          <div className="space-y-2 text-center">
-            <h1 className="text-3xl font-bold">
-              Welcome back to{" "}
-              <span className="text-slate-500 text-4xl">Soutenancia</span>
-            </h1>
-            <p className="text-muted-foreground">
-              Enter your credentials to login to your account
-            </p>
-          </div>
-          <LoginForm />
+    <div className="h-screen flex items-center justify-center bg-background">
+      <div className="flex flex-col md:flex-row w-full md:w-11/12 md:h-5/6  h-screen rounded-xl overflow-hidden bg-white shadow-md ">
+        <div className="flex-1 flex  justify-center items-center p-6 overflow-auto">
+          <Outlet />
         </div>
-      </div>
-
-      <div className="hidden lg:flex lg:flex-1 bg-muted">
-        <div className="relative w-full h-full">
-          <img
-            src="/placeholder.svg?height=800&width=600"
-            alt="Login illustration"
-            className="object-cover"
-            sizes="(max-width: 768px) 0vw, 50vw"
-          />
+        <div className="hidden lg:flex lg:flex-1 bg-muted">
+          <div className="relative w-full h-full flex items-center justify-center rounded-r-xl">
+            <img
+              src="/assets/login-image.jpg"
+              alt="Login illustration"
+              className="saturate-50"
+            />
+          </div>
         </div>
       </div>
     </div>

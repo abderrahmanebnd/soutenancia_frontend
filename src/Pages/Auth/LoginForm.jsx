@@ -13,7 +13,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Link } from "react-router";
+import { useLogin } from "./useLogin";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -31,7 +33,7 @@ const formSchema = z.object({
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  /* TODO: const { login, isLoading } = useLogin(); */
+  const { login, isPending, isError } = useLogin();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,11 +44,24 @@ function LoginForm() {
 
   function onSubmit(formData) {
     console.log(formData);
-    // TODO: when endpoint for api is ready
-    // login(formData);
+    login(formData);
   }
   return (
-    <div>
+    <div className="space-y-6">
+      <div className="w-full max-w-md space-y-8">
+        <div className="space-y-2 text-center ">
+          <img
+            src="/assets/Soutenancia.png"
+            alt="Logo"
+            width={250}
+            className="mx-auto "
+          />
+          <h1 className="text-3xl font-bold text-primary">Welcome back</h1>
+          <p className="text-muted-foreground">
+            Enter your credentials to login to your account
+          </p>
+        </div>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -94,24 +109,36 @@ function LoginForm() {
                     </Button>
                   </div>
                 </FormControl>
-                <div className="flex items-center justify-between">
+
+                <div className="flex  justify-between flex-col">
                   <FormMessage />
+
+                  {isError && (
+                    <p className="text-red-500 text-sm">
+                      Invalid email or password. Please try again.
+                    </p>
+                  )}
                 </div>
+                <Link
+                  className="underline text-primary text-sm "
+                  to="/forgot-password"
+                >
+                  Forgot Password ?
+                </Link>
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Submit
-          </Button>
-
-          {/* 
-          TODO: when endpoint for api is ready
-          <Button type="submit" className="w-full">
-            {isLoading
-              ? `Submit`
-              : (<Loader2 className="animate-spin" />)`Please wait...`}
-          </Button> */}
+          {isPending ? (
+            <Button type="submit" className="w-full">
+              <Loader2 className="animate-spin" />
+              Loggin in ...
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full">
+              Log In
+            </Button>
+          )}
         </form>
       </Form>
     </div>

@@ -1,14 +1,20 @@
-import { loginUser } from "@/api/apiLogin";
+import { loginUser } from "@/api/apiAuth";
 import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+
 import { useNavigate } from "react-router";
 
 export function useLogin() {
-  const { navigate } = useNavigate();
-  const { mutate: login, isLoading } = useMutation({
+  const navigate = useNavigate();
+  const {
+    mutate: login,
+    isPending,
+    isError,
+  } = useMutation({
     mutationFn: (credentials) => loginUser(credentials),
     onSuccess: (data) => {
       console.log(data);
-      switch (data.role) {
+      switch (data.user.role) {
         case "admin":
           navigate("/admin");
           break;
@@ -22,8 +28,11 @@ export function useLogin() {
     },
     onError: (error) => {
       console.error("Login failed:", error);
-      /* TODO:show the toast when error occurs */
+
+      toast.error(
+        "Login failed. Make sure your email and password are correct."
+      );
     },
   });
-  return { login, isLoading };
+  return { login, isPending, isError };
 }
