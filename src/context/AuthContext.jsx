@@ -1,19 +1,15 @@
-/* import { checkAuth } from "@/api/apiAuth";
+import { getCurrentUser } from "@/api/apiAuth";
 import { useQuery } from "@tanstack/react-query";
 import { createContext, useContext } from "react";
 
 const AuthContext = createContext();
 function AuthProvider({ children }) {
-  const {
-    data: user,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: currentUser, isLoading } = useQuery({
     queryKey: ["user"],
-    queryFn: () => checkAuth(),
+    queryFn: () => getCurrentUser(),
   });
   return (
-    <AuthContext.Provider value={{ user, isLoading, isError }}>
+    <AuthContext.Provider value={{ currentUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
@@ -25,4 +21,4 @@ function useAuth() {
   }
   return context;
 }
-export { AuthProvider, useAuth }; */
+export { AuthProvider, useAuth };

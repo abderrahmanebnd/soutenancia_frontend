@@ -7,6 +7,7 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 1000 * 60 * 5,
       cacheTime: 1000 * 60 * 10,
+      retry: 1,
     },
   },
 });
@@ -32,8 +33,8 @@ function App() {
             fontSize: "16px",
             maxWidth: "500px",
             padding: "16px 24px",
-            backgroundColor: "var(--color-grey-0)",
-            color: "var(--color-grey-700)",
+
+            backgroundColor: "#fff",
           },
         }}
       />

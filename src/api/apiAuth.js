@@ -10,12 +10,12 @@ export async function loginUser(credentials) {
   }
 }
 
-/* export async function checkAuth() {
+export async function getCurrentUser() {
   try {
-    const response = await axiosPrivate.get("/auth/signup");
-    return response.data;
+    const response = await axiosPrivate.get("/users/me");
+    return response.data.data;
   } catch (error) {
     console.error("Auth check error:", error);
     throw error;
   }
-} */
+}

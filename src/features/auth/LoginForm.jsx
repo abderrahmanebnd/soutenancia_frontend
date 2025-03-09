@@ -21,14 +21,9 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  password: z
-    .string()
-    .min(6, {
-      message: "Password must be at least 6 characters.",
-    })
-    .max(20, {
-      message: "Password must be at most 20 characters.",
-    }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
 });
 
 function LoginForm() {
@@ -43,12 +38,11 @@ function LoginForm() {
   });
 
   function onSubmit(formData) {
-    console.log(formData);
     login(formData);
   }
   return (
     <div className="space-y-6">
-      <div className="w-full max-w-md space-y-8">
+      <div className="w-full max-w-md">
         <div className="space-y-2 text-center ">
           <img
             src="/assets/Soutenancia.png"
@@ -88,7 +82,7 @@ function LoginForm() {
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      placeholder="••••••"
+                      placeholder="••••••••"
                       {...field}
                     />
                     <Button
@@ -110,7 +104,7 @@ function LoginForm() {
                   </div>
                 </FormControl>
 
-                <div className="flex  justify-between flex-col">
+                <div className="flex flex-col">
                   <FormMessage />
 
                   {isError && (
@@ -130,7 +124,7 @@ function LoginForm() {
           />
 
           {isPending ? (
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isPending}>
               <Loader2 className="animate-spin" />
               Loggin in ...
             </Button>
