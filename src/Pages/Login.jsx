@@ -2,9 +2,9 @@ import { Outlet } from "react-router";
 
 export default function Login() {
   return (
-    <div className="min-h-screen lg:h-screen flex items-center justify-center bg-background p-8  md:p-12 ">
-      <div className="flex flex-col md:flex-row w-full h-full shadow-md rounded-xl">
-        <div className="flex-1 flex  justify-center items-center p-4  rounded-xl md:rounded-l-xl md:rounded-r-none  bg-white">
+    <div className="flex min-h-svh flex-col items-center justify-center bg-background p-6 md:p-10">
+      <div className="w-full max-w-sm md:max-w-5xl  flex flex-col md:flex-row shadow-md rounded-xl">
+        <div className="flex-1 flex justify-center items-center p-4 rounded-xl md:rounded-l-xl md:rounded-r-none bg-white ">
           <Outlet />
         </div>
         <div className="hidden md:flex md:flex-1 bg-muted">
