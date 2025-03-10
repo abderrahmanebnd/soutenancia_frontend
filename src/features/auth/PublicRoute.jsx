@@ -1,36 +1,28 @@
 import Spinner from "@/components/commun/Spinner";
 import { useAuth } from "@/context/AuthContext";
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
+
+import { Navigate } from "react-router";
 
 function PublicRoute({ children }) {
-  const navigate = useNavigate();
   const { currentUser, isLoading } = useAuth();
 
-  useEffect(() => {
-    if (currentUser) {
-      const userRole = currentUser?.user.role;
-      switch (userRole) {
-        case "admin":
-          navigate("/admin");
-          break;
-        case "student":
-          navigate("/student", { replace: true });
-          break;
-        case "teacher":
-          navigate("/teacher");
-          break;
-        case "enterprise":
-          navigate("/enterprise");
-          break;
-        default:
-          navigate("/unauthorized");
-          break;
-      }
-    }
-  }, [currentUser, isLoading, navigate]);
-
   if (isLoading) return <Spinner />;
+  if (currentUser) {
+    const userRole = currentUser?.user.role;
+    switch (userRole) {
+      case "admin":
+        return <Navigate replace to="/admin" />;
+      case "student":
+        return <Navigate replace to="/student" />;
+      case "teacher":
+        return <Navigate replace to="/teacher" />;
+      case "enterprise":
+        return <Navigate replace to="/enterprise" />;
+      default:
+        return <Navigate replace to="/unauthorized" />;
+    }
+  }
+
   return children;
 }
 

@@ -40,7 +40,7 @@ function Router() {
             <Route path="unauthorized" element={<Unauthorized />} />
             <Route
               element={
-                <ProtectedRoute allowedRoles="admin">
+                <ProtectedRoute allowedRoles={["admin"]}>
                   <AdminLayout />
                 </ProtectedRoute>
               }
@@ -53,7 +53,7 @@ function Router() {
 
             <Route
               element={
-                <ProtectedRoute allowedRoles="student">
+                <ProtectedRoute allowedRoles={["student"]}>
                   <StudentLayout />
                 </ProtectedRoute>
               }
@@ -66,7 +66,7 @@ function Router() {
 
             <Route
               element={
-                <ProtectedRoute allowedRoles="teacher">
+                <ProtectedRoute allowedRoles={["teacher"]}>
                   <TeacherLayout />
                 </ProtectedRoute>
               }
@@ -79,7 +79,7 @@ function Router() {
 
             <Route
               element={
-                <ProtectedRoute allowedRoles="enterprise">
+                <ProtectedRoute allowedRoles={["enterprise"]}>
                   <EnterpriseLayout />
                 </ProtectedRoute>
               }
