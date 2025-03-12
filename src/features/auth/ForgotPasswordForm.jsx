@@ -11,15 +11,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
+import { setItem } from "@/utils/localStorage";
+import { Loader2 } from "lucide-react";
+import { useForgotPassword } from "./useForgotPassword";
 
 const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
 });
+
 function ForgotPasswordForm() {
-  const navigate = useNavigate();
+  const { forgotPwd, isPending, isError } = useForgotPassword();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -29,10 +32,8 @@ function ForgotPasswordForm() {
   });
 
   function onSubmit(formData) {
-    console.log(formData);
-    navigate("/confirmation-code");
-    // TODO: when endpoint for api is ready
-    // login(formData);
+    setItem("email", formData.email);
+    forgotPwd(formData);
   }
 
   return (
@@ -49,7 +50,7 @@ function ForgotPasswordForm() {
             Forgot Password
           </h1>
           <p className="text-muted-foreground text-sm">
-            Enter your email address to receive a 6 digit-code
+            Enter your email address to receive a 4 digit-code
           </p>
         </div>
       </div>
@@ -65,21 +66,25 @@ function ForgotPasswordForm() {
                   <Input placeholder="your.email@example.com" {...field} />
                 </FormControl>
                 <FormMessage />
+                {isError && (
+                  <p className="text-red-500 text-sm">
+                    email not found . Please try again.
+                  </p>
+                )}
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Get a 6-digit code
-          </Button>
-
-          {/* 
-          TODO: when endpoint for api is ready
-          <Button type="submit" className="w-full">
-            {isLoading
-              ? `Submit`
-              : (<Loader2 className="animate-spin" />)`Please wait...`}
-          </Button> */}
+          {isPending ? (
+            <Button type="submit" className="w-full" disabled={isPending}>
+              <Loader2 className="animate-spin" />
+              Please wait...
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full">
+              Get a 4-digit code
+            </Button>
+          )}
         </form>
       </Form>
     </div>

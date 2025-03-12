@@ -19,3 +19,33 @@ export async function getCurrentUser() {
     throw error;
   }
 }
+
+export async function forgotPassword(email) {
+  try {
+    const response = await axiosPrivate.post("/auth/forgot-password", email);
+    return response.data;
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    throw error;
+  }
+}
+
+export async function verifyOneTimePassword(credentials) {
+  try {
+    const response = await axiosPrivate.post("/auth/verify-otp", credentials);
+    return response.data;
+  } catch (error) {
+    console.error("Verify OTP error:", error);
+    throw error;
+  }
+}
+
+export async function resetPassword(passwords) {
+  try {
+    const response = await axiosPrivate.post("/auth/reset-password", passwords);
+    return response.data;
+  } catch (error) {
+    console.error("Reset password error:", error);
+    throw error;
+  }
+}
