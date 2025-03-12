@@ -10,10 +10,11 @@ import Unauthorized from "./Pages/Unauthorized";
 
 import LoginForm from "./features/auth/LoginForm";
 import ForgotPasswordForm from "./features/auth/ForgotPasswordForm";
-import ConfirmationCodeForm from "./features/auth/ConfirmationCodeForm";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./features/auth/ProtectedRoute";
 import PublicRoute from "./features/auth/PublicRoute";
+import VerifyOtpForm from "./features/auth/VerifyOtpForm";
+import ResetPasswordForm from "./features/auth/ResetPasswordForm";
 
 function Router() {
   return (
@@ -32,15 +33,13 @@ function Router() {
               <Route index element={<Navigate replace to="login" />} />
               <Route path="login" element={<LoginForm />} />
               <Route path="forgot-password" element={<ForgotPasswordForm />} />
-              <Route
-                path="confirmation-code"
-                element={<ConfirmationCodeForm />}
-              />
+              <Route path="verification-code" element={<VerifyOtpForm />} />
+              <Route path="reset-password" element={<ResetPasswordForm />} />
             </Route>
             <Route path="unauthorized" element={<Unauthorized />} />
             <Route
               element={
-                <ProtectedRoute allowedRoles="admin">
+                <ProtectedRoute allowedRoles={["admin"]}>
                   <AdminLayout />
                 </ProtectedRoute>
               }
@@ -53,7 +52,7 @@ function Router() {
 
             <Route
               element={
-                <ProtectedRoute allowedRoles="student">
+                <ProtectedRoute allowedRoles={["student"]}>
                   <StudentLayout />
                 </ProtectedRoute>
               }
@@ -66,7 +65,7 @@ function Router() {
 
             <Route
               element={
-                <ProtectedRoute allowedRoles="teacher">
+                <ProtectedRoute allowedRoles={["teacher"]}>
                   <TeacherLayout />
                 </ProtectedRoute>
               }
@@ -79,7 +78,7 @@ function Router() {
 
             <Route
               element={
-                <ProtectedRoute allowedRoles="enterprise">
+                <ProtectedRoute allowedRoles={["enterprise"]}>
                   <EnterpriseLayout />
                 </ProtectedRoute>
               }

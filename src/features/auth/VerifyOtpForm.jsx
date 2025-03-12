@@ -18,24 +18,31 @@ import {
 } from "@/components/ui/input-otp";
 
 import { Button } from "@/components/ui/button";
+import { getItem } from "@/utils/localStorage";
+import { Loader2 } from "lucide-react";
+import { useVerifyOtp } from "./useVerifyOtp";
 
 const formSchema = z.object({
-  pin: z.string().min(6, {
-    message: "Your one-time password must be 6 characters.",
+  otp: z.string().min(4, {
+    message: "Your one-time password must be 4 characters.",
   }),
 });
-function ConfirmationCodeForm() {
+function VerifyOtpForm() {
+  const { verifyOtp, isPending, isError } = useVerifyOtp();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      pin: "",
+      otp: "",
     },
   });
 
   function onSubmit(formData) {
-    console.log(formData);
-    // TODO: when endpoint for api is ready
-    // login(formData);
+    const newFormData = {
+      email: getItem("email"),
+      otp: formData.otp,
+    };
+    verifyOtp(newFormData);
   }
 
   return (
@@ -45,14 +52,13 @@ function ConfirmationCodeForm() {
           <img
             src="/assets/Soutenancia.png"
             alt="Logo"
-            width={250}
             className="mx-auto w-44 md:w-48 lg:w-60"
           />
           <h1 className=" text-2xl lg:text-3xl font-bold text-primary">
             Confirmation Code
           </h1>
           <p className="text-muted-foreground text-sm">
-            Enter the 6-digit code sent to your email address.
+            Enter the 4-digit code sent to your email address.
           </p>
         </div>
       </div>
@@ -60,22 +66,20 @@ function ConfirmationCodeForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name="pin"
+            name="otp"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <div className="flex items-center justify-center">
-                    <InputOTP maxLength={6} {...field}>
+                    <InputOTP maxLength={4} {...field}>
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
                       </InputOTPGroup>
                       <InputOTPSeparator />
                       <InputOTPGroup>
+                        <InputOTPSlot index={2} />
                         <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
                       </InputOTPGroup>
                     </InputOTP>
                   </div>
@@ -84,25 +88,29 @@ function ConfirmationCodeForm() {
                   Please enter the one-time password sent to your email address.
                 </FormDescription>
                 <FormMessage />
+                {isError && (
+                  <p className="text-red-500 text-sm">
+                    Invalid One time Password. Please try again.
+                  </p>
+                )}
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Submit The 6 digit-code
-          </Button>
-
-          {/* 
-      TODO: when endpoint for api is ready
-      <Button type="submit" className="w-full">
-        {isLoading
-          ? `Submit`
-          : (<Loader2 className="animate-spin" />)`Please wait...`}
-      </Button> */}
+          {isPending ? (
+            <Button type="submit" className="w-full" disabled={isPending}>
+              <Loader2 className="animate-spin" />
+              Please wait ...
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full">
+              Submit The 4 digit-code
+            </Button>
+          )}
         </form>
       </Form>
     </div>
   );
 }
 
-export default ConfirmationCodeForm;
+export default VerifyOtpForm;

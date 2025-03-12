@@ -11,6 +11,7 @@ export function useLogin() {
     mutate: login,
     isPending,
     isError,
+    error,
   } = useMutation({
     mutationFn: (credentials) => loginUser(credentials),
     onSuccess: (data) => {
@@ -53,5 +54,5 @@ export function useLogin() {
       }
     },
   });
-  return { login, isPending, isError };
+  return { login, isPending, isError, error };
 }

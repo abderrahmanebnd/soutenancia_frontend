@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isPending, isError } = useLogin();
+  const { login, isPending, isError, error } = useLogin();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,7 +58,7 @@ function LoginForm() {
         </div>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
@@ -110,7 +110,9 @@ function LoginForm() {
 
                   {isError && (
                     <p className="text-red-500 text-sm">
-                      Invalid email or password. Please try again.
+                      {error.response.status === 401
+                        ? "Invalid email or password. Please try again."
+                        : " An unexpected error occurred. Please try again later."}
                     </p>
                   )}
                 </div>
@@ -127,7 +129,7 @@ function LoginForm() {
           {isPending ? (
             <Button type="submit" className="w-full" disabled={isPending}>
               <Loader2 className="animate-spin" />
-              Loggin in ...
+              Please wait...
             </Button>
           ) : (
             <Button type="submit" className="w-full">
