@@ -15,6 +15,9 @@ import ProtectedRoute from "./features/auth/ProtectedRoute";
 import PublicRoute from "./features/auth/PublicRoute";
 import VerifyOtpForm from "./features/auth/VerifyOtpForm";
 import ResetPasswordForm from "./features/auth/ResetPasswordForm";
+import IsCompletedRoute from "./modules/student/features/IsCompletedRoute";
+import Student from "./modules/student/pages/Student";
+import StudentSkills from "./modules/student/pages/StudentSkills";
 
 function Router() {
   return (
@@ -57,10 +60,29 @@ function Router() {
                 </ProtectedRoute>
               }
             >
-              <Route
-                path="/student"
-                element={<div>content of the student dashboard</div>}
-              />
+              <Route path="/student" element={<Student />}>
+                <Route
+                  index
+                  element={<Navigate replace to="student-preferences" />}
+                />
+                <Route
+                  path="student-preferences"
+                  element={
+                    <IsCompletedRoute>
+                      <StudentSkills />
+                    </IsCompletedRoute>
+                  }
+                />
+                <Route
+                  path="list-teams"
+                  element={
+                    <div>
+                      if you see this it means that your student has chosen his
+                      skills and now the pop up wont be shown
+                    </div>
+                  }
+                />
+              </Route>
             </Route>
 
             <Route

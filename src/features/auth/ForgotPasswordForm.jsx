@@ -12,8 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { setItem } from "@/utils/localStorage";
-import { Loader2 } from "lucide-react";
 import { useForgotPassword } from "./useForgotPassword";
+import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -68,7 +68,7 @@ function ForgotPasswordForm() {
                 <FormMessage />
                 {isError && (
                   <p className="text-red-500 text-sm">
-                    email not found . Please try again.
+                    email not found . Please try another.
                   </p>
                 )}
               </FormItem>
@@ -76,10 +76,7 @@ function ForgotPasswordForm() {
           />
 
           {isPending ? (
-            <Button type="submit" className="w-full" disabled={isPending}>
-              <Loader2 className="animate-spin" />
-              Please wait...
-            </Button>
+            <ButtonWithSpinner disabled={isPending} />
           ) : (
             <Button type="submit" className="w-full">
               Get a 4-digit code

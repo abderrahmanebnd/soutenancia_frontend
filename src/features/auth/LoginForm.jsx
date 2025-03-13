@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router";
 import { useLogin } from "./useLogin";
+import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -127,10 +128,7 @@ function LoginForm() {
           />
 
           {isPending ? (
-            <Button type="submit" className="w-full" disabled={isPending}>
-              <Loader2 className="animate-spin" />
-              Please wait...
-            </Button>
+            <ButtonWithSpinner disabled={isPending} />
           ) : (
             <Button type="submit" className="w-full">
               Log In
