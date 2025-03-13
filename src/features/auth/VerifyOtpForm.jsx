@@ -19,8 +19,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { getItem } from "@/utils/localStorage";
-import { Loader2 } from "lucide-react";
 import { useVerifyOtp } from "./useVerifyOtp";
+import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
 const formSchema = z.object({
   otp: z.string().min(4, {
@@ -98,10 +98,7 @@ function VerifyOtpForm() {
           />
 
           {isPending ? (
-            <Button type="submit" className="w-full" disabled={isPending}>
-              <Loader2 className="animate-spin" />
-              Please wait ...
-            </Button>
+            <ButtonWithSpinner disabled={isPending} />
           ) : (
             <Button type="submit" className="w-full">
               Submit The 4 digit-code

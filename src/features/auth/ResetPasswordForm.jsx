@@ -12,9 +12,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useResetPassword } from "./useResetPassword";
+import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
 const formSchema = z
   .object({
@@ -172,10 +173,7 @@ function ResetPasswordForm() {
           />
 
           {isPending ? (
-            <Button type="submit" className="w-full" disabled={isPending}>
-              <Loader2 className="animate-spin" />
-              Please wait...
-            </Button>
+            <ButtonWithSpinner disabled={isPending} />
           ) : (
             <Button type="submit" className="w-full">
               Reset Password
