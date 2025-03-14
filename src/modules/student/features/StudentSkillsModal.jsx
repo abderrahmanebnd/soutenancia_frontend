@@ -44,12 +44,22 @@ import InlineSpinner from "@/components/commun/InlineSpinner";
 import { useAddStudentSkills } from "./useAddStudentSkills";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
-const formSchema = z.object({
-  generalSkills: z.array(z.string()).min(1, {
-    message: "Please select at least one skill",
-  }),
-  customSkill: z.array(z.string()),
-});
+const formSchema = z
+  .object({
+    generalSkills: z.array(z.string()).min(1, {
+      message: "Please select at least one skill",
+    }),
+    customSkill: z.array(z.string()),
+  })
+  .refine(
+    (data) =>
+      !data.generalSkills.some((skill) => data.customSkill.includes(skill)),
+    {
+      message:
+        "You have duplicate skills in both selected and custom skills. Please remove the one from custom skills.",
+      path: ["customSkill"],
+    }
+  );
 
 export function StudentSkillsModal() {
   const { currentUser } = useAuth();
@@ -71,7 +81,6 @@ export function StudentSkillsModal() {
       studentId: currentStudentId,
       ...formData,
     };
-    console.log("Form submitted:", skillsWithStudentId);
     addSkills(skillsWithStudentId);
   }
 
@@ -270,7 +279,7 @@ export function StudentSkillsModal() {
                                   field.value.filter((s) => s !== skill)
                                 );
                               }}
-                              className="rounded-full hover:bg-muted p-0.5"
+                              className="rounded-full  p-0.5"
                             >
                               <X className="h-3 w-3" />
                               <span className="sr-only">Remove {skill}</span>
