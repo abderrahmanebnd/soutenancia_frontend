@@ -8,7 +8,7 @@ function IsCompletedRoute({ children }) {
   if (isLoading) return <Spinner />;
   if (!currentUser && !isLoading) return <Navigate replace to="/login" />;
   if (currentUser && currentUser?.user.Student.isCompletedProfile)
-    return <Navigate replace to="/student/list-teams" />;
+    return <Navigate replace to="/student/team-offers" />;
 
   return children;
 }

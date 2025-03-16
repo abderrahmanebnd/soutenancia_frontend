@@ -74,13 +74,16 @@ function Router() {
                   }
                 />
                 <Route
-                  path="list-teams"
-                  element={
-                    <div>
-                      if you see this it means that your student has chosen his
-                      skills and now the pop up wont be shown
-                    </div>
-                  }
+                  path="team-offers"
+                  element={<div>team offer page</div>}
+                />
+                <Route
+                  path="submit-offer"
+                  element={<div>submit offer page</div>}
+                />
+                <Route
+                  path="team-management"
+                  element={<div>team management page</div>}
                 />
               </Route>
             </Route>
