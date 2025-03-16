@@ -25,6 +25,7 @@ export function getSessionSidebarData(role) {
             },
           ],
         },
+        /* here you can add another section of links related to student  */
       ],
     };
   }
