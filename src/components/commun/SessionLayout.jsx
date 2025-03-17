@@ -3,17 +3,15 @@ import SessionHeader from "@/components/commun/SessionHeader";
 import SessionSidebar from "@/components/commun/SessionSidebar";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { getSessionSidebarData } from "@/utils/getSessionSidebarData";
 
 import { Outlet } from "react-router";
 
-function StudentLayout() {
-  const data = getSessionSidebarData("student");
+function SessionLayout({ dashboardTitle, sessionSidebarLinks }) {
   return (
     <SidebarProvider>
       <SessionSidebar
-        dashboard="Student Dashboard"
-        sessionSidebarLinks={data}
+        dashboardTitle={dashboardTitle}
+        sessionSidebarLinks={sessionSidebarLinks}
       />
       <SidebarInset className="p-6">
         <SessionHeader />
@@ -26,4 +24,4 @@ function StudentLayout() {
   );
 }
 
-export default StudentLayout;
+export default SessionLayout;

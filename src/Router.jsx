@@ -1,9 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import Login from "./Pages/Login";
-import AdminLayout from "./modules/admin/pages/AdminLayout";
-import StudentLayout from "./modules/student/pages/StudentLayout";
-import TeacherLayout from "./modules/teacher/pages/TeacherLayout";
-import EnterpriseLayout from "./modules/enterprise/pages/EnterpriseLayout";
 import PageNotFound from "./Pages/PageNotFound";
 
 import Unauthorized from "./Pages/Unauthorized";
@@ -18,6 +14,11 @@ import ResetPasswordForm from "./features/auth/ResetPasswordForm";
 import IsCompletedRoute from "./modules/student/features/IsCompletedRoute";
 import Student from "./modules/student/pages/Student";
 import StudentSkills from "./modules/student/pages/StudentSkills";
+import SessionLayout from "./components/commun/SessionLayout";
+import { getSessionSidebarData } from "./utils/getSessionSidebarData";
+import Admin from "./modules/admin/pages/Admin";
+import Enterprise from "./modules/enterprise/pages/Enterprise";
+import Teacher from "./modules/teacher/pages/Teacher";
 
 function Router() {
   return (
@@ -40,23 +41,32 @@ function Router() {
               <Route path="reset-password" element={<ResetPasswordForm />} />
             </Route>
             <Route path="unauthorized" element={<Unauthorized />} />
+
             <Route
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
-                  <AdminLayout />
+                  <SessionLayout
+                    dashboardTitle={"Admin Dashboard"}
+                    sessionSidebarLinks={getSessionSidebarData("admin")}
+                  />
                 </ProtectedRoute>
               }
             >
-              <Route
-                path="/admin"
-                element={<div>content of the admin dashboard</div>}
-              />
+              {/* this is an exemple route for admin  just for testing */}
+              <Route path="/admin" element={<Admin />}>
+                <Route index element={<Navigate replace to="add-users" />} />
+
+                <Route path="add-users" element={<div>add-users</div>} />
+              </Route>
             </Route>
 
             <Route
               element={
                 <ProtectedRoute allowedRoles={["student"]}>
-                  <StudentLayout />
+                  <SessionLayout
+                    dashboardTitle={"Student Dashboard"}
+                    sessionSidebarLinks={getSessionSidebarData("student")}
+                  />
                 </ProtectedRoute>
               }
             >
@@ -91,27 +101,35 @@ function Router() {
             <Route
               element={
                 <ProtectedRoute allowedRoles={["teacher"]}>
-                  <TeacherLayout />
+                  <SessionLayout
+                    dashboardTitle={"Teacher Dashboard"}
+                    sessionSidebarLinks={getSessionSidebarData("teacher")}
+                  />
                 </ProtectedRoute>
               }
             >
-              <Route
-                path="/teacher"
-                element={<div>content of the teacher dashboard</div>}
-              />
+              <Route path="/teacher" element={<Teacher />}>
+                <Route index element={<Navigate replace to="add-project" />} />
+
+                <Route path="add-project" element={<div>add-project</div>} />
+              </Route>
             </Route>
 
             <Route
               element={
                 <ProtectedRoute allowedRoles={["enterprise"]}>
-                  <EnterpriseLayout />
+                  <SessionLayout
+                    dashboardTitle={"Enterprise Dashboard"}
+                    sessionSidebarLinks={getSessionSidebarData("enterprise")}
+                  />
                 </ProtectedRoute>
               }
             >
-              <Route
-                path="/enterprise"
-                element={<div>content of the enterprise dashboard</div>}
-              />
+              <Route path="/enterprise" element={<Enterprise />}>
+                <Route index element={<Navigate replace to="add-project" />} />
+
+                <Route path="add-project" element={<div>add-project</div>} />
+              </Route>
             </Route>
 
             <Route path="*" element={<PageNotFound />} />

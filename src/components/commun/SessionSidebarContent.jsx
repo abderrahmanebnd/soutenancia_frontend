@@ -6,12 +6,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import { Link, useLocation } from "react-router";
 
 function SessionSidebarContent({ sessionSidebarLinks }) {
   const location = useLocation();
+  const { setOpenMobile } = useSidebar();
+
   return (
     <SidebarContent>
       {sessionSidebarLinks.navMain.map((item) => (
@@ -25,6 +28,7 @@ function SessionSidebarContent({ sessionSidebarLinks }) {
                     asChild
                     isActive={location.pathname === item.url}
                     size="lg"
+                    onClick={() => setOpenMobile(false)}
                   >
                     <Link to={item.url}>
                       <item.icon />

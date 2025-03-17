@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Home } from "lucide-react";
 
-function SessionSidebarHeader({ dashboard }) {
+function SessionSidebarHeader({ dashboardTitle }) {
   return (
     <SidebarHeader>
       <SidebarMenu>
@@ -17,7 +17,7 @@ function SessionSidebarHeader({ dashboard }) {
           <div className="p-2 rounded-xl bg-primary text-background">
             <Home className="h-5 w-5" />
           </div>
-          <span className="text-primary ">{dashboard}</span>
+          <span className="text-primary ">{dashboardTitle}</span>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarHeader>

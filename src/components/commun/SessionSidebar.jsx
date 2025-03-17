@@ -6,11 +6,11 @@ import {
 import SessionSidebarHeader from "./SessionSidebarHeader";
 import SessionSidebarContent from "./SessionSidebarContent";
 
-function SessionSidebar({ dashboard, sessionSidebarLinks }) {
+function SessionSidebar({ dashboardTitle, sessionSidebarLinks }) {
   return (
     <Sidebar>
       <SidebarRail />
-      <SessionSidebarHeader dashboard={dashboard} />
+      <SessionSidebarHeader dashboardTitle={dashboardTitle} />
       <SidebarSeparator />
       <SessionSidebarContent sessionSidebarLinks={sessionSidebarLinks} />
     </Sidebar>
