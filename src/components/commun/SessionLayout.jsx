@@ -6,17 +6,14 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { Outlet } from "react-router";
 
-function SessionLayout({ dashboardTitle, sessionSidebarLinks }) {
+function SessionLayout() {
   return (
     <SidebarProvider>
-      <SessionSidebar
-        dashboardTitle={dashboardTitle}
-        sessionSidebarLinks={sessionSidebarLinks}
-      />
+      <SessionSidebar />
       <SidebarInset className="p-6">
         <SessionHeader />
 
-        <main className=" mt-6 lg:mt-10">
+        <main className=" mt-6 md:mt-10">
           <Outlet />
         </main>
       </SidebarInset>

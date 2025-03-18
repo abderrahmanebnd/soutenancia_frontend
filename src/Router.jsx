@@ -15,125 +15,124 @@ import IsCompletedRoute from "./modules/student/features/IsCompletedRoute";
 import Student from "./modules/student/pages/Student";
 import StudentSkills from "./modules/student/pages/StudentSkills";
 import SessionLayout from "./components/commun/SessionLayout";
-import { getSessionSidebarData } from "./utils/getSessionSidebarData";
 import Admin from "./modules/admin/pages/Admin";
 import Enterprise from "./modules/enterprise/pages/Enterprise";
 import Teacher from "./modules/teacher/pages/Teacher";
+import { SessionProvider } from "./context/SessionContext";
 
 function Router() {
   return (
     <>
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
-              }
-            >
-              <Route index element={<Navigate replace to="login" />} />
-              <Route path="login" element={<LoginForm />} />
-              <Route path="forgot-password" element={<ForgotPasswordForm />} />
-              <Route path="verification-code" element={<VerifyOtpForm />} />
-              <Route path="reset-password" element={<ResetPasswordForm />} />
-            </Route>
-            <Route path="unauthorized" element={<Unauthorized />} />
-
-            <Route
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <SessionLayout
-                    dashboardTitle={"Admin Dashboard"}
-                    sessionSidebarLinks={getSessionSidebarData("admin")}
-                  />
-                </ProtectedRoute>
-              }
-            >
-              {/* this is an exemple route for admin  just for testing */}
-              <Route path="/admin" element={<Admin />}>
-                <Route index element={<Navigate replace to="add-users" />} />
-
-                <Route path="add-users" element={<div>add-users</div>} />
+          <SessionProvider>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                }
+              >
+                <Route index element={<Navigate replace to="login" />} />
+                <Route path="login" element={<LoginForm />} />
+                <Route
+                  path="forgot-password"
+                  element={<ForgotPasswordForm />}
+                />
+                <Route path="verification-code" element={<VerifyOtpForm />} />
+                <Route path="reset-password" element={<ResetPasswordForm />} />
               </Route>
-            </Route>
+              <Route path="unauthorized" element={<Unauthorized />} />
 
-            <Route
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <SessionLayout
-                    dashboardTitle={"Student Dashboard"}
-                    sessionSidebarLinks={getSessionSidebarData("student")}
-                  />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/student" element={<Student />}>
-                <Route
-                  index
-                  element={<Navigate replace to="student-preferences" />}
-                />
-                <Route
-                  path="student-preferences"
-                  element={
-                    <IsCompletedRoute>
-                      <StudentSkills />
-                    </IsCompletedRoute>
-                  }
-                />
-                <Route
-                  path="team-offers"
-                  element={<div>team offer page</div>}
-                />
-                <Route
-                  path="submit-offer"
-                  element={<div>submit offer page</div>}
-                />
-                <Route
-                  path="team-management"
-                  element={<div>team management page</div>}
-                />
+              <Route
+                element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <SessionLayout />
+                  </ProtectedRoute>
+                }
+              >
+                {/* this is an exemple route for admin  just for testing */}
+                <Route path="/admin" element={<Admin />}>
+                  <Route index element={<Navigate replace to="add-users" />} />
+
+                  <Route path="add-users" element={<div>add-users</div>} />
+                </Route>
               </Route>
-            </Route>
 
-            <Route
-              element={
-                <ProtectedRoute allowedRoles={["teacher"]}>
-                  <SessionLayout
-                    dashboardTitle={"Teacher Dashboard"}
-                    sessionSidebarLinks={getSessionSidebarData("teacher")}
+              <Route
+                element={
+                  <ProtectedRoute allowedRoles={["student"]}>
+                    <SessionLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/student" element={<Student />}>
+                  <Route
+                    index
+                    element={<Navigate replace to="student-preferences" />}
                   />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/teacher" element={<Teacher />}>
-                <Route index element={<Navigate replace to="add-project" />} />
-
-                <Route path="add-project" element={<div>add-project</div>} />
-              </Route>
-            </Route>
-
-            <Route
-              element={
-                <ProtectedRoute allowedRoles={["enterprise"]}>
-                  <SessionLayout
-                    dashboardTitle={"Enterprise Dashboard"}
-                    sessionSidebarLinks={getSessionSidebarData("enterprise")}
+                  <Route
+                    path="student-preferences"
+                    element={
+                      <IsCompletedRoute>
+                        <StudentSkills />
+                      </IsCompletedRoute>
+                    }
                   />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="/enterprise" element={<Enterprise />}>
-                <Route index element={<Navigate replace to="add-project" />} />
-
-                <Route path="add-project" element={<div>add-project</div>} />
+                  <Route
+                    path="team-offers"
+                    element={<div>team offer page</div>}
+                  />
+                  <Route
+                    path="submit-offer"
+                    element={<div>submit offer page</div>}
+                  />
+                  <Route
+                    path="team-management"
+                    element={<div>team management page</div>}
+                  />
+                </Route>
               </Route>
-            </Route>
 
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
+              <Route
+                element={
+                  <ProtectedRoute allowedRoles={["teacher"]}>
+                    <SessionLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/teacher" element={<Teacher />}>
+                  <Route
+                    index
+                    element={<Navigate replace to="add-project" />}
+                  />
+
+                  <Route path="add-project" element={<div>add-project</div>} />
+                </Route>
+              </Route>
+
+              <Route
+                element={
+                  <ProtectedRoute allowedRoles={["enterprise"]}>
+                    <SessionLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="/enterprise" element={<Enterprise />}>
+                  <Route
+                    index
+                    element={<Navigate replace to="add-project" />}
+                  />
+
+                  <Route path="add-project" element={<div>add-project</div>} />
+                </Route>
+              </Route>
+
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </SessionProvider>
         </AuthProvider>
       </BrowserRouter>
     </>

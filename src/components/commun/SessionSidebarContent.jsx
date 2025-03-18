@@ -8,13 +8,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useSession } from "@/context/SessionContext";
 
 import { Link, useLocation } from "react-router";
 
-function SessionSidebarContent({ sessionSidebarLinks }) {
+function SessionSidebarContent() {
   const location = useLocation();
   const { setOpenMobile } = useSidebar();
-
+  const { sessionSidebarLinks } = useSession();
   return (
     <SidebarContent>
       {sessionSidebarLinks.navMain.map((item) => (

@@ -3,9 +3,11 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useSession } from "@/context/SessionContext";
 import { Home } from "lucide-react";
 
-function SessionSidebarHeader({ dashboardTitle }) {
+function SessionSidebarHeader() {
+  const { currentUserRole } = useSession();
   return (
     <SidebarHeader>
       <SidebarMenu>
@@ -17,7 +19,9 @@ function SessionSidebarHeader({ dashboardTitle }) {
           <div className="p-2 rounded-xl bg-primary text-background">
             <Home className="h-5 w-5" />
           </div>
-          <span className="text-primary ">{dashboardTitle}</span>
+          <span className="text-primary capitalize">
+            {currentUserRole} Dashboard
+          </span>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarHeader>
