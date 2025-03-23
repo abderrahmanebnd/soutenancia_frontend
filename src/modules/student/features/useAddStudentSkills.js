@@ -6,7 +6,7 @@ import { addStudentSkills } from "../api/apiStudentSkills";
 export function useAddStudentSkills() {
   const queryClient = useQueryClient();
   const { mutate: addSkills, isPending: isAddingSkills } = useMutation({
-    mutationFn: (skillsWithStudentId) => addStudentSkills(skillsWithStudentId),
+    mutationFn: (skills) => addStudentSkills(skills),
     onSuccess: () => {
       toast.success("Skills added successfully");
       queryClient.invalidateQueries(["user"]);

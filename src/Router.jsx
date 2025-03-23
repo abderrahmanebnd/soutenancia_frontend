@@ -19,6 +19,7 @@ import Admin from "./modules/admin/pages/Admin";
 import Enterprise from "./modules/enterprise/pages/Enterprise";
 import Teacher from "./modules/teacher/pages/Teacher";
 import { SessionProvider } from "./context/SessionContext";
+import TeamOffers from "./modules/student/pages/TeamOffers";
 
 function Router() {
   return (
@@ -81,10 +82,7 @@ function Router() {
                       </IsCompletedRoute>
                     }
                   />
-                  <Route
-                    path="team-offers"
-                    element={<div>team offer page</div>}
-                  />
+                  <Route path="team-offers" element={<TeamOffers />} />
                   <Route
                     path="submit-offer"
                     element={<div>submit offer page</div>}

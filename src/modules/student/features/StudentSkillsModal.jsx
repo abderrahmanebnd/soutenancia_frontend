@@ -37,7 +37,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/context/AuthContext";
 import { useStudentSkills } from "./useStudentSkills";
 
 import InlineSpinner from "@/components/commun/InlineSpinner";
@@ -62,10 +61,8 @@ const formSchema = z
   );
 
 export function StudentSkillsModal() {
-  const { currentUser } = useAuth();
   const { studentSkills, isLoading } = useStudentSkills();
   const { addSkills, isAddingSkills } = useAddStudentSkills();
-  const currentStudentId = currentUser?.user.Student.id;
   const [customSkillInput, setCustomSkillInput] = useState("");
 
   const form = useForm({
@@ -77,11 +74,7 @@ export function StudentSkillsModal() {
   });
 
   function onSubmit(formData) {
-    const skillsWithStudentId = {
-      studentId: currentStudentId,
-      ...formData,
-    };
-    addSkills(skillsWithStudentId);
+    addSkills(formData);
   }
 
   return (

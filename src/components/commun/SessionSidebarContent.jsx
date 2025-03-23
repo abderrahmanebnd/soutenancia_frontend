@@ -14,8 +14,14 @@ import { Link, useLocation } from "react-router";
 
 function SessionSidebarContent() {
   const location = useLocation();
-  const { setOpenMobile } = useSidebar();
+  const { setOpen, setOpenMobile, isMobile } = useSidebar();
   const { sessionSidebarLinks } = useSession();
+  function handleCloseSidebar() {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+    setOpen(false);
+  }
   return (
     <SidebarContent>
       {sessionSidebarLinks.navMain.map((item) => (
@@ -29,9 +35,8 @@ function SessionSidebarContent() {
                     asChild
                     isActive={location.pathname === item.url}
                     size="lg"
-                    onClick={() => setOpenMobile(false)}
                   >
-                    <Link to={item.url}>
+                    <Link to={item.url} onClick={handleCloseSidebar}>
                       <item.icon />
 
                       <span>{item.title}</span>
