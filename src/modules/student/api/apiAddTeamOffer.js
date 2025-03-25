@@ -9,5 +9,4 @@ const addTeamOffer = async (data) => {
     throw new Error(errorMessage);
   }
 };
-
 export default addTeamOffer;

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { Upload, X, Check, Plus } from "lucide-react";
 import {
   Command,
@@ -32,7 +32,6 @@ import {
 import { useStudentSkills } from "../features/useStudentSkills";
 import { useaddTeamOffer } from "../features/useAddTeamOffer";
 import { useAuth } from "@/context/AuthContext";
-import { useQuery } from "@tanstack/react-query";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Project title is required." }),
