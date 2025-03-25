@@ -8,7 +8,7 @@ export const useaddTeamOffer = () => {
     mutationFn: (data) => addTeamOffer(data),
     onSuccess: () => {
       toast.success("Offer submitted successfully!");
-      queryClient.invalidateQueries(["teamOffers"]); 
+      queryClient.invalidateQueries(["teams"]); 
     },
     onError: (error) => {
       console.error("Error submitting offer:", error);

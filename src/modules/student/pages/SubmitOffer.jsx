@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState} from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -32,6 +33,7 @@ import {
 import { useStudentSkills } from "../features/useStudentSkills";
 import { useaddTeamOffer } from "../features/useAddTeamOffer";
 import { useAuth } from "@/context/AuthContext";
+import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Project title is required." }),
@@ -161,24 +163,25 @@ function SubmitOffer() {
     },
   });
 
-  const onSubmit = async (data) => {
-    try {
-      const payload = {
-        leader_id: currentUser.user.Student.id,
-        title: data.title,
-        max_members: parseInt(data.max_members, 10),
-        description: data.description,
-        general_required_skills: data.general_required_skills,
-        specific_required_skills: data.specific_required_skills || [],
-      };
+  function onSubmit(data) {
+    const payload = {
+      leader_id: currentUser.user.Student.id,
+      title: data.title,
+      max_members: parseInt(data.max_members, 10),
+      description: data.description,
+      general_required_skills: data.general_required_skills,
+      specific_required_skills: data.specific_required_skills || [],
+    };
 
-      await addTeamOffer(payload);
-      toast.success("Team offer submitted successfully!");
-    } catch (error) {
-      console.error("Error submitting team offer:", error);
-      toast.error(error.message || "Failed to submit team offer.");
-    }
-  };
+    addTeamOffer(payload)
+      .then(() => {
+        toast.success("Team offer submitted successfully!");
+      })
+      .catch((error) => {
+        console.error("Error submitting team offer:", error);
+        toast.error(error.message || "Failed to submit team offer.");
+      });
+  }
 
   if (currentUser?.user?.Student?.isLeader) {
     return (
@@ -228,7 +231,7 @@ function SubmitOffer() {
             />
 
             {isLoading ? (
-              <div>Loading skills...</div>
+              <ButtonWithSpinner smallSpinner={true} disabled={true} />
             ) : (
               <RequiredSkillsField
                 control={form.control}
@@ -326,16 +329,15 @@ function SubmitOffer() {
               )}
             />
 
-            <div className="flex justify-between items-center mt-6">
-              <Button
-                type="submit"
-                disabled={isAdding}
-                className="flex items-center gap-2 bg-primary text-white"
-              >
-                {isAdding ? "Submitting..." : "Submit Offer"}
-                <Upload size={16} />
-              </Button>
-            </div>
+<div className="flex justify-between items-center mt-6">
+  {isAdding ? (
+    <ButtonWithSpinner disabled={true} />
+  ) : (
+    <Button type="submit" className="w-full">
+      Submit Offer
+    </Button>
+  )}
+</div>
           </form>
         </FormProvider>
       </div>
