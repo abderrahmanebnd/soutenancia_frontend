@@ -231,7 +231,7 @@ function SubmitOffer() {
             />
 
             {isLoading ? (
-              <ButtonWithSpinner smallSpinner={true} disabled={true} />
+              <ButtonWithSpinner  disabled={isAdding} />
             ) : (
               <RequiredSkillsField
                 control={form.control}
@@ -331,7 +331,7 @@ function SubmitOffer() {
 
 <div className="flex justify-between items-center mt-6">
   {isAdding ? (
-    <ButtonWithSpinner disabled={true} />
+    <ButtonWithSpinner disabled={isAdding} />
   ) : (
     <Button type="submit" className="w-full">
       Submit Offer
