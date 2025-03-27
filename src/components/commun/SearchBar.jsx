@@ -1,9 +1,12 @@
 import { Input } from "@/components/ui/input";
-import { useTeamOffers } from "../context/TeamOffersContext";
+import { useState } from "react";
+import { useSearchParams } from "react-router";
 
 function SearchBar() {
-  const { searchQuery, setSearchQuery, searchParams, setSearchParams } =
-    useTeamOffers();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || ""
+  );
 
   function handleSearch(e) {
     setSearchQuery(e.target.value);

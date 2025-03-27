@@ -5,18 +5,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ListFilter } from "lucide-react";
-import FilterTeamOffers from "./FilterTeamOffers";
-import { useTeamOffers } from "../context/TeamOffersContext";
 
-function Filter() {
-  const { filterValue } = useTeamOffers();
+function Filter({ children, filterValue }) {
+  const filterLength = filterValue.length;
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline">
-          {filterValue.length > 0 ? (
+          {filterLength > 0 ? (
             <span className="bg-primary text-secondary h-7 w-7 rounded-full flex items-center justify-center">
-              {filterValue.length}
+              {filterLength}
             </span>
           ) : (
             ""
@@ -33,7 +32,7 @@ function Filter() {
           </h4>
           <div className="space-y-2">
             <p className="text-sm">Filter by:</p>
-            <FilterTeamOffers />
+            {children}
           </div>
         </div>
       </PopoverContent>

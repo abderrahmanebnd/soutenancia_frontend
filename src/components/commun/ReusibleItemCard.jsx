@@ -12,8 +12,11 @@ import { getAllSkills, viewLessText } from "@/utils/helpers";
 import { useSidebar } from "@/components/ui/sidebar";
 import { CirclePlus } from "lucide-react";
 import { Link } from "react-router";
+import { useAuth } from "@/context/AuthContext";
 
 function ReusibleItemCard({ data }) {
+  //fot the moment the reusibleItemCard is used only for the team offers and not so reusible but in the futur i will make it reusible depending on the cards that we would get
+
   const {
     id,
     title,
@@ -28,6 +31,8 @@ function ReusibleItemCard({ data }) {
     general_required_skills,
     specific_required_skills
   );
+  const { currentUser } = useAuth();
+  const isLeader = currentUser?.user.Student.isLeader;
   return (
     <Card className="w-full flex flex-col overflow-hidden transition-all hover:shadow-md">
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
@@ -66,12 +71,12 @@ function ReusibleItemCard({ data }) {
             : "flex-col items-start sm:flex-row sm:justify-between sm:items-end "
         } gap-2 pt-2`}
       >
-        <Button variant="outline" isChild>
+        <Button variant="outline">
           <Link to={id}>
             View Details <span>•••</span>
           </Link>
         </Button>
-        <Button variant="requestJoin">
+        <Button variant="requestJoin" disabled={isLeader}>
           Request join
           <CirclePlus className="text-green-600" />
         </Button>

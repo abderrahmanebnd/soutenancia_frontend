@@ -5,76 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getTeamOffers } from "../api/apiStudent";
 import { getAllSkills } from "@/utils/helpers";
 
-/* const teams = [
-  {
-    id: "team-1",
-    name: "Alpha Development",
-    number: "Team #42",
-    description:
-      "A dynamic team focused on building innovative web applications with modern technologies. We're looking for passionate developers to join our upcoming project.",
-    technologies: ["React", "TypeScript", "Node.js", "Tailwindcss"],
-    imageUrl: "/placeholder.svg?height=100&width=100",
-    size: 3,
-  },
-  {
-    id: "team-2",
-    name: "Beta Solutions",
-    number: "Team #87",
-    description:
-      "We specialize in creating enterprise-level solutions with a focus on security and scalability. Currently seeking backend developers with database expertise.",
-    technologies: ["Python", "Django", "PostgreSQL", "Docker"],
-    imageUrl: "/placeholder.svg?height=100&width=100",
-    size: 2,
-  },
-  {
-    id: "team-3",
-    name: "Gamma Innovators",
-    number: "Team #13",
-    description:
-      "An AI-focused team building next-generation applications. We're looking for machine learning engineers and frontend developers to join our cutting-edge projects.",
-    technologies: [
-      "TensorFlow",
-      "React",
-      "Python",
-      "AWS",
-      "JavaScript",
-      "Ruby",
-    ],
-    imageUrl: "/placeholder.svg?height=100&width=100",
-    size: 1,
-  },
-  {
-    id: "team-4",
-    name: "Dib Innovators",
-    number: "Team #13",
-    description:
-      "An AI-focused team building next-generation applications. We're looking for machine learning engineers and frontend developers to join our cutting-edge projects.",
-    technologies: ["Svelte", "AWS"],
-    imageUrl: "/placeholder.svg?height=100&width=100",
-    size: 4,
-  },
-  {
-    id: "team-5",
-    name: "Teta Innovators",
-    number: "Team #13",
-    description:
-      "An AI-focused team building next-generation applications. We're looking for machine learning engineers and frontend developers to join our cutting-edge projects.",
-    technologies: ["Nest", "React", "Python", "AWS"],
-    imageUrl: "/placeholder.svg?height=100&width=100",
-    size: 5,
-  },
-  {
-    id: "team-6",
-    name: "Other Innovators",
-    number: "Team #13",
-    description:
-      "An AI-focused team building next-generation applications. We're looking for machine learning engineers and frontend developers to join our cutting-edge projects.",
-    technologies: ["Nest", "Python"],
-    imageUrl: "/placeholder.svg?height=100&width=100",
-    size: 5,
-  },
-]; */
-
 const TeamOffersContext = createContext();
 
 function TeamOffersProvider({ children }) {
@@ -83,10 +13,8 @@ function TeamOffersProvider({ children }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchValue = searchParams.get("search") || "";
   const filterValue = searchParams.get("filter")?.split(",") || [];
+
   // local State
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || ""
-  );
   const [selectedSkills, setSelectedSkills] = useState(filterValue);
   const [openSkills, setOpenSkills] = useState(false);
 
@@ -174,14 +102,13 @@ function TeamOffersProvider({ children }) {
       )
     );
   }
+
   const value = {
     teams,
     filteredTeams,
     filterValue,
     studentSkills,
     isLoading,
-    searchQuery,
-    setSearchQuery,
     selectedSkills,
     openSkills,
     setOpenSkills,
@@ -204,7 +131,7 @@ function TeamOffersProvider({ children }) {
 
 function useTeamOffers() {
   const context = useContext(TeamOffersContext);
-  if (context === "undefined") {
+  if (context === undefined) {
     throw new Error("useTeamOffers must be used within a TeamOffersProvider");
   }
   return context;
