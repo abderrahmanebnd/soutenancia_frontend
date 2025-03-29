@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router";
-import { useTeamOffer } from "../features/useTeamOffer";
+import { useTeamOffer } from "../features/team-offers/useTeamOffer";
 import Spinner from "@/components/commun/Spinner";
 
 // Sample team data

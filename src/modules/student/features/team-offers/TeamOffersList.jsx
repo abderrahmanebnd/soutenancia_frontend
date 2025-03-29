@@ -1,5 +1,5 @@
 import ReusibleItemCard from "@/components/commun/ReusibleItemCard";
-import { useTeamOffers } from "../context/TeamOffersContext";
+import { useTeamOffers } from "../../context/TeamOffersContext";
 import Spinner from "@/components/commun/Spinner";
 import { UserRoundX } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";

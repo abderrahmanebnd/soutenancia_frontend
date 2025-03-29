@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAvailableSkills } from "../api/apiStudentSkills";
+import { getAvailableSkills } from "../../api/apiStudentSkills";
 import toast from "react-hot-toast";
 
 export function useStudentSkills() {

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
-import { addStudentSkills } from "../api/apiStudentSkills";
+import { addStudentSkills } from "../../api/apiStudentSkills";
 
 export function useAddStudentSkills() {
   const queryClient = useQueryClient();

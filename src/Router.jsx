@@ -11,7 +11,7 @@ import ProtectedRoute from "./features/auth/ProtectedRoute";
 import PublicRoute from "./features/auth/PublicRoute";
 import VerifyOtpForm from "./features/auth/VerifyOtpForm";
 import ResetPasswordForm from "./features/auth/ResetPasswordForm";
-import IsCompletedRoute from "./modules/student/features/IsCompletedRoute";
+import IsCompletedRoute from "./modules/student/features/team-offers/IsCompletedRoute";
 import Student from "./modules/student/pages/Student";
 import StudentSkills from "./modules/student/pages/StudentSkills";
 import SessionLayout from "./components/commun/SessionLayout";

@@ -28,8 +28,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useStudentSkills } from "../features/useStudentSkills";
-import { useAddTeamOffer } from "../features/useAddTeamOffer";
+import { useStudentSkills } from "../features/team-offers/useStudentSkills";
+import { useAddTeamOffer } from "../features/team-offers/useAddTeamOffer";
 import { useAuth } from "@/context/AuthContext";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 import { Slider } from "@/components/ui/slider";

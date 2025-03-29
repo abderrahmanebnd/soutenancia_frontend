@@ -30,16 +30,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useStudentSkills } from "../features/useStudentSkills";
+import { useStudentSkills } from "../features/team-offers/useStudentSkills";
 
 import SectionTitle from "../components/SectionTitle";
 import InlineSpinner from "@/components/commun/InlineSpinner";
 import { Slider } from "@/components/ui/slider";
-import { useCurrentLeaderTeamOffer } from "../features/useCurrentLeaderTeamOffer";
-import { useEditCurrentLeaderTeamOffer } from "../features/useEditCurrentLeaderTeamOffer";
+import { useCurrentLeaderTeamOffer } from "../features/team-offers/useCurrentLeaderTeamOffer";
+import { useEditCurrentLeaderTeamOffer } from "../features/team-offers/useEditCurrentLeaderTeamOffer";
 import toast from "react-hot-toast";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
-import { useDeleteCurrentLeaderTeamOffer } from "../features/useDeleteCurrentLeaderTeamOffer";
+import { useDeleteCurrentLeaderTeamOffer } from "../features/team-offers/useDeleteCurrentLeaderTeamOffer";
 import Spinner from "@/components/commun/Spinner";
 
 const formSchema = z.object({

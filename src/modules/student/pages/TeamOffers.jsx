@@ -3,15 +3,15 @@ import SectionTitle from "../components/SectionTitle";
 import { useTeamOffers } from "../context/TeamOffersContext";
 import Filter from "../../../components/commun/Filter";
 import SearchBar from "../../../components/commun/SearchBar";
-import TeamOffersList from "../features/TeamOffersList";
+import TeamOffersList from "../features/team-offers/TeamOffersList";
 import OperationsHoverButton from "@/components/commun/OperationsHoverButton";
-import FilterTeamOffers from "../features/FilterTeamOffers";
+import FilterTeamOffers from "../features/team-offers/FilterTeamOffers";
 import { Pencil, Plus } from "lucide-react";
 
 function TeamOffers() {
   const { currentUser } = useAuth();
   const isLeader = currentUser?.user.Student.isLeader;
-  const { filterValue } = useTeamOffers();
+  const { filterValue, maxMembersValue } = useTeamOffers();
   return (
     <div className="space-y-4">
       <section className="sm:flex sm:flex-row sm:items-center sm:justify-between grid grid-cols-2 grid-rows-2 gap-4 bg-section rounded-xl px-3 py-4 shadow-sm">
@@ -20,7 +20,7 @@ function TeamOffers() {
           subtitle="Choose your team and start your journey"
         />
         <SearchBar />
-        <Filter filterValue={filterValue}>
+        <Filter filterValue={filterValue} maxMembersValue={maxMembersValue}>
           <FilterTeamOffers />
         </Filter>
       </section>

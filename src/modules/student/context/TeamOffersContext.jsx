@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useSearchParams } from "react-router";
-import { useStudentSkills } from "../features/useStudentSkills";
+import { useStudentSkills } from "../features/team-offers/useStudentSkills";
 import { useQuery } from "@tanstack/react-query";
 import { getTeamOffers } from "../api/apiStudent";
 import { getAllSkills, getGeneralSkillsWithNameOnly } from "@/utils/helpers";
@@ -13,10 +13,11 @@ function TeamOffersProvider({ children }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchValue = searchParams.get("search") || "";
   const filterValue = searchParams.get("filter")?.split(",") || [];
-
+  const maxMembersValue = searchParams.get("max_members") || 0;
   // local State
   const [selectedSkills, setSelectedSkills] = useState(filterValue);
-  const [openSkills, setOpenSkills] = useState(false);
+  const [openSkills] = useState(false);
+  const [openMaxMembers, setOpenMaxMembers] = useState(false);
 
   //StudentSkills
   const { studentSkills, isLoading } = useStudentSkills();
@@ -42,7 +43,15 @@ function TeamOffersProvider({ children }) {
       return updatedSkills;
     });
   }
-
+  function handleSelectMaxMembers(currentMaxMembers) {
+    searchParams.set("max_members", currentMaxMembers);
+    setSearchParams(searchParams);
+  }
+  function handleClearMaxMembers() {
+    searchParams.delete("max_members");
+    setSearchParams(searchParams);
+    setOpenMaxMembers(false);
+  }
   function handleOtherSkills() {
     if (searchParams.get("filter") === "custom") {
       searchParams.delete("filter");
@@ -57,6 +66,7 @@ function TeamOffersProvider({ children }) {
   function handleClearFilters() {
     setSelectedSkills([]);
     searchParams.delete("filter");
+    searchParams.delete("max_members");
     setSearchParams(searchParams);
     setCustomSkillsIsSelected(false);
   }
@@ -79,6 +89,11 @@ function TeamOffersProvider({ children }) {
     filteredTeams = filteredTeams?.filter((team) =>
       team.title.toLowerCase().includes(searchValue)
     );
+  }
+  if (maxMembersValue) {
+    filteredTeams = filteredTeams?.filter((team) => {
+      return team.max_members === Number(maxMembersValue);
+    });
   }
   const hasValidFilters =
     filterValue.length > 0 &&
@@ -112,7 +127,6 @@ function TeamOffersProvider({ children }) {
     isLoading,
     selectedSkills,
     openSkills,
-    setOpenSkills,
     customSkillsIsSelected,
     handleSelectSkill,
     handleOtherSkills,
@@ -121,6 +135,10 @@ function TeamOffersProvider({ children }) {
     setSearchParams,
     isErrorGettingTeams,
     isLoadingTeams,
+    openMaxMembers,
+    maxMembersValue,
+    handleSelectMaxMembers,
+    handleClearMaxMembers,
   };
 
   return (
