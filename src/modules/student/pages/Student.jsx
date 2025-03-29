@@ -1,9 +1,12 @@
 import { Outlet } from "react-router";
+import { TeamOffersProvider } from "../context/TeamOffersContext";
 
 function Student() {
   return (
     <>
-      <Outlet />
+      <TeamOffersProvider>
+        <Outlet />
+      </TeamOffersProvider>
     </>
   );
 }

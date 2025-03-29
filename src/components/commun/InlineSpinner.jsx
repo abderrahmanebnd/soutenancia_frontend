@@ -1,6 +1,6 @@
 function InlineSpinner() {
   return (
-    <div role="status" className="flex items-center justify-center ">
+    <div role="status" className="flex items-center justify-center p-4">
       <svg
         aria-hidden="true"
         className="w-10 h-10 lg:h-12 lg:w-12 text-gray-200 animate-spin dark:text-gray-600 fill-primary"
