@@ -40,25 +40,34 @@ import { useEditCurrentLeaderTeamOffer } from "../features/useEditCurrentLeaderT
 import toast from "react-hot-toast";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 import { useDeleteCurrentLeaderTeamOffer } from "../features/useDeleteCurrentLeaderTeamOffer";
+import Spinner from "@/components/commun/Spinner";
 
 const formSchema = z.object({
-  title: z.string().min(1, { message: "Project title is required." }),
+  title: z
+    .string()
+    .min(3, {
+      message: "Project title is required and must be at least 3 characters .",
+    })
+    .max(10, { message: "Project title must be less than 10 characters." }),
   description: z
     .string()
-    .min(10, { message: "Description must be at least 10 characters." }),
+    .min(10, { message: "Description must be at least 10 characters." })
+    .max(1000, {
+      message: "Description must be less than 1000 characters.",
+    }),
   generalSkills: z
     .array(z.string())
     .min(1, { message: "General skills are required." }),
   maxMembers: z
     .array(z.number())
-    .min(1, { message: "Members must be between 2 and 6" })
-    .refine((val) => val[0] >= 2 && val[0] <= 6, {
-      message: "Members must be between 2 and 6",
+    .min(1, { message: "Members must be between 2 and 7" })
+    .refine((val) => val[0] >= 2 && val[0] <= 7, {
+      message: "Members must be between 2 and 7",
     }),
   customSkills: z.array(z.string()).optional(),
 });
 
-function SubmitOffer() {
+function EditTeamOffer() {
   const { studentSkills, isLoading: isGettingStudentSkills } =
     useStudentSkills();
   const [customSkillInput, setCustomSkillInput] = useState("");
@@ -138,6 +147,15 @@ function SubmitOffer() {
     }
   }
 
+  if (isLoadingCurrentLeaderTeamOffer) return <Spinner />;
+
+  if (isError)
+    return (
+      <p className="text-red-500">
+        Failed to get your team offer . Please try again later.
+      </p>
+    );
+
   return (
     <div className="min-h-[80vh] flex justify-center p-4">
       <div className="bg-white px-6 pt-6 lg:px-12 lg:pt-12 pb-6 rounded-xl shadow-lg w-full md:max-w-2xl space-y-6">
@@ -145,12 +163,7 @@ function SubmitOffer() {
           title="Edit Team Offer"
           subtitle="Want to edit or delete your team offer? You can do it here."
         />
-        {isLoadingCurrentLeaderTeamOffer && <InlineSpinner />}
-        {isError && (
-          <p className="text-red-500">
-            Failed to get your team offer . Please try again later.
-          </p>
-        )}
+
         {!isLoadingCurrentLeaderTeamOffer && !isError && (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -394,7 +407,7 @@ function SubmitOffer() {
                       <FormControl>
                         <Slider
                           min={2}
-                          max={6}
+                          max={7}
                           step={1}
                           onValueChange={field.onChange}
                           defaultValue={field.value}
@@ -444,4 +457,4 @@ function SubmitOffer() {
     </div>
   );
 }
-export default SubmitOffer;
+export default EditTeamOffer;

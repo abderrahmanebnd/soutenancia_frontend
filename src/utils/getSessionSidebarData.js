@@ -16,7 +16,7 @@ export function getSessionSidebarData(role) {
             {
               title: "Submit Offer",
               icon: FileCheck2,
-              url: "/student/submit-offer",
+              url: "/student/submit-team-offer",
             },
             {
               title: "Team Management",

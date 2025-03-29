@@ -4,8 +4,9 @@ import { useTeamOffers } from "../context/TeamOffersContext";
 import Filter from "../../../components/commun/Filter";
 import SearchBar from "../../../components/commun/SearchBar";
 import TeamOffersList from "../features/TeamOffersList";
-import EditHoverButton from "@/components/commun/EditHoverButton";
+import OperationsHoverButton from "@/components/commun/OperationsHoverButton";
 import FilterTeamOffers from "../features/FilterTeamOffers";
+import { Pencil, Plus } from "lucide-react";
 
 function TeamOffers() {
   const { currentUser } = useAuth();
@@ -23,10 +24,20 @@ function TeamOffers() {
           <FilterTeamOffers />
         </Filter>
       </section>
-      {isLeader && (
-        <EditHoverButton path="/student/edit-team-offer">
+      {isLeader ? (
+        <OperationsHoverButton
+          path="/student/submit-team-offer"
+          icon={<Pencil />}
+        >
           Edit my team offer
-        </EditHoverButton>
+        </OperationsHoverButton>
+      ) : (
+        <OperationsHoverButton
+          path="/student/submit-team-offer"
+          icon={<Plus strokeWidth={3} />}
+        >
+          Add a team offer
+        </OperationsHoverButton>
       )}
 
       <TeamOffersList />

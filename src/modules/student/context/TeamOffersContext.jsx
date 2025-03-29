@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router";
 import { useStudentSkills } from "../features/useStudentSkills";
 import { useQuery } from "@tanstack/react-query";
 import { getTeamOffers } from "../api/apiStudent";
-import { getAllSkills } from "@/utils/helpers";
+import { getAllSkills, getGeneralSkillsWithNameOnly } from "@/utils/helpers";
 
 const TeamOffersContext = createContext();
 
@@ -96,11 +96,12 @@ function TeamOffersProvider({ children }) {
     });
   }
   if (hasValidFilters && filterValue[0] !== "custom") {
-    filteredTeams = filteredTeams?.filter((team) =>
-      team.general_required_skills.some((tech) =>
-        filterValue.includes(tech.name)
-      )
-    );
+    filteredTeams = filteredTeams?.filter((team) => {
+      const teamSkills = getGeneralSkillsWithNameOnly(
+        team.general_required_skills
+      );
+      return filterValue.every((filter) => teamSkills.includes(filter));
+    });
   }
 
   const value = {

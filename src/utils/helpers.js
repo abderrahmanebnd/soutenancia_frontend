@@ -9,3 +9,6 @@ export function viewLessText(text) {
 export function getAllSkills(generalSkills, specificSkills) {
   return [...generalSkills.map((skill) => skill.name), ...specificSkills];
 }
+export function getGeneralSkillsWithNameOnly(generalSkills) {
+  return generalSkills.map((skill) => skill.name);
+}

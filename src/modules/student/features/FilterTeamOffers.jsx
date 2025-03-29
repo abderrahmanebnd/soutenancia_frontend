@@ -77,13 +77,6 @@ function FilterTeamOffers() {
                     ))}
                   </CommandGroup>
                 </CommandList>
-                {selectedSkills.length > 0 && (
-                  <div className="flex items-center justify-between p-2 border-t">
-                    <Button size="sm" onClick={() => setOpenSkills(false)}>
-                      Apply
-                    </Button>
-                  </div>
-                )}
               </Command>
             )}
           </PopoverContent>
@@ -96,9 +89,11 @@ function FilterTeamOffers() {
           Other Skills
         </Button>
       </div>
-      <Button variant="link" className="w-full" onClick={handleClearFilters}>
-        Clear all filters
-      </Button>
+      <div className="flex justify-center">
+        <Button variant="link" onClick={handleClearFilters}>
+          Clear all filters
+        </Button>
+      </div>
     </div>
   );
 }
