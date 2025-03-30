@@ -1,4 +1,4 @@
-import { StudentSkillsModal } from "../features/StudentSkillsModal";
+import { StudentSkillsModal } from "../features/team-offers/StudentSkillsModal";
 
 function StudentSkills() {
   return (

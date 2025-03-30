@@ -11,7 +11,7 @@ import ProtectedRoute from "./features/auth/ProtectedRoute";
 import PublicRoute from "./features/auth/PublicRoute";
 import VerifyOtpForm from "./features/auth/VerifyOtpForm";
 import ResetPasswordForm from "./features/auth/ResetPasswordForm";
-import IsCompletedRoute from "./modules/student/features/IsCompletedRoute";
+import IsCompletedRoute from "./modules/student/features/team-offers/IsCompletedRoute";
 import Student from "./modules/student/pages/Student";
 import StudentSkills from "./modules/student/pages/StudentSkills";
 import SessionLayout from "./components/commun/SessionLayout";
@@ -19,6 +19,11 @@ import Admin from "./modules/admin/pages/Admin";
 import Enterprise from "./modules/enterprise/pages/Enterprise";
 import Teacher from "./modules/teacher/pages/Teacher";
 import { SessionProvider } from "./context/SessionContext";
+
+import TeamOffers from "./modules/student/pages/TeamOffers";
+import TeamOfferDetails from "./modules/student/pages/TeamOfferDetails";
+import EditTeamOffer from "./modules/student/pages/EditTeamOffer";
+
 import SubmitOffer from "./modules/student/pages/SubmitOffer";
 
 function Router() {
@@ -82,14 +87,13 @@ function Router() {
                       </IsCompletedRoute>
                     }
                   />
+                  <Route path="team-offers" element={<TeamOffers />} />
                   <Route
-                    path="team-offers"
-                    element={<div>team-offers</div>}
+                    path="team-offers/:idTeamOfferDetails"
+                    element={<TeamOfferDetails />}
                   />
-                  <Route
-                    path="submit-offer"
-                    element={<SubmitOffer/>}
-                  />
+                  <Route path="edit-team-offer" element={<EditTeamOffer />} />
+                  <Route path="submit-team-offer" element={<SubmitOffer />} />
                   <Route
                     path="team-management"
                     element={<div>team management page</div>}

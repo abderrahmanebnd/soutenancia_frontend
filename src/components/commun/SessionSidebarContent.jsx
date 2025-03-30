@@ -16,6 +16,7 @@ function SessionSidebarContent() {
   const location = useLocation();
   const { setOpenMobile } = useSidebar();
   const { sessionSidebarLinks } = useSession();
+
   return (
     <SidebarContent>
       {sessionSidebarLinks.navMain.map((item) => (
@@ -29,9 +30,8 @@ function SessionSidebarContent() {
                     asChild
                     isActive={location.pathname === item.url}
                     size="lg"
-                    onClick={() => setOpenMobile(false)}
                   >
-                    <Link to={item.url}>
+                    <Link to={item.url} onClick={() => setOpenMobile(false)}>
                       <item.icon />
 
                       <span>{item.title}</span>
