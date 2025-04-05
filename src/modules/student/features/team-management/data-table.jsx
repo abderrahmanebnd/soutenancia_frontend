@@ -19,6 +19,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import Filter from "@/components/commun/Filter";
+import FilterTeamApplication from "./FilterTeamApplication";
+
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -44,15 +47,18 @@ export function DataTable({ columns, data }) {
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center gap-4 py-4">
         <Input
-          placeholder="Filter emails..."
-          value={table.getColumn("email")?.getFilterValue() ?? ""}
+          placeholder="Search student name..."
+          value={table.getColumn("studentName")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("studentName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
+        <Filter>
+          <FilterTeamApplication table={table} />
+        </Filter>
       </div>
       <div className="rounded-md border">
         <Table>
