@@ -17,12 +17,17 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import Filter from "@/components/commun/Filter";
-import FilterTeamApplication from "./FilterTeamApplication";
 
-export function DataTable({ columns, data }) {
+export function DataTable({
+  columns,
+  data,
+  searchWith = null,
+
+  filterComponent = null,
+}) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const table = useReactTable({
@@ -48,17 +53,19 @@ export function DataTable({ columns, data }) {
   return (
     <div>
       <div className="flex items-center gap-4 py-4">
-        <Input
-          placeholder="Search student name..."
-          value={table.getColumn("studentName")?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn("studentName")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <Filter>
-          <FilterTeamApplication table={table} />
-        </Filter>
+        {searchWith && (
+          <Input
+            placeholder={`Search ${searchWith}`}
+            value={table.getColumn(searchWith)?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table.getColumn(searchWith)?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        )}
+        {filterComponent && (
+          <Filter>{React.cloneElement(filterComponent, { table })}</Filter>
+        )}
       </div>
       <div className="rounded-md border">
         <Table>

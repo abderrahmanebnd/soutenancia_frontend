@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 import { useSearchParams } from "react-router";
 import { useStudentSkills } from "../features/team-offers/useStudentSkills";
 import { useQuery } from "@tanstack/react-query";
-import { getTeamOffers } from "../api/apiStudent";
+import { getTeamOffers } from "../api/apiStudentOffer";
 import { getAllSkills, getGeneralSkillsWithNameOnly } from "@/utils/helpers";
 
 const TeamOffersContext = createContext();

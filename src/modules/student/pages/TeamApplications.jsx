@@ -1,6 +1,7 @@
-import { columns } from "./columns";
-import { DataTable } from "./data-table";
-import SectionTitle from "../../components/SectionTitle";
+import { columnsTeamApplications } from "../features/team-management/columnsTeamApplications";
+import { DataTable } from "../../../components/commun/data-table";
+import SectionTitle from "../components/SectionTitle";
+import FilterTeamApplication from "../features/team-management/FilterTeamApplication";
 const data = [
   {
     id: "728ed521",
@@ -38,14 +39,19 @@ const data = [
   },
 ];
 
-export default function TestingDataTablePage() {
+export default function TeamApplications() {
   return (
     <div className="bg-section p-4 rounded-xl shadow-sm">
       <SectionTitle
         title="Team Applications"
         subtitle="Browse and manage your team applications here."
       />
-      <DataTable columns={columns} data={data} />
+      <DataTable
+        columns={columnsTeamApplications}
+        data={data}
+        searchWith="studentName"
+        filterComponent={<FilterTeamApplication />}
+      />
     </div>
   );
 }

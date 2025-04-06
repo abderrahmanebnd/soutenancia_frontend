@@ -25,7 +25,7 @@ import TeamOfferDetails from "./modules/student/pages/TeamOfferDetails";
 import EditTeamOffer from "./modules/student/pages/EditTeamOffer";
 
 import SubmitOffer from "./modules/student/pages/SubmitOffer";
-import TestingDataTablePage from "./modules/student/features/team-management/TestingDataTablePage";
+import TeamApplications from "./modules/student/pages/TeamApplications";
 
 function Router() {
   return (
@@ -97,7 +97,7 @@ function Router() {
                   <Route path="submit-team-offer" element={<SubmitOffer />} />
                   <Route
                     path="team-management"
-                    element={<TestingDataTablePage />}
+                    element={<TeamApplications />}
                   />
                 </Route>
               </Route>
