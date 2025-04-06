@@ -41,7 +41,6 @@ import toast from "react-hot-toast";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 import { useDeleteCurrentLeaderTeamOffer } from "../features/team-offers/useDeleteCurrentLeaderTeamOffer";
 import Spinner from "@/components/commun/Spinner";
-
 const formSchema = z.object({
   title: z
     .string()
@@ -71,9 +70,12 @@ function EditTeamOffer() {
   const { studentSkills, isLoading: isGettingStudentSkills } =
     useStudentSkills();
   const [customSkillInput, setCustomSkillInput] = useState("");
-  const { dataTeamOffer, isLoadingCurrentLeaderTeamOffer, isError } =
-    useCurrentLeaderTeamOffer();
-
+  const { 
+    dataTeamOffer, 
+    isLoadingCurrentLeaderTeamOffer, 
+    isError,
+    hasMembers,  
+  } = useCurrentLeaderTeamOffer();
   const { editTeamOffer, isEditing } = useEditCurrentLeaderTeamOffer();
   const { deleteTeamOffer, isDeleting } = useDeleteCurrentLeaderTeamOffer();
   const form = useForm({
@@ -433,22 +435,24 @@ function EditTeamOffer() {
                     Edit Team Offer
                   </Button>
                 )}
-                {isDeleting ? (
-                  <ButtonWithSpinner
-                    disabled={isDeleting}
-                    className="w-1/2"
-                    variant="destructive"
-                  />
-                ) : (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    className="w-1/2 "
-                    onClick={() => deleteTeamOffer(dataTeamOffer.id)}
+              {isDeleting ? (
+                 <ButtonWithSpinner
+                   disabled={isDeleting}
+                   className="w-1/2"
+                   variant="destructive"
+                 />
+             ) : (
+               <Button
+                  type="button"
+                  variant="destructive"
+                  disabled={hasMembers || isDeleting}
+                  className="w-1/2"
+                  onClick={() => deleteTeamOffer(dataTeamOffer.id)}
                   >
-                    Delete Team Offer
-                  </Button>
-                )}
+                 {hasMembers ? "Offer Not Empty" : "Delete Team Offer"}
+                </Button>
+               )}
+                
               </div>
             </form>
           </Form>

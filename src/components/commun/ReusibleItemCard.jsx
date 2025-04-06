@@ -12,13 +12,15 @@ import { getAllSkills, viewLessText } from "@/utils/helpers";
 import { useSidebar } from "@/components/ui/sidebar";
 import { CirclePlus } from "lucide-react";
 import { Link } from "react-router";
+import { useApplyToTeamOffer } from "@/modules/student/features/team-management/useApplyToTeamOffer";
 import { useAuth } from "@/context/AuthContext";
 
 function ReusibleItemCard({ data }) {
   //fot the moment the reusibleItemCard is used only for the team offers and not so reusible but in the futur i will make it reusible depending on the cards that we would get
 
   const {
-    id,
+    id: teamOfferId,
+    leader_id,
     title,
     description,
     general_required_skills,
@@ -27,12 +29,15 @@ function ReusibleItemCard({ data }) {
     max_members,
   } = data;
   const { open } = useSidebar();
+  const { currentUser } = useAuth();
+  const studentId = currentUser?.user.Student.id;
+  const myTeamOffer = leader_id === studentId;
+  const { requestJoin, isApplying } = useApplyToTeamOffer(title);
   const allSkills = getAllSkills(
     general_required_skills,
     specific_required_skills
   );
-  const { currentUser } = useAuth();
-  const isLeader = currentUser?.user.Student.isLeader;
+
   return (
     <Card className="w-full flex flex-col overflow-hidden transition-all hover:shadow-md">
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
@@ -72,12 +77,16 @@ function ReusibleItemCard({ data }) {
         } gap-2 pt-2`}
       >
         <Button variant="outline">
-          <Link to={id}>
+          <Link to={teamOfferId}>
             View Details <span>•••</span>
           </Link>
         </Button>
-        <Button variant="requestJoin" disabled={isLeader}>
-          Request join
+        <Button
+          variant="requestJoin"
+          onClick={() => requestJoin({ teamOfferId: teamOfferId })}
+          disabled={isApplying || myTeamOffer}
+        >
+          Request To Join
           <CirclePlus className="text-green-600" />
         </Button>
       </CardFooter>
