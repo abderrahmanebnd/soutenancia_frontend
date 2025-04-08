@@ -106,7 +106,7 @@ function FilterTeamOffers() {
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
             <Command>
-              <CommandInput placeholder="Search Skills..." />
+              <CommandInput placeholder="Search team size..." />
               <CommandList>
                 <CommandEmpty>No Skill found.</CommandEmpty>
                 <CommandGroup>

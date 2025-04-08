@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/popover";
 import { ListFilter } from "lucide-react";
 
-function Filter({ children, filterValue, maxMembersValue }) {
+function Filter({ children, filterValue = [], maxMembersValue = 0 }) {
   const filterLength = filterValue.length + (maxMembersValue ? 1 : 0);
 
   return (

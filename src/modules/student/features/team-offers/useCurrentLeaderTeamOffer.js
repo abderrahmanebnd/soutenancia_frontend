@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentLeaderTeamOffer } from "../../api/apiStudentOffer";
+import { getCurrentLeaderTeamOffer } from "@/modules/student/api/apiStudentOffer";
 import toast from "react-hot-toast";
 
 export function useCurrentLeaderTeamOffer() {
@@ -7,13 +7,12 @@ export function useCurrentLeaderTeamOffer() {
     data: dataTeamOffer,
     isLoading: isLoadingCurrentLeaderTeamOffer,
     isError,
-   
   } = useQuery({
     queryKey: ["myTeamOffer"],
-    queryFn: () => getCurrentLeaderTeamOffer(),
+    queryFn: getCurrentLeaderTeamOffer,
     onError: (error) => {
       console.error("Error fetching team leader offer:", error);
-      toast.error("Failed to get your team offer . Please try again later.");
+      toast.error("Failed to get your team offer. Please try again later.");
     },
     select: (data) => ({
       ...data,
@@ -21,12 +20,9 @@ export function useCurrentLeaderTeamOffer() {
       hasMembers: (data?.TeamMembers?.length || 0) > 0,
     }),
   });
-
   return {
     dataTeamOffer,
     isLoadingCurrentLeaderTeamOffer,
     isError,
-    membersCount: dataTeamOffer?.membersCount || 0,
-    hasMembers: dataTeamOffer?.hasMembers || false,
   };
 }
