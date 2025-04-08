@@ -23,6 +23,7 @@ export default function FilterMyApplications({ table }) {
     { value: "pending", label: "Pending" },
     { value: "accepted", label: "Accepted" },
     { value: "rejected", label: "Rejected" },
+    {value:  "canceled", label: "Canceled"}
   ];
 
   const handleStatusSelect = (statusValue) => {

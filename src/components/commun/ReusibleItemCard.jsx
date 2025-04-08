@@ -72,7 +72,7 @@ function ReusibleItemCard({ data }) {
       <CardFooter
         className={`flex ${
           open
-            ? "flex-col xl:flex-row items-start justify-end xl:items-end xl:justify-between"
+            ? "flex-col xl:flex-row items-start justify-end xl:items-end xl:justify-between flex-wrap"
             : "flex-col items-start sm:flex-row sm:justify-between sm:items-end "
         } gap-2 pt-2`}
       >

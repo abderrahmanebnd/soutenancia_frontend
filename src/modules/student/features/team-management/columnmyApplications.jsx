@@ -1,9 +1,12 @@
+
 import { createColumnHelper } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import HeaderCellWithSorting from "../../components/HeaderCellWithSorting";
 import SkillsHoverButton from "@/components/commun/SkillsHoverButton";
-import { CheckCircle2, Clock, XCircle, HelpCircle } from "lucide-react";
+import { CheckCircle2, Clock, XCircle, HelpCircle, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { useUpdateTeamApplication } from "@/modules/student/features/team-management/useUpdateTeamApplication";
 
 const columnHelper = createColumnHelper();
 
@@ -22,6 +25,11 @@ const statusBadgeConfig = {
     variant: "destructive",
     icon: <XCircle className="mr-1 h-4 w-4" />,
     text: "Rejected"
+  },
+  canceled: {
+    variant: "destructive",
+    icon: <XCircle className="mr-1 h-4 w-4" />,
+    text: "Canceled"
   },
   default: {
     variant: "outline",
@@ -148,11 +156,8 @@ export const columnsMyApplications = [
   }),
 
   columnHelper.accessor(row => {
-    // Get specific skills (array of strings)
     const specificSkills = row.teamOffer?.specific_required_skills || [];
-    // Get general skills (array of objects with name property)
     const generalSkills = row.teamOffer?.general_required_skills?.map(skill => skill.name) || [];
-    // Combine both arrays
     return [...specificSkills, ...generalSkills];
   }, {
     id: "requiredSkills",
@@ -198,5 +203,48 @@ export const columnsMyApplications = [
     ),
     size: 150,
     enableSorting: true
+  }),
+
+  columnHelper.display({
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const application = row.original;
+      const { updateTeamApplication, isUpdating } = useUpdateTeamApplication();
+
+      const handleCancel = () => {
+        if (!application?.id) {
+          toast.error("Invalid application ID");
+          return;
+        }
+        
+        if (confirm("Do you really want to cancel this application?")) {
+          updateTeamApplication({ 
+            idApplication: application.id,
+            status: "canceled"
+          });
+        }
+      };
+
+      if (!["pending", "accepted"].includes(application.status)) {
+        return null;
+      }
+
+      return (
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200 rounded-full h-6 hover:text-red-600"
+            onClick={handleCancel}
+            disabled={isUpdating}
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            {isUpdating ? "Canceling..." : "Cancel"}
+          </Button>
+        </div>
+      );
+    },
+    size: 120
   })
 ];

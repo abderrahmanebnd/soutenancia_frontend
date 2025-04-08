@@ -1,4 +1,3 @@
-
 import { columnsMyApplications } from "../features/team-management/columnmyApplications";
 import { DataTable } from "../../../components/commun/data-table";
 import SectionTitle from "../components/SectionTitle";
@@ -7,21 +6,21 @@ import { useMyApplications } from "@/modules/student/features/team-management/us
 import LoadingSpinner from "@/components/commun/ButtonWithSpinner";
 import { useTeamOffer } from "../features/team-offers/useTeamOffer";
 import toast from "react-hot-toast";
+import { useQueries } from "@tanstack/react-query";
 
 export default function MyApplications() {
   const { data: myApplications, isLoading, error } = useMyApplications();
-
-  // Transform the applications data with proper fallbacks
-  const applicationsData = myApplications?.applications?.map(app => {
-    const { teamOfferId } = app;
-    
-    // Use the useTeamOffer hook for each application
-    const { 
-      teamOfferDetails, 
-      isLoading: isTeamOfferLoading, 
-      isError: isTeamOfferError 
-    } = useTeamOffer(teamOfferId);
-
+  const teamOfferIds = myApplications?.applications?.map(app => app.teamOfferId) || [];
+  const teamOfferQueries = useQueries({
+    queries: teamOfferIds.map(id => ({
+      queryKey: ["team", id],
+      queryFn: () => getTeamOfferById(id),
+    })),
+  });
+  const isTeamOffersLoading = teamOfferQueries.some(query => query.isLoading);
+  const applicationsData = myApplications?.applications?.map((app, index) => {
+    const teamOfferQuery = teamOfferQueries[index];
+    const teamOfferDetails = teamOfferQuery?.data;
     const generalSkills = teamOfferDetails?.general_required_skills?.map(skill => skill.name) || [];
     const specificSkills = teamOfferDetails?.specific_required_skills || [];
 
@@ -30,18 +29,18 @@ export default function MyApplications() {
       teamOffer: {
         title: teamOfferDetails?.title || app.teamOffer?.title || 'N/A',
         max_members: teamOfferDetails?.max_members || app.teamOffer?.max_members || 1,
-        membersCount: teamOfferDetails?.membersCount || app.teamOffer?.membersCount || 0,
+        membersCount: teamOfferDetails?.membersCount || 0,
         specific_required_skills: specificSkills,
         general_required_skills: generalSkills
       },
       status: app.status || 'pending',
       createdAt: app.createdAt || new Date().toISOString(),
-      isTeamOfferLoading,
-      isTeamOfferError
+      isTeamOfferLoading: teamOfferQuery?.isLoading,
+      isTeamOfferError: teamOfferQuery?.isError
     };
   }) || [];
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading || isTeamOffersLoading) return <LoadingSpinner />;
   if (error) return <ErrorMessage error={error} />;
 
   return (
@@ -73,5 +72,4 @@ function ErrorMessage({ error }) {
       </p>
     </div>
   );
-
 }
