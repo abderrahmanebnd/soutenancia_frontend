@@ -31,3 +31,12 @@ export async function updateTeamApplicationStatus(idApplication, status) {
     throw error;
   }
 }
+export async function getMyApplications() {
+  try {
+    const response = await axiosPrivate.get("/teamApplications/myApplications");
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.error || "Failed to fetch applications";
+    throw new Error(errorMessage);
+  }
+}

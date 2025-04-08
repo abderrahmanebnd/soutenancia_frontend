@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMyApplications } from "@/modules/student/api/apiMyapplications";
+import { getMyApplications } from "../../api/apiStudentApplication";
 
 export function useMyApplications() {
   return useQuery({
@@ -7,7 +7,7 @@ export function useMyApplications() {
     queryFn: getMyApplications,
     select: (data) => ({
       applications: data.applications || [],
-      isInTeam: data.applications?.length > 0, // Directly compute here
+      isInTeam: data.applications?.length > 0,
       hasPending: data.applications?.some(app => app.status === "pending") || false,
       hasAccepted: data.applications?.some(app => app.status === "accepted") || false
     })
