@@ -8,7 +8,8 @@ export function useUpdateTeamApplication(applicationId) {
     mutate: updateTeamApplication,
     isPending: isUpdatingTeamApplication,
   } = useMutation({
-    mutationFn: (status) => updateTeamApplicationStatus(status, applicationId),
+    mutationFn: (statusApplication) =>
+      updateTeamApplicationStatus(statusApplication, applicationId),
     onSuccess: () => {
       queryClient.invalidateQueries(["teamApplications"]);
       toast.success("Team Application status updated successfully!");

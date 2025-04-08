@@ -4,8 +4,13 @@ import toast from "react-hot-toast";
 
 export function useApplyToTeamOffer(teamName) {
   const queryClient = useQueryClient();
-  const { mutate: requestJoin, isPending: isApplying } = useMutation({
-    mutationFn: (teamOfferId) => applyToTeamOffer(teamOfferId),
+  const {
+    mutate: requestJoin,
+    isPending: isApplying,
+    isSuccess,
+  } = useMutation({
+    mutationFn: (teamOfferIdAndMessage) =>
+      applyToTeamOffer(teamOfferIdAndMessage),
     onSuccess: () => {
       queryClient.invalidateQueries(["teamApplications"]);
       toast.success(`Request sent successfully to ${teamName}`);
@@ -18,5 +23,6 @@ export function useApplyToTeamOffer(teamName) {
   return {
     requestJoin,
     isApplying,
+    isSuccess,
   };
 }

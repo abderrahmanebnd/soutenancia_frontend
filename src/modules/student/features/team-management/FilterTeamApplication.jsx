@@ -34,9 +34,9 @@ function FilterTeamApplication({ table }) {
         ? prevSkills.filter((skill) => skill !== currentSkill)
         : [...prevSkills, currentSkill];
       if (updatedSkills.length > 0) {
-        table.getColumn("skills")?.setFilterValue(updatedSkills);
+        table.getColumn("generalSkills")?.setFilterValue(updatedSkills);
       } else {
-        table.getColumn("skills")?.setFilterValue([]);
+        table.getColumn("generalSkills")?.setFilterValue([]);
       }
       return updatedSkills;
     });
@@ -45,7 +45,7 @@ function FilterTeamApplication({ table }) {
     setSelectedSkills([]);
     setStatus("");
     table.getColumn("status")?.setFilterValue("");
-    table.getColumn("skills")?.setFilterValue("");
+    table.getColumn("generalSkills")?.setFilterValue("");
   }
 
   return (

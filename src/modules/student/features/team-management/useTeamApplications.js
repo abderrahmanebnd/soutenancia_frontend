@@ -6,10 +6,10 @@ export function useTeamApplications() {
   const {
     data: teamApplicationsData,
     isLoading: isGettingTeamApplications,
-    isError,
+    isError: isErrorGettingTeamApplications,
   } = useQuery({
     queryKey: ["teamApplications"],
-    /* TODO:"add this teamApplications to the query key of the ApplyToOffer" */
+
     queryFn: () => getTeamApplications(),
     onError: (error) => {
       console.error("Error fetching team applications:", error);
@@ -20,8 +20,8 @@ export function useTeamApplications() {
   });
 
   return {
-    data: teamApplicationsData,
-    isLoading: isGettingTeamApplications,
-    isError,
+    teamApplicationsData,
+    isGettingTeamApplications,
+    isErrorGettingTeamApplications,
   };
 }

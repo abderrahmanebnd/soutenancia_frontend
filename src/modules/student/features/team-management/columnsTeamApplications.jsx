@@ -49,10 +49,15 @@ export const columnsTeamApplications = [
     },
   }),
 
-  columnHelper.accessor("skills", {
+  columnHelper.accessor("generalSkills", {
     header: "Skills",
     cell: ({ row }) => {
-      return <SkillsHoverButton skillsArray={row.original.skills} />;
+      return (
+        <SkillsHoverButton
+          generalSkillsArray={row.original.generalSkills}
+          customSkillsArray={row.original.customSkills}
+        />
+      );
     },
     filterFn: (row, columnId, filterValue) => {
       const rowSkills = row.getValue(columnId);

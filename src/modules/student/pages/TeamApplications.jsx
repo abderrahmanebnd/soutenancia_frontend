@@ -2,7 +2,10 @@ import { columnsTeamApplications } from "../features/team-management/columnsTeam
 import { DataTable } from "../../../components/commun/data-table";
 import SectionTitle from "../components/SectionTitle";
 import FilterTeamApplication from "../features/team-management/FilterTeamApplication";
-const data = [
+import { useTeamApplications } from "../features/team-management/useTeamApplications";
+import InlineSpinner from "@/components/commun/InlineSpinner";
+
+/* const data = [
   {
     id: "728ed521",
     studentName: "Mehdi",
@@ -38,20 +41,41 @@ const data = [
     skills: ["c++", "Nest"],
   },
 ];
-
+ */
 export default function TeamApplications() {
+  const {
+    teamApplicationsData,
+    isGettingTeamApplications,
+    isErrorGettingTeamApplications,
+  } = useTeamApplications();
+
+  const formattedData = teamApplicationsData?.map((app) => ({
+    id: app.id,
+    studentName: `${app.student.user.firstName} ${app.student.user.lastName}`,
+    status: app.status,
+    email: app.student.user.email,
+    message: app.message ? app.message : "No Message Provided",
+    generalSkills: app.student.skills.map((tech) => tech.skill.name),
+    customSkills: app.student.customSkills,
+  }));
   return (
     <div className="bg-section p-4 rounded-xl shadow-sm">
       <SectionTitle
         title="Team Applications"
         subtitle="Browse and manage your team applications here."
       />
-      <DataTable
-        columns={columnsTeamApplications}
-        data={data}
-        searchWith="studentName"
-        filterComponent={<FilterTeamApplication />}
-      />
+      {isGettingTeamApplications && <InlineSpinner />}
+      {isErrorGettingTeamApplications && (
+        <p className="text-red-500">Error getting your team applications</p>
+      )}
+      {!isGettingTeamApplications && !isErrorGettingTeamApplications && (
+        <DataTable
+          columns={columnsTeamApplications}
+          data={formattedData}
+          searchWith="studentName"
+          filterComponent={<FilterTeamApplication />}
+        />
+      )}
     </div>
   );
 }
