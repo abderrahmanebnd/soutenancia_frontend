@@ -1,31 +1,52 @@
 // features/team-management/useUpdateTeamApplication.js
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateTeamApplicationStatus } from "../../api/apiStudentApplication";
+import { axiosPrivate } from "@/api/axios";
 import toast from "react-hot-toast";
 
-export function useUpdateTeamApplication() {
+export function useUpdateApplication() {
   const queryClient = useQueryClient();
   
   const mutation = useMutation({
-    mutationFn: ({ idApplication, status }) => {
-      if (!idApplication || typeof idApplication !== 'string' && typeof idApplication !== 'number') {
-        throw new Error("Invalid application ID");
+    mutationFn: async ({ idApplication, status }) => {
+      if (!idApplication) {
+        throw new Error("Application ID is required");
       }
-      return updateTeamApplicationStatus(idApplication, status);
+      const response = await axiosPrivate.patch(`/teamApplications/${idApplication}`, { status });
+      return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Invalidate relevant queries
       queryClient.invalidateQueries(["teamApplications"]);
       queryClient.invalidateQueries(["myApplications"]);
-      toast.success("Application status updated successfully");
+      
+      // Optimistically update the specific application
+      queryClient.setQueryData(["myApplications"], (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          applications: old.applications.map(app => 
+            app.id === variables.idApplication 
+              ? { ...app, status: variables.status }
+              : app
+          )
+        };
+      });
+      
+      toast.success(`Application ${variables.status} successfully`);
     },
-    onError: (error) => {
+    onError: (error, variables) => {
       console.error("Error updating application:", error);
       toast.error(error.message || "Failed to update application");
-    }
+      
+      // Revert optimistic update if error occurs
+      queryClient.invalidateQueries(["myApplications"]);
+    },
+    retry: 1,
+    retryDelay: 1000
   });
 
   return {
-    updateTeamApplication: mutation.mutate,
+    updateTeamApplication: mutation.mutateAsync, // Using mutateAsync for better error handling
     isUpdating: mutation.isPending,
   };
 }

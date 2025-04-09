@@ -1,8 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import EditTeamOffer from "./EditTeamOffer";
 import AddTeamOffer from "./AddTeamOffer";
-import { useMyApplications } from "@/modules/student/features/team-management/useMyapplication";
-import { useEffect } from "react";
 
 function SubmitOffer() {
   const { currentUser } = useAuth();

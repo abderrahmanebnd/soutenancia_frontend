@@ -4,44 +4,58 @@ import SectionTitle from "../components/SectionTitle";
 import FilterMyApplications from "../features/team-management/FilterMyApplications";
 import { useMyApplications } from "@/modules/student/features/team-management/useMyapplication";
 import LoadingSpinner from "@/components/commun/ButtonWithSpinner";
-import { useTeamOffer } from "../features/team-offers/useTeamOffer";
-import toast from "react-hot-toast";
 import { useQueries } from "@tanstack/react-query";
+import { XCircle, Clock } from "lucide-react";
 
 export default function MyApplications() {
-  const { data: myApplications, isLoading, error } = useMyApplications();
+  const { 
+    data: myApplications, 
+    isLoading, 
+    error,
+    isError 
+  } = useMyApplications();
+  
   const teamOfferIds = myApplications?.applications?.map(app => app.teamOfferId) || [];
+  
   const teamOfferQueries = useQueries({
     queries: teamOfferIds.map(id => ({
-      queryKey: ["team", id],
+      queryKey: ["teamOffer", id],
       queryFn: () => getTeamOfferById(id),
+      retry: 1,
+      enabled: !!id && !isError, // Only fetch if we have an ID and no auth error
     })),
   });
-  const isTeamOffersLoading = teamOfferQueries.some(query => query.isLoading);
+
+  const isTeamOffersLoading = teamOfferQueries.some(query => query.isLoading && query.fetchStatus !== "idle");
+
+  // Merge application data with team offer details
   const applicationsData = myApplications?.applications?.map((app, index) => {
     const teamOfferQuery = teamOfferQueries[index];
-    const teamOfferDetails = teamOfferQuery?.data;
-    const generalSkills = teamOfferDetails?.general_required_skills?.map(skill => skill.name) || [];
-    const specificSkills = teamOfferDetails?.specific_required_skills || [];
+    const teamOfferDetails = teamOfferQuery?.data || app.teamOffer;
 
     return {
       ...app,
       teamOffer: {
-        title: teamOfferDetails?.title || app.teamOffer?.title || 'N/A',
-        max_members: teamOfferDetails?.max_members || app.teamOffer?.max_members || 1,
-        membersCount: teamOfferDetails?.membersCount || 0,
-        specific_required_skills: specificSkills,
-        general_required_skills: generalSkills
-      },
-      status: app.status || 'pending',
-      createdAt: app.createdAt || new Date().toISOString(),
-      isTeamOfferLoading: teamOfferQuery?.isLoading,
-      isTeamOfferError: teamOfferQuery?.isError
+        ...app.teamOffer,
+        ...teamOfferDetails,
+        _count: {
+          TeamMembers: teamOfferDetails?._count?.TeamMembers || 0
+        }
+      }
     };
   }) || [];
 
-  if (isLoading || isTeamOffersLoading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage error={error} />;
+  if (isLoading || isTeamOffersLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return <ErrorMessage error={error} />;
+  }
 
   return (
     <div className="bg-section p-6 rounded-xl shadow-sm">
@@ -62,14 +76,22 @@ export default function MyApplications() {
 
 function ErrorMessage({ error }) {
   return (
-    <div className="rounded-md bg-destructive/10 p-4">
+    <div className="rounded-md bg-destructive/10 p-4 max-w-2xl mx-auto mt-8">
       <div className="flex items-center gap-2 text-destructive">
         <XCircle className="h-4 w-4" />
-        <h3 className="font-medium">Failed to load applications</h3>
+        <h3 className="font-medium">Application Error</h3>
       </div>
       <p className="mt-2 text-sm text-muted-foreground">
-        {error.message || 'Please try again later'}
+        {error.message}
       </p>
+      {error.message.includes("permission") && (
+        <button 
+          onClick={() => window.location.reload()}
+          className="mt-4 text-sm text-primary underline"
+        >
+          Try refreshing the page
+        </button>
+      )}
     </div>
   );
 }

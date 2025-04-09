@@ -5,66 +5,75 @@ import {
   HoverCardTrigger,
 } from "../ui/hover-card";
 
-function SkillsHoverButton({ generalSkillsArray, customSkillsArray }) {
+function SkillsHoverButton({ 
+  generalSkills = [], 
+  customSkills = [],
+  emptyMessage = "No skills required"
+}) {
+  const hasGeneralSkills = generalSkills.length > 0;
+  const hasCustomSkills = customSkills.length > 0;
+
+  if (!hasGeneralSkills && !hasCustomSkills) {
+    return <p className="text-muted-foreground text-sm">{emptyMessage}</p>;
+  }
+
   return (
     <div>
-      {generalSkillsArray.length > 1 ? (
+      {hasGeneralSkills && generalSkills.length > 1 ? (
         <HoverCard>
           <HoverCardTrigger>
             <Badge className="cursor-pointer">
-              {generalSkillsArray.at(0)} ...
+              {generalSkills[0].name} ...
             </Badge>
           </HoverCardTrigger>
           <HoverCardContent>
             <div className="space-y-4">
-              <div className="space-y-2">
-                <div>
-                  <h4 className="text-sm font-semibold ">
-                    General Skills{" "}
-                    <Badge variant="outline">{generalSkillsArray.length}</Badge>
-                  </h4>
-                  <h5 className="text-xs text-muted-foreground">
-                    General Skills specific to the student
-                  </h5>
+              {hasGeneralSkills && (
+                <div className="space-y-2">
+                  <div>
+                    <h4 className="text-sm font-semibold">
+                      General Skills{" "}
+                      <Badge variant="outline">{generalSkills.length}</Badge>
+                    </h4>
+                    <h5 className="text-xs text-muted-foreground">
+                      General Skills required for the project
+                    </h5>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {generalSkills.map((skill) => (
+                      <Badge key={skill.name}>{skill.name}</Badge>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {generalSkillsArray.map((skill) => (
-                    <Badge key={skill}>{skill}</Badge>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div>
-                  <h4 className="text-sm font-semibold ">
-                    Custom Skills{" "}
-                    <Badge variant="outline">
-                      {customSkillsArray.at(0).length}
-                    </Badge>
-                  </h4>
-                  <h5 className="text-xs text-muted-foreground">
-                    Custom Skills specific to the student
-                  </h5>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {customSkillsArray.at(0).length > 0 ? (
-                    customSkillsArray.at(0).map((skill) => (
-                      <Badge key={skill} variant="outline">
+              )}
+              {hasCustomSkills && (
+                <div className="space-y-2">
+                  <div>
+                    <h4 className="text-sm font-semibold">
+                      Custom Skills{" "}
+                      <Badge variant="outline">{customSkills.length}</Badge>
+                    </h4>
+                    <h5 className="text-xs text-muted-foreground">
+                      Custom Skills required for the project
+                    </h5>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {customSkills.map((skill, index) => (
+                      <Badge key={index} variant="outline">
                         {skill}
                       </Badge>
-                    ))
-                  ) : (
-                    <p className="text-muted-foreground">
-                      No custom skills required
-                    </p>
-                  )}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </HoverCardContent>
         </HoverCard>
-      ) : (
-        <Badge>{generalSkillsArray.at(0)}</Badge>
-      )}
+      ) : hasGeneralSkills ? (
+        <Badge>{generalSkills[0].name}</Badge>
+      ) : hasCustomSkills ? (
+        <Badge variant="outline">{customSkills[0]}</Badge>
+      ) : null}
     </div>
   );
 }

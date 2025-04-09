@@ -1,12 +1,12 @@
-
 import { createColumnHelper } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import HeaderCellWithSorting from "../../components/HeaderCellWithSorting";
 import SkillsHoverButton from "@/components/commun/SkillsHoverButton";
-import { CheckCircle2, Clock, XCircle, HelpCircle, Trash2 } from "lucide-react";
+import HeaderCellWithSorting from "../../components/HeaderCellWithSorting";
+import HoverTextCell from "../../components/HoverTextCell";
+import { CheckCircle2, Clock, XCircle, HelpCircle, Trash2, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { useUpdateTeamApplication } from "@/modules/student/features/team-management/useUpdateTeamApplication";
+import { useUpdateApplication } from "@/modules/student/features/team-management/useUpdateApplication";
 
 const columnHelper = createColumnHelper();
 
@@ -44,12 +44,11 @@ export const columnsMyApplications = [
     header: ({ column }) => (
       <HeaderCellWithSorting
         title="Project Title"
-        column={column}
-        sortKey="title"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       />
     ),
     cell: ({ getValue }) => (
-      <p className="font-medium text-gray-900 truncate max-w-[200px] hover:text-clip">
+      <p className="font-semibold">
         {getValue()}
       </p>
     ),
@@ -58,13 +57,7 @@ export const columnsMyApplications = [
   }),
 
   columnHelper.accessor("status", {
-    header: ({ column }) => (
-      <HeaderCellWithSorting
-        title="Status"
-        column={column}
-        sortKey="status"
-      />
-    ),
+    header: "Status",
     cell: ({ row }) => {
       const status = row.original.status || "default";
       const config = statusBadgeConfig[status] || statusBadgeConfig.default;
@@ -84,24 +77,23 @@ export const columnsMyApplications = [
     enableSorting: true
   }),
 
-  columnHelper.accessor(row => {
-    const total = row.teamOffer?.max_members || 1;
-    const membersCount = row.teamOffer?.membersCount || 0;
-    return { total, membersCount, remaining: total - membersCount };
-  }, {
+  columnHelper.accessor(row => row.teamOffer, {
     id: "teamProgress",
     header: ({ column }) => (
       <HeaderCellWithSorting
         title="Team Availability"
-        column={column}
-        sortKey="membersCount"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       />
     ),
     cell: ({ getValue }) => {
-      const { total, membersCount, remaining } = getValue() || {};
+      const teamData = getValue();
+      if (!teamData) return <span className="text-gray-400">No team data</span>;
+      
+      const total = teamData.max_members || 1;
+      const membersCount = teamData._count?.TeamMembers || 0;
+      const remaining = total - membersCount;
+
       const percentage = Math.min(100, (membersCount / total) * 100);
-      const isFull = remaining <= 0;
-      const isAlmostFull = remaining <= Math.ceil(total * 0.25) && !isFull;
       
       return (
         <div className="flex flex-col gap-2 w-full">
@@ -114,10 +106,13 @@ export const columnsMyApplications = [
           <div className="relative h-2 w-full rounded-full bg-gray-100 overflow-hidden">
             <div
               className={`absolute top-0 left-0 h-full rounded-full transition-all duration-300 ${
-                isFull ? 'bg-destructive' : 
-                isAlmostFull ? 'bg-warning' : 'bg-success'
+                percentage === 100 ? 'bg-destructive' : 
+                percentage >= 75 ? 'bg-warning' : 'bg-success'
               }`}
-              style={{ width: `${percentage}%` }}
+              style={{ 
+                width: `${percentage}%`,
+                minWidth: '0'
+              }}
               role="progressbar"
               aria-valuenow={membersCount}
               aria-valuemin={0}
@@ -125,48 +120,63 @@ export const columnsMyApplications = [
             />
           </div>
           
-          {isFull ? (
+          {percentage === 100 ? (
             <p className="text-xs text-destructive font-medium flex items-center gap-1">
               <XCircle className="h-3 w-3" />
               Team at full capacity
             </p>
-          ) : isAlmostFull && (
+          ) : percentage >= 75 ? (
             <p className="text-xs text-warning-foreground font-medium flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              Limited availability
+              Limited availability ({remaining} spot{remaining !== 1 ? 's' : ''} left)
+            </p>
+          ) : (
+            <p className="text-xs text-success-foreground font-medium flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3" />
+              {remaining} spot{remaining !== 1 ? 's' : ''} available
             </p>
           )}
         </div>
       );
     },
     filterFn: (row, _, filterValue) => {
-      const value = row.getValue('teamProgress');
-      if (!value) return false;
-      const { remaining } = value;
+      const teamOffer = row.original.teamOffer;
+      if (!teamOffer) return false;
+      
+      const total = teamOffer.max_members || 1;
+      const membersCount = teamOffer._count?.TeamMembers || 0;
+      const remaining = total - membersCount;
+      
       if (filterValue === undefined || filterValue === "") return true;
       return remaining >= parseInt(filterValue);
     },
     sortingFn: (rowA, rowB) => {
-      const a = rowA.getValue('teamProgress')?.remaining || 0;
-      const b = rowB.getValue('teamProgress')?.remaining || 0;
+      const getRemaining = (offer) => {
+        if (!offer?.teamOffer) return 0;
+        const total = offer.teamOffer.max_members || 1;
+        const membersCount = offer.teamOffer._count?.TeamMembers || 0;
+        return total - membersCount;
+      };
+      
+      const a = getRemaining(rowA);
+      const b = getRemaining(rowB);
       return a - b;
     },
     size: 250,
     enableSorting: true
   }),
 
-  columnHelper.accessor(row => {
-    const specificSkills = row.teamOffer?.specific_required_skills || [];
-    const generalSkills = row.teamOffer?.general_required_skills?.map(skill => skill.name) || [];
-    return [...specificSkills, ...generalSkills];
-  }, {
+  columnHelper.accessor(row => row.teamOffer, {
     id: "requiredSkills",
     header: "Required Skills",
     cell: ({ getValue }) => {
-      const skills = getValue();
+      const teamData = getValue();
+      if (!teamData) return <span className="text-gray-400">No skills data</span>;
+      
       return (
         <SkillsHoverButton 
-          skillsArray={skills}
+          generalSkills={teamData.general_required_skills || []}
+          customSkills={teamData.specific_required_skills || []}
           className="max-w-[200px]"
           emptyMessage="No skills required"
         />
@@ -174,9 +184,16 @@ export const columnsMyApplications = [
     },
     filterFn: (row, _, filterValue) => {
       if (!filterValue?.length) return true;
-      const skills = row.getValue('requiredSkills') || [];
+      
+      const teamOffer = row.original.teamOffer;
+      if (!teamOffer) return false;
+      
+      const generalSkills = teamOffer.general_required_skills?.map(s => s.name) || [];
+      const specificSkills = teamOffer.specific_required_skills || [];
+      const allSkills = [...generalSkills, ...specificSkills];
+      
       return filterValue.every(selectedSkill => 
-        skills.includes(selectedSkill)
+        allSkills.includes(selectedSkill)
       );
     },
     size: 200
@@ -187,8 +204,7 @@ export const columnsMyApplications = [
     header: ({ column }) => (
       <HeaderCellWithSorting
         title="Date Applied"
-        column={column}
-        sortKey="createdAt"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       />
     ),
     cell: ({ getValue }) => (
@@ -208,42 +224,77 @@ export const columnsMyApplications = [
   columnHelper.display({
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const application = row.original;
-      const { updateTeamApplication, isUpdating } = useUpdateTeamApplication();
+      const { updateTeamApplication, isUpdating } = useUpdateApplication();
 
-      const handleCancel = () => {
-        if (!application?.id) {
-          toast.error("Invalid application ID");
-          return;
-        }
+      const handleCancel = async () => {
+        if (!application?.id) return;
         
         if (confirm("Do you really want to cancel this application?")) {
-          updateTeamApplication({ 
-            idApplication: application.id,
-            status: "canceled"
-          });
+          try {
+            await updateTeamApplication({ 
+              idApplication: application.id,
+              status: "canceled"
+            });
+            table.options.meta?.refreshData?.();
+          } catch (error) {
+            console.error("Failed to cancel application:", error);
+          }
         }
       };
 
-      if (!["pending", "accepted"].includes(application.status)) {
-        return null;
+      const handleJoin = async () => {
+        if (!application?.id) return;
+        
+        if (confirm("Do you want to rejoin this team?")) {
+          try {
+            await updateTeamApplication({ 
+              idApplication: application.id,
+              status: "pending"
+            });
+            table.options.meta?.refreshData?.();
+          } catch (error) {
+            console.error("Failed to join team:", error);
+          }
+        }
+      };
+
+      if (application.status === "canceled") {
+        return (
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-green-50 hover:bg-green-100 text-green-600 border-green-200 rounded-full h-6 hover:text-green-600"
+              onClick={handleJoin}
+              disabled={isUpdating}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              {isUpdating ? "Joining..." : "Join"}
+            </Button>
+          </div>
+        );
       }
 
-      return (
-        <div className="flex justify-center">
-          <Button
-            variant="outline"
-            size="sm"
-            className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200 rounded-full h-6 hover:text-red-600"
-            onClick={handleCancel}
-            disabled={isUpdating}
-          >
-            <Trash2 className="h-4 w-4 mr-2" />
-            {isUpdating ? "Canceling..." : "Cancel"}
-          </Button>
-        </div>
-      );
+      if (["pending", "accepted"].includes(application.status)) {
+        return (
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200 rounded-full h-6 hover:text-red-600"
+              onClick={handleCancel}
+              disabled={isUpdating}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {isUpdating ? "Canceling..." : "Cancel"}
+            </Button>
+          </div>
+        );
+      }
+
+      return null;
     },
     size: 120
   })

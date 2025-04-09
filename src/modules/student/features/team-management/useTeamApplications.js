@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+
 import { getTeamApplications } from "../../api/apiStudentApplication";
 
 export function useTeamApplications() {
