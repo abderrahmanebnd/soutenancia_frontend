@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router";
 import { useTeamOffer } from "../features/team-offers/useTeamOffer";
 import Spinner from "@/components/commun/Spinner";
+import LeaderAndMembersCard from "../components/LeaderAndMembersCard";
 
 // Sample team data
 /* const teamData = {
@@ -52,7 +53,7 @@ function TeamOfferDetails() {
       <Dialog open={true}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] p-0 overflow-hidden flex flex-col">
           <DialogHeader className="px-6 pt-6 pb-2 sticky top-0 z-10 bg-background border-b">
-            <DialogTitle className="text-2xl font-bold text-primary">
+            <DialogTitle className="text-2xl font-semibold text-primary">
               {teamOfferDetails.title}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -77,19 +78,33 @@ function TeamOfferDetails() {
                 <CardContent>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="text-sm font-medium">Year:</div>
-                    <div className="text-sm">{teamOfferDetails.year} year</div>
+                    <Badge className="w-fit" variant="outline">
+                      {teamOfferDetails.year} year
+                    </Badge>
 
                     <div className="text-sm font-medium">Speciality:</div>
-                    <div className="text-sm">{teamOfferDetails.speciality}</div>
+                    <Badge className="w-fit" variant="outline">
+                      {teamOfferDetails.speciality}
+                    </Badge>
 
                     <div className="text-sm font-medium">Max Students:</div>
-                    <div className="text-sm">
+                    <Badge className="w-fit" variant="outline">
                       {teamOfferDetails.max_members} students
+                    </Badge>
+                    <div className="text-sm font-medium">
+                      Current Team Members :
                     </div>
+                    <Badge className="w-fit" variant="outline">
+                      {teamOfferDetails._count.TeamMembers} out of{" "}
+                      {teamOfferDetails.max_members}
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
-
+              <LeaderAndMembersCard
+                leaderObject={teamOfferDetails?.leader}
+                teamMembersArray={teamOfferDetails?.TeamMembers}
+              />
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg text-primary">
