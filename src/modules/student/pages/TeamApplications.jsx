@@ -2,56 +2,76 @@ import { columnsTeamApplications } from "../features/team-management/columnsTeam
 import { DataTable } from "../../../components/commun/data-table";
 import SectionTitle from "../components/SectionTitle";
 import FilterTeamApplication from "../features/team-management/FilterTeamApplication";
-const data = [
-  {
-    id: "728ed521",
-    studentName: "Mehdi",
-    status: "pending",
-    email: "m@example.com",
-
-    message: "Hello, I am interested in joining your team gdygdyyevgygyvfgey.",
-    skills: ["Python", "Java Script"],
-  },
-  {
-    id: "728ed522",
-    studentName: "Ali",
-    status: "accepted",
-    email: "a@example.com",
-
-    message: "Hello, I am interested in joining your team.",
-    skills: ["javascript", "React"],
-  },
-  {
-    id: "728ed523",
-    studentName: "Sara",
-    status: "accepted",
-    message: "Hello, I am interested in joining your team.",
-    email: "b@example.com",
-    skills: ["Nest", "Python"],
-  },
-  {
-    id: "728ed524",
-    studentName: "Nesrine",
-    status: "rejected",
-    message: "Hello, I am interested in joining your team.",
-    email: "c@example.com",
-    skills: ["c++", "Nest"],
-  },
-];
+import { useTeamApplications } from "../features/team-management/useTeamApplications";
+import InlineSpinner from "@/components/commun/InlineSpinner";
+import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
 
 export default function TeamApplications() {
+  const {
+    teamApplicationsData,
+    isGettingTeamApplications,
+    error,
+    isErrorGettingTeamApplications,
+  } = useTeamApplications();
+
+  const formattedData = teamApplicationsData?.map((app) => ({
+    id: app.id,
+    studentName: `${app.student.user.firstName} ${app.student.user.lastName}`,
+    status: app.status,
+    email: app.student.user.email,
+    message: app.message ? app.message : "No Message Provided",
+    generalSkills: app.student.skills.map((tech) => tech.skill.name),
+    customSkills: app.student.customSkills,
+  }));
+
   return (
     <div className="bg-section p-4 rounded-xl shadow-sm">
       <SectionTitle
         title="Team Applications"
         subtitle="Browse and manage your team applications here."
       />
-      <DataTable
-        columns={columnsTeamApplications}
-        data={data}
-        searchWith="studentName"
-        filterComponent={<FilterTeamApplication />}
-      />
+
+      {isGettingTeamApplications && <InlineSpinner />}
+
+      {isErrorGettingTeamApplications && (
+        <>
+          {error.response.status === 403 ? (
+            <div className="flex flex-col items-center gap-3 p-8">
+              <img
+                src="/assets/team-not-found.svg"
+                alt="team not found"
+                className="w-48 h-48 mx-auto mb-4"
+              />
+              <div className="text-center mb-4">
+                <h3 className="text-2xl font-semibold text-primary">
+                  Not in a team yet ?
+                </h3>
+                <p className="text-muted-foreground">
+                  You are not in a team yet or your applications status are
+                  still
+                  <span className="font-semibold text-lg"> Pending</span>
+                </p>
+              </div>
+              <Button>
+                <Link to="/student/team-offers">Explore Team Offers</Link>
+              </Button>
+            </div>
+          ) : (
+            <p className="text-destructive">
+              Error getting your team applications
+            </p>
+          )}
+        </>
+      )}
+      {teamApplicationsData && (
+        <DataTable
+          columns={columnsTeamApplications}
+          data={formattedData}
+          searchWith="studentName"
+          filterComponent={<FilterTeamApplication />}
+        />
+      )}
     </div>
   );
 }

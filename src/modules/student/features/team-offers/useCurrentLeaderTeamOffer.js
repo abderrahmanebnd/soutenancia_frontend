@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentLeaderTeamOffer } from "@/modules/student/api/apiStudentOffer";
+import { getCurrentLeaderTeamOffer } from "../../api/apiStudentOffer";
 import toast from "react-hot-toast";
 
 export function useCurrentLeaderTeamOffer() {

@@ -2,30 +2,27 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTeamApplicationStatus } from "../../api/apiStudentApplication";
 import toast from "react-hot-toast";
 
-export function useUpdateTeamApplication() {
+export function useUpdateTeamApplication(applicationId) {
   const queryClient = useQueryClient();
-  
-  const mutation = useMutation({
-    mutationFn: ({ idApplication, status }) => {
-      // Validation de l'ID
-      if (!idApplication || typeof idApplication === 'object') {
-        throw new Error("ID d'application invalide");
-      }
-      return updateTeamApplicationStatus(idApplication, status);
-    },
+  const {
+    mutate: updateTeamApplication,
+    isPending: isUpdatingTeamApplication,
+  } = useMutation({
+    mutationFn: (statusApplication) =>
+      updateTeamApplicationStatus(statusApplication, applicationId),
     onSuccess: () => {
       queryClient.invalidateQueries(["teamApplications"]);
-      queryClient.invalidateQueries(["myApplications"]);
-      toast.success("Statut de l'application mis à jour");
+      toast.success("Team Application status updated successfully!");
     },
     onError: (error) => {
-      console.error("Erreur de mise à jour:", error);
-      toast.error(error.message || "Échec de la mise à jour");
-    }
+      console.error("Error updating team application status:", error);
+      toast.error(
+        "Failed to update team application status. Please try again later."
+      );
+    },
   });
-
   return {
-    updateTeamApplication: mutation.mutate,
-    isUpdating: mutation.isPending,
+    updateTeamApplication,
+    isUpdatingTeamApplication,
   };
 }

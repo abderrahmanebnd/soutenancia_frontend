@@ -9,11 +9,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getAllSkills, viewLessText } from "@/utils/helpers";
-import { useSidebar } from "@/components/ui/sidebar";
-import { CirclePlus } from "lucide-react";
 import { Link } from "react-router";
 import { useApplyToTeamOffer } from "@/modules/student/features/team-management/useApplyToTeamOffer";
 import { useAuth } from "@/context/AuthContext";
+import MessageDialog from "@/modules/student/features/team-management/MessageDialog";
+import { useCurrentLeaderTeamOffer } from "@/modules/student/features/team-offers/useCurrentLeaderTeamOffer";
+import WarningDialog from "./WarningDialog";
+import LeaderApplyDialog from "@/modules/student/features/team-management/LeaderApplyDialog";
+
+import ButtonWithSpinner from "./ButtonWithSpinner";
 
 function ReusibleItemCard({ data }) {
   //fot the moment the reusibleItemCard is used only for the team offers and not so reusible but in the futur i will make it reusible depending on the cards that we would get
@@ -28,11 +32,16 @@ function ReusibleItemCard({ data }) {
     imageUrl,
     max_members,
   } = data;
-  const { open } = useSidebar();
+
   const { currentUser } = useAuth();
+  const { dataTeamOffer, isLoadingCurrentLeaderTeamOffer, isError } =
+    useCurrentLeaderTeamOffer();
+  const countTeamMembers = dataTeamOffer?.TeamMembers?.length;
   const studentId = currentUser?.user.Student.id;
+  const isLeader = currentUser?.user.Student.isLeader;
+  const isInTeam = currentUser?.user.Student.isInTeam;
+
   const myTeamOffer = leader_id === studentId;
-  const { requestJoin, isApplying } = useApplyToTeamOffer(title);
   const allSkills = getAllSkills(
     general_required_skills,
     specific_required_skills
@@ -69,26 +78,45 @@ function ReusibleItemCard({ data }) {
           <Badge variant="outline">{max_members}</Badge>
         </div>
       </CardContent>
-      <CardFooter
-        className={`flex ${
-          open
-            ? "flex-col xl:flex-row items-start justify-end xl:items-end xl:justify-between flex-wrap"
-            : "flex-col items-start sm:flex-row sm:justify-between sm:items-end "
-        } gap-2 pt-2`}
-      >
+      <CardFooter className="flex gap-2 pt-2 justify-between items-center flex-wrap">
         <Button variant="outline">
           <Link to={teamOfferId}>
             View Details <span>•••</span>
           </Link>
         </Button>
-        <Button
-          variant="requestJoin"
-          onClick={() => requestJoin({ teamOfferId: teamOfferId })}
-          disabled={isApplying || myTeamOffer}
-        >
-          Request To Join
-          <CirclePlus className="text-green-600" />
-        </Button>
+        {isLeader && isLoadingCurrentLeaderTeamOffer && (
+          <ButtonWithSpinner
+            variant="requestJoin"
+            disabled={true}
+            className="w-1/2"
+          />
+        )}
+        {isLeader && isError && (
+          <Button
+            variant="requestJoin"
+            disabled="true"
+            className="text-destructive border-destructive"
+          >
+            Cannot apply for the moment
+          </Button>
+        )}
+        {isLeader && countTeamMembers > 1 && !isError && <WarningDialog />}
+        {isLeader && countTeamMembers === 1 && !isError && (
+          <LeaderApplyDialog
+            title={title}
+            teamOfferId={teamOfferId}
+            myTeamOffer={myTeamOffer}
+            isLoadingData={isLoadingCurrentLeaderTeamOffer}
+          />
+        )}
+        {!isLeader && !isInTeam && (
+          <MessageDialog
+            title={title}
+            teamOfferId={teamOfferId}
+            myTeamOffer={myTeamOffer}
+          />
+        )}
+        {!isLeader && isInTeam && <WarningDialog />}
       </CardFooter>
     </Card>
   );

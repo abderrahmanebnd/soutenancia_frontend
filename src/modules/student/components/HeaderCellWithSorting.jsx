@@ -11,4 +11,3 @@ function HeaderCellWithSorting({ title, onClick }) {
 }
 
 export default HeaderCellWithSorting;
-

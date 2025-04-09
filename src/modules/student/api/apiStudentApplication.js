@@ -1,8 +1,11 @@
 import { axiosPrivate } from "@/api/axios";
 
-export async function applyToTeamOffer(offerId) {
+export async function applyToTeamOffer(offerIdAndMessage) {
   try {
-    const response = await axiosPrivate.post("/teamApplications", offerId);
+    const response = await axiosPrivate.post(
+      "/teamApplications",
+      offerIdAndMessage
+    );
     return response.data;
   } catch (error) {
     console.error("error while applying to team offer :", error);
@@ -12,41 +15,25 @@ export async function applyToTeamOffer(offerId) {
 export async function getTeamApplications() {
   try {
     const response = await axiosPrivate.get("/teamApplications");
-    return response.data;
+    return response.data.applications;
   } catch (error) {
     console.error("error while fetching team applications :", error);
     throw error;
   }
 }
 
-export async function updateTeamApplicationStatus(idApplication, status) {
+export async function updateTeamApplicationStatus(
+  statusApplication,
+  idApplication
+) {
   try {
-    const applicationId = String(idApplication).trim();
-    
-    if (!applicationId) {
-      throw new Error("Invalid application ID");
-    }
-
     const response = await axiosPrivate.patch(
-      `/teamApplications/${applicationId}`,
-      { status }
+      `/teamApplications/${idApplication}`,
+      statusApplication
     );
     return response.data;
   } catch (error) {
-    const errorMessage = error.response?.data?.message || 
-      error.message || 
-      "Failed to update application status";
-    console.error("Error updating application status:", errorMessage);
-    throw new Error(errorMessage);
-  }
-}
-
-export async function getMyApplications() {
-  try {
-    const response = await axiosPrivate.get("/teamApplications/myApplications");
-    return response.data;
-  } catch (error) {
-    const errorMessage = error.response?.data?.error || "Failed to fetch applications";
-    throw new Error(errorMessage);
+    console.error("error while updating team application status :", error);
+    throw error;
   }
 }

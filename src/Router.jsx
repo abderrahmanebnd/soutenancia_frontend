@@ -96,9 +96,9 @@ function Router() {
                   <Route path="edit-team-offer" element={<EditTeamOffer />} />
                   <Route path="submit-team-offer" element={<SubmitOffer />} />
                   <Route
-  path="team-management"
-  element={<TeamManagementPage />}
-/>
+                    path="team-management"
+                    element={<TestingDataTablePage />}
+                  />
                 </Route>
               </Route>
 
