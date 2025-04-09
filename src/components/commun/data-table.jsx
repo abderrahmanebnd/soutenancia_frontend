@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import Filter from "@/components/commun/Filter";
+import { Badge } from "../ui/badge";
 
 export function DataTable({
   columns,
@@ -45,7 +46,7 @@ export function DataTable({
     },
     initialState: {
       pagination: {
-        pageSize: 4,
+        pageSize: 6,
       },
     },
   });
@@ -117,23 +118,40 @@ export function DataTable({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className="flex items-center justify-between space-x-2 py-4">
+        {/* Page information text */}
+        <div className="text-sm text-primary">
+          Page{" "}
+          <Badge variant="outline" className="rounded-md text-primary">
+            {table.getState().pagination.pageIndex + 1}
+          </Badge>{" "}
+          of{" "}
+          <Badge variant="outline" className="rounded-md text-primary">
+            {table.getPageCount()}
+          </Badge>{" "}
+        </div>
+
+        {/* Pagination buttons */}
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="text-primary"
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="text-primary"
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ export function useApplyToTeamOffer(teamName) {
       applyToTeamOffer(teamOfferIdAndMessage),
     onSuccess: () => {
       queryClient.invalidateQueries(["teamApplications"]);
+      queryClient.invalidateQueries(["teams"]);
       toast.success(`Request sent successfully to ${teamName}`);
     },
     onError: (error) => {

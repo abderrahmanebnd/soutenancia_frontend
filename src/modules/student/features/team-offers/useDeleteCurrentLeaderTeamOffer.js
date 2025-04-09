@@ -11,6 +11,7 @@ export function useDeleteCurrentLeaderTeamOffer() {
     onSuccess: () => {
       queryClient.setQueryData(["myTeamOffer"], null); //this line is to set the team offer to null because it is deleted
       queryClient.invalidateQueries(["teams"]);
+      queryClient.invalidateQueries(["teamApplications"]);
       toast.success("Team offer deleted successfully");
       navigate("/student/team-offers");
     },

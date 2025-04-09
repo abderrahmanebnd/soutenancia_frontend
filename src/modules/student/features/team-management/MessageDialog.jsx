@@ -27,7 +27,7 @@ function MessageDialog({ title, teamOfferId, myTeamOffer }) {
   }, [isSuccess]);
   function handleSubmitMessage(e) {
     e.preventDefault();
-    requestJoin({ teamOfferId });
+    requestJoin({ teamOfferId, message });
   }
 
   return (

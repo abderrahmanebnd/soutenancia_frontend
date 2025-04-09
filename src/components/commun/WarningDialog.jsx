@@ -32,7 +32,7 @@ function WarningDialog() {
             </DialogTitle>
             <DialogDescription className="text-center">
               You cannot request to join this team because you are already a
-              member of another team.
+              member or a leader of another team.
             </DialogDescription>
           </div>
         </DialogHeader>

@@ -29,12 +29,12 @@ function LeaderApplyDialog({ title, teamOfferId, myTeamOffer, isLoadingData }) {
   }, [isSuccess]);
   function handleSubmitMessage(e) {
     e.preventDefault();
-    requestJoin({ teamOfferId });
+    requestJoin({ teamOfferId, message });
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="requestJoin" disabled={isLoadingData}>
+        <Button variant="requestJoin" disabled={isLoadingData || myTeamOffer}>
           Request To Join{" "}
           {isLoadingData ? (
             <Loader2 className="animate-spin" />
@@ -45,9 +45,9 @@ function LeaderApplyDialog({ title, teamOfferId, myTeamOffer, isLoadingData }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md" closeButton={true}>
         <DialogHeader className="flex flex-col items-center gap-4">
-          <div className="bg-red-100 w-fit p-4 rounded-full mx-auto relative flex items-center justify-center">
-            <OctagonAlert className="text-red-600 z-20" size={34} />
-            <div className="absolute w-12 h-12 bg-red-200 rounded-full z-10"></div>
+          <div className="bg-orange-200 w-fit p-4 rounded-full mx-auto relative flex items-center justify-center">
+            <OctagonAlert className="text-orange-600 z-20" size={34} />
+            <div className="absolute w-12 h-12 bg-orange-300 rounded-full z-10"></div>
           </div>
           <div className="space-y-1">
             <DialogTitle className="text-xl text-center">
@@ -60,12 +60,12 @@ function LeaderApplyDialog({ title, teamOfferId, myTeamOffer, isLoadingData }) {
           </div>
         </DialogHeader>
         <div className="grid w-full gap-1.5">
-          <Label htmlFor="message" className="text-primary">
+          <Label htmlFor="message-2" className="text-primary">
             Your Message
           </Label>
           <Textarea
             placeholder="Type your message here."
-            id="message"
+            id="message-2"
             onChange={(e) => setMessage(e.target.value)}
           />
         </div>

@@ -37,18 +37,26 @@ function SkillsHoverButton({ generalSkillsArray, customSkillsArray }) {
                 <div>
                   <h4 className="text-sm font-semibold ">
                     Custom Skills{" "}
-                    <Badge variant="outline">{customSkillsArray.length}</Badge>
+                    <Badge variant="outline">
+                      {customSkillsArray.at(0).length}
+                    </Badge>
                   </h4>
                   <h5 className="text-xs text-muted-foreground">
                     Custom Skills specific to the student
                   </h5>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {customSkillsArray.map((skill) => (
-                    <Badge key={skill} variant="outline">
-                      {skill}
-                    </Badge>
-                  ))}
+                  {customSkillsArray.at(0).length > 0 ? (
+                    customSkillsArray.at(0).map((skill) => (
+                      <Badge key={skill} variant="outline">
+                        {skill}
+                      </Badge>
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground">
+                      No custom skills required
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

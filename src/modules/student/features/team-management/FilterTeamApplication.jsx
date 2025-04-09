@@ -86,6 +86,12 @@ function FilterTeamApplication({ table }) {
                   >
                     Rejected
                   </CommandItem>
+                  <CommandItem
+                    onSelect={() => handleStatusSelection("canceled")}
+                    className="flex items-center justify-center text-primary text-sm"
+                  >
+                    Canceled
+                  </CommandItem>
                   <CommandSeparator />
                 </CommandGroup>
 
