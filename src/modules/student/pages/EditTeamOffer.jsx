@@ -427,7 +427,7 @@ function EditTeamOffer() {
                     <FormDescription className="mt-10">
                       Move the slider to select a value between{" "}
                       {dataTeamOffer.TeamMembers.length} and 7 (you cannot go
-                      bellow {dataTeamOffer.TeamMembers.length} because you
+                      below {dataTeamOffer.TeamMembers.length} because you
                       already have members in your team)
                     </FormDescription>
                     <FormMessage />

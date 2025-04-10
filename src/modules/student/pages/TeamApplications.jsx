@@ -2,13 +2,14 @@ import { columnsTeamApplications } from "../features/team-management/columnsTeam
 import { DataTable } from "../../../components/commun/data-table";
 import SectionTitle from "../components/SectionTitle";
 import FilterTeamApplication from "../features/team-management/FilterTeamApplication";
-import { useTeamApplications } from "../features/team-management/useTeamApplications";
+
 import InlineSpinner from "@/components/commun/InlineSpinner";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
+import { useTeamApplicationsWithContext } from "../context/TeamApplicationsContext";
 
 export default function TeamApplications() {
-  const {
+  /*  const {
     teamApplicationsData,
     isGettingTeamApplications,
     error,
@@ -23,7 +24,14 @@ export default function TeamApplications() {
     message: app.message ? app.message : "No Message Provided",
     generalSkills: app.student.skills.map((tech) => tech.skill.name),
     customSkills: app.student.customSkills,
-  }));
+  })); */
+  const {
+    formattedData,
+    isGettingTeamApplications,
+    error,
+    isErrorGettingTeamApplications,
+    teamApplicationsData,
+  } = useTeamApplicationsWithContext();
 
   return (
     <div className="bg-section p-4 rounded-xl shadow-sm">

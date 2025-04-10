@@ -47,7 +47,6 @@ function FilterTeamApplication({ table }) {
     table.getColumn("status")?.setFilterValue("");
     table.getColumn("generalSkills")?.setFilterValue("");
   }
-
   return (
     <>
       <div className="space-x-2">
