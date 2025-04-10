@@ -76,10 +76,7 @@ function EditTeamOffer() {
 
   const { editTeamOffer, isEditing } = useEditCurrentLeaderTeamOffer();
   const { deleteTeamOffer, isDeleting } = useDeleteCurrentLeaderTeamOffer();
-  const teamMembersSupTwo =
-    dataTeamOffer?.TeamMembers?.length < 2
-      ? 2
-      : dataTeamOffer?.TeamMembers?.length;
+
   const teamMembersSupTwo =
     dataTeamOffer?.TeamMembers?.length < 2
       ? 2
