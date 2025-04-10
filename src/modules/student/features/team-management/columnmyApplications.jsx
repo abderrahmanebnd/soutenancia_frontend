@@ -2,11 +2,11 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import SkillsHoverButton from "@/components/commun/SkillsHoverButton";
 import HeaderCellWithSorting from "../../components/HeaderCellWithSorting";
-import HoverTextCell from "../../components/HoverTextCell";
 import { CheckCircle2, Clock, XCircle, HelpCircle, Trash2, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useUpdateApplication } from "@/modules/student/features/team-management/useUpdateApplication";
+import { useAuth } from "@/context/AuthContext"; 
 
 const columnHelper = createColumnHelper();
 
@@ -88,30 +88,31 @@ export const columnsMyApplications = [
     cell: ({ getValue }) => {
       const teamData = getValue();
       if (!teamData) return <span className="text-gray-400">No team data</span>;
-      
+
       const total = teamData.max_members || 1;
       const membersCount = teamData._count?.TeamMembers || 0;
       const remaining = total - membersCount;
 
-      const percentage = Math.min(100, (membersCount / total) * 100);
+      const percentage = Math.max(5, Math.min(100, (membersCount / total) * 100));
       
       return (
         <div className="flex flex-col gap-2 w-full">
           <div className="flex items-center justify-between w-full">
             <span className="text-sm font-medium text-gray-600">
-              {membersCount}/{total} members
+              {membersCount}/{total} Members 
             </span>
           </div>
           
           <div className="relative h-2 w-full rounded-full bg-gray-100 overflow-hidden">
             <div
-              className={`absolute top-0 left-0 h-full rounded-full transition-all duration-300 ${
-                percentage === 100 ? 'bg-destructive' : 
-                percentage >= 75 ? 'bg-warning' : 'bg-success'
-              }`}
+              className={`
+                absolute top-0 left-0 h-full rounded-full transition-all duration-300
+                ${percentage === 100 ? 'bg-red-500' : 
+                  percentage >= 75 ? 'bg-yellow-500' : 'bg-green-500'}
+              `}
               style={{ 
                 width: `${percentage}%`,
-                minWidth: '0'
+                minWidth: '8px'
               }}
               role="progressbar"
               aria-valuenow={membersCount}
@@ -121,17 +122,17 @@ export const columnsMyApplications = [
           </div>
           
           {percentage === 100 ? (
-            <p className="text-xs text-destructive font-medium flex items-center gap-1">
+            <p className="text-xs text-red-600 font-medium flex items-center gap-1">
               <XCircle className="h-3 w-3" />
               Team at full capacity
             </p>
           ) : percentage >= 75 ? (
-            <p className="text-xs text-warning-foreground font-medium flex items-center gap-1">
+            <p className="text-xs text-yellow-600 font-medium flex items-center gap-1">
               <Clock className="h-3 w-3" />
               Limited availability ({remaining} spot{remaining !== 1 ? 's' : ''} left)
             </p>
           ) : (
-            <p className="text-xs text-success-foreground font-medium flex items-center gap-1">
+            <p className="text-xs text-green-600 font-medium flex items-center gap-1">
               <CheckCircle2 className="h-3 w-3" />
               {remaining} spot{remaining !== 1 ? 's' : ''} available
             </p>
@@ -227,6 +228,8 @@ export const columnsMyApplications = [
     cell: ({ row, table }) => {
       const application = row.original;
       const { updateTeamApplication, isUpdating } = useUpdateApplication();
+      const { currentUser } = useAuth(); // Get current user from auth context
+      const isInTeam = currentUser?.user?.Student?.isInTeam; // Check if already in a team
 
       const handleCancel = async () => {
         if (!application?.id) return;
@@ -247,6 +250,12 @@ export const columnsMyApplications = [
       const handleJoin = async () => {
         if (!application?.id) return;
         
+        // Prevent joining if already in a team
+        if (isInTeam) {
+          alert("You cannot rejoin this team because you're already a member of another team");
+          return;
+        }
+
         if (confirm("Do you want to rejoin this team?")) {
           try {
             await updateTeamApplication({ 
@@ -260,24 +269,30 @@ export const columnsMyApplications = [
         }
       };
 
+      // Show Join button only if:
+      // 1. Status is canceled
+      // 2. Student is not already in a team
       if (application.status === "canceled") {
-        return (
-          <div className="flex justify-center">
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-green-50 hover:bg-green-100 text-green-600 border-green-200 rounded-full h-6 hover:text-green-600"
-              onClick={handleJoin}
-              disabled={isUpdating}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              {isUpdating ? "Joining..." : "Join"}
-            </Button>
-          </div>
-        );
+        if (!isInTeam) {
+          return (
+            <div className="flex justify-center">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-green-50 hover:bg-green-100 text-green-600 border-green-200 rounded-full h-6 hover:text-green-600"
+                onClick={handleJoin}
+                disabled={isUpdating}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {isUpdating ? "Joining..." : "Join"}
+              </Button>
+            </div>
+          );
+        }
       }
 
-      if (["pending", "accepted"].includes(application.status)) {
+      // Show Cancel button only if status is pending
+      if (application.status === "pending") {
         return (
           <div className="flex justify-center">
             <Button

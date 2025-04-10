@@ -5,9 +5,17 @@ import FilterMyApplications from "../features/team-management/FilterMyApplicatio
 import { useMyApplications } from "@/modules/student/features/team-management/useMyapplication";
 import LoadingSpinner from "@/components/commun/ButtonWithSpinner";
 import { useQueries } from "@tanstack/react-query";
-import { XCircle, Clock } from "lucide-react";
+import { XCircle } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function MyApplications() {
+  const { currentUser } = useAuth();
+  const isLeader = currentUser?.user?.Student?.isLeader;
+
+  if (isLeader) {
+    return null; 
+  }
+
   const { 
     data: myApplications, 
     isLoading, 
@@ -28,7 +36,6 @@ export default function MyApplications() {
 
   const isTeamOffersLoading = teamOfferQueries.some(query => query.isLoading && query.fetchStatus !== "idle");
 
-  // Merge application data with team offer details
   const applicationsData = myApplications?.applications?.map((app, index) => {
     const teamOfferQuery = teamOfferQueries[index];
     const teamOfferDetails = teamOfferQuery?.data || app.teamOffer;
