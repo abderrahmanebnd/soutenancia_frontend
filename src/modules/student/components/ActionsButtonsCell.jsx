@@ -9,7 +9,10 @@ function ActionsButtonsCell({ row }) {
   const { currentUser } = useAuth();
   const { updateTeamApplication, isUpdatingTeamApplication } =
     useUpdateTeamApplication(row.original.id);
+  const currentStatus = row.original.status;
+  const statusNotPending = currentStatus !== "pending";
   const isLeader = currentUser?.user.Student.isLeader;
+
   function handleAccept() {
     setButtonSpin("accept");
     updateTeamApplication({ status: "accepted" });
@@ -25,7 +28,7 @@ function ActionsButtonsCell({ row }) {
         size="sm"
         className="bg-green-50 hover:bg-green-100 text-green-600 border-green-200 rounded-full h-6 hover:text-green-600"
         onClick={handleAccept}
-        disabled={!isLeader || isUpdatingTeamApplication}
+        disabled={!isLeader || isUpdatingTeamApplication || statusNotPending}
       >
         Accept
         {isUpdatingTeamApplication && buttonSpin === "accept" ? (
@@ -39,7 +42,7 @@ function ActionsButtonsCell({ row }) {
         size="sm"
         className="bg-red-50 hover:bg-red-100 text-red-600 border-red-200 rounded-full h-6 hover:text-red-600"
         onClick={handleReject}
-        disabled={!isLeader || isUpdatingTeamApplication}
+        disabled={!isLeader || isUpdatingTeamApplication || statusNotPending}
       >
         Reject
         {isUpdatingTeamApplication && buttonSpin === "reject" ? (
