@@ -25,8 +25,9 @@ import TeamOfferDetails from "./modules/student/pages/TeamOfferDetails";
 import EditTeamOffer from "./modules/student/pages/EditTeamOffer";
 
 import SubmitOffer from "./modules/student/pages/SubmitOffer";
-import TeamApplications from "./modules/student/pages/TeamApplications";
+
 import { TeamApplicationsProvider } from "./modules/student/context/TeamApplicationsContext";
+import TeamManagementPage from "./modules/student/pages/TeamManagementPage";
 
 function Router() {
   return (
@@ -100,7 +101,7 @@ function Router() {
                     path="team-management"
                     element={
                       <TeamApplicationsProvider>
-                        <TeamApplications />
+                        <TeamManagementPage />
                       </TeamApplicationsProvider>
                     }
                   />

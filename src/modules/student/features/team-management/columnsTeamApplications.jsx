@@ -76,8 +76,8 @@ export const columnsTeamApplications = [
     cell: ({ row }) => {
       return (
         <SkillsHoverButton
-          generalSkillsArray={row.original.generalSkills}
-          customSkillsArray={row.original.customSkills}
+          generalSkills={row.original.generalSkills}
+          customSkills={row.original.customSkills}
         />
       );
     },

@@ -12,6 +12,8 @@ export function useUpdateTeamApplication(applicationId) {
       updateTeamApplicationStatus(statusApplication, applicationId),
     onSuccess: () => {
       queryClient.invalidateQueries(["teamApplications"]);
+      queryClient.invalidateQueries(["myApplications"]);
+      queryClient.invalidateQueries(["teams"]);
       toast.success("Team Application status updated successfully!");
     },
     onError: (error) => {

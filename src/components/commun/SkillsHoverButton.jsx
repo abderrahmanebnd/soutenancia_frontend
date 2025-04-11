@@ -5,10 +5,10 @@ import {
   HoverCardTrigger,
 } from "../ui/hover-card";
 
-function SkillsHoverButton({ 
-  generalSkills = [], 
+function SkillsHoverButton({
+  generalSkills = [],
   customSkills = [],
-  emptyMessage = "No skills required"
+  emptyMessage = "No skills required",
 }) {
   const hasGeneralSkills = generalSkills.length > 0;
   const hasCustomSkills = customSkills.length > 0;

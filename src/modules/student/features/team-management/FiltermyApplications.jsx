@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/command";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronsUpDown, X } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 
@@ -23,7 +23,7 @@ export default function FilterMyApplications({ table }) {
     { value: "pending", label: "Pending" },
     { value: "accepted", label: "Accepted" },
     { value: "rejected", label: "Rejected" },
-    {value:  "canceled", label: "Canceled"}
+    { value: "canceled", label: "Canceled" },
   ];
 
   const handleStatusSelect = (statusValue) => {
@@ -32,9 +32,11 @@ export default function FilterMyApplications({ table }) {
       : [...selectedStatus, statusValue];
 
     setSelectedStatus(newSelectedStatus);
-    table.getColumn("status")?.setFilterValue(
-      newSelectedStatus.length > 0 ? newSelectedStatus : undefined
-    );
+    table
+      .getColumn("status")
+      ?.setFilterValue(
+        newSelectedStatus.length > 0 ? newSelectedStatus : undefined
+      );
   };
 
   const handleMinSpotsFilter = () => {
@@ -56,9 +58,20 @@ export default function FilterMyApplications({ table }) {
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" className="w-[200px] justify-between">
-              {selectedStatus.length > 0
-                ? `${selectedStatus.length} status selected`
-                : "Filter by status"}
+              {hasFilters && selectedStatus.length > 0 ? (
+                <Badge
+                  key={selectedStatus.at(0)}
+                  className="flex items-center justify-center capitalize"
+                >
+                  {selectedStatus.length > 1
+                    ? `${selectedStatus.at(0)} ....`
+                    : selectedStatus.at(0)}
+                </Badge>
+              ) : selectedStatus.length > 0 ? (
+                `${selectedStatus.length} status selected`
+              ) : (
+                "Filter by status"
+              )}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -85,14 +98,24 @@ export default function FilterMyApplications({ table }) {
         </Popover>
 
         <div className="flex items-center gap-2">
-          <input
-            type="number"
-            min="0"
-            value={minSpotsInput}
-            onChange={(e) => setMinSpotsInput(e.target.value)}
-            placeholder="Min spots remaining"
-            className="p-2 border rounded w-32 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative">
+            <input
+              type="number"
+              min="0"
+              value={minSpotsInput}
+              onChange={(e) => setMinSpotsInput(e.target.value)}
+              placeholder="Min spots remaining"
+              className="p-2 border rounded w-32 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            {hasFilters && minSpotsInput !== "" && (
+              <Badge
+                variant="secondary"
+                className="absolute transform -translate-x-1/2 translate-y-1/2 left-1/2 top-3/4 w-full"
+              >
+                {minSpotsInput} spots left
+              </Badge>
+            )}
+          </div>
           <Button
             variant="outline"
             onClick={handleMinSpotsFilter}
@@ -101,31 +124,12 @@ export default function FilterMyApplications({ table }) {
             Apply
           </Button>
         </div>
-
-        {hasFilters && (
-          <Button
-            variant="ghost"
-            onClick={clearAllFilters}
-            className="h-8 px-3 text-sm"
-          >
-            <X className="h-3.5 w-3.5 mr-1.5" />
-            Clear filters
-          </Button>
-        )}
       </div>
-
-      {hasFilters && (
-        <div className="flex flex-wrap items-center gap-2">
-          {selectedStatus.map((status) => (
-            <Badge key={status} variant="secondary" className="capitalize">
-              {status}
-            </Badge>
-          ))}
-          {minSpotsInput !== "" && (
-            <Badge variant="secondary">Min {minSpotsInput} spots remaining</Badge>
-          )}
-        </div>
-      )}
+      <div className="flex justify-center">
+        <Button variant="link" onClick={clearAllFilters}>
+          Clear all filters
+        </Button>
+      </div>
     </div>
   );
 }

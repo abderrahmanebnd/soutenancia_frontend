@@ -15,7 +15,7 @@ function TeamApplicationsProvider({ children }) {
     status: app.status,
     email: app.student.user.email,
     message: app.message ? app.message : "No Message Provided",
-    generalSkills: app.student.skills.map((tech) => tech.skill.name),
+    generalSkills: app.student.skills.map((tech) => tech.skill),
     customSkills: app.student.customSkills,
   }));
 
