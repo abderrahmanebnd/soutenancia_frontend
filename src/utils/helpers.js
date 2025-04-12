@@ -1,3 +1,4 @@
+import { differenceInCalendarDays, parseISO } from "date-fns";
 export function splitRouteIntoElements(route) {
   return route.split("/").filter(Boolean);
 }
@@ -11,4 +12,15 @@ export function getAllSkills(generalSkills, specificSkills) {
 }
 export function getGeneralSkillsWithNameOnly(generalSkills) {
   return generalSkills.map((skill) => skill.name);
+}
+
+export function getDaysRemaining(isoDateString) {
+  const today = new Date();
+  const endDate = parseISO(isoDateString);
+  return differenceInCalendarDays(endDate, today);
+}
+export function getTotalDays(isoDateStringStart, isoDateStringEnd) {
+  const startDate = parseISO(isoDateStringStart);
+  const endDate = parseISO(isoDateStringEnd);
+  return differenceInCalendarDays(endDate, startDate);
 }
