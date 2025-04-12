@@ -3,7 +3,7 @@ import MyApplications from "./MyApplications";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/context/AuthContext";
 
-export default function TeamManagementPage() {
+export default function TeamApplicationsManagement() {
   const { currentUser } = useAuth();
   const isLeader = currentUser?.user?.Student?.isLeader;
   if (isLeader) return <TeamApplications />;
