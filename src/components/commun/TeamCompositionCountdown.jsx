@@ -1,26 +1,63 @@
-import * as React from "react";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { getDaysRemaining, getTotalDays } from "@/utils/helpers";
+import { getTimeRemaining, getTotalDays } from "@/utils/helpers";
+import { useEffect, useState } from "react";
+import { useTeamCompositionCountdown } from "@/modules/student/features/team-management/useTeamCompositionCountdown";
+import InlineSpinner from "./InlineSpinner";
 
-const END_DATE_TEST = "2025-04-14T00:00:00.000Z"; // Example ISO date string
-const START_DATE_TEST = "2025-04-07T00:00:00.000Z"; // Example ISO date string
 export function TeamCompositionCountdown() {
-  const [progress, setProgress] = React.useState(13);
+  const [progress, setProgress] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState({
+    daysRemaining: 0,
+    hoursRemaining: 0,
+    minutesRemaining: 0,
+  });
+  const {
+    teamComposition,
+    isLoadingTeamComposition,
+    isErrorGettingTeamCompositionCountdown,
+  } = useTeamCompositionCountdown();
 
-  const daysRemaining = getDaysRemaining(END_DATE_TEST);
-  const totalDays = getTotalDays(START_DATE_TEST, END_DATE_TEST);
-  const daysPassed = totalDays - daysRemaining;
-  React.useEffect(() => {
-    const timer = setTimeout(
-      () => setProgress(Math.round((daysPassed * 100) / totalDays)),
-      500
+  const startDate = teamComposition?.at(0).startDate;
+  const endDate = teamComposition?.at(0)?.endDate;
+
+  const totalDays = getTotalDays(startDate, endDate);
+
+  useEffect(() => {
+    if (!endDate) {
+      return;
+    }
+    function updateRemainingTime() {
+      const updatedDate = getTimeRemaining(endDate);
+      setTimeRemaining(updatedDate);
+      const totalMinutes = totalDays * 1440;
+      const minutesLeft =
+        updatedDate.daysRemaining * 1440 +
+        updatedDate.hoursRemaining * 60 +
+        updatedDate.minutesRemaining;
+      const minutePassed = totalMinutes - minutesLeft;
+      setProgress(Math.round((minutePassed * 100) / totalMinutes));
+    }
+
+    updateRemainingTime();
+    const interval = setInterval(updateRemainingTime, 60000);
+    return () => clearInterval(interval);
+  }, [endDate, totalDays]);
+
+  if (isLoadingTeamComposition) {
+    return (
+      <div className="w-full rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 shadow-md">
+        <InlineSpinner />
+      </div>
     );
-    return () => clearTimeout(timer);
-  }, [daysPassed, totalDays]);
-
-  // Calculate days passed
-
+  }
+  if (isErrorGettingTeamCompositionCountdown) {
+    return (
+      <div className="w-full rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 shadow-md">
+        <p className="text-red-500">Error loading countdown</p>
+      </div>
+    );
+  }
   return (
     <div className="w-full space-y-2 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 shadow-md">
       <div className="flex items-center justify-between">
@@ -30,10 +67,40 @@ export function TeamCompositionCountdown() {
             Team Composition Deadline
           </h3>
         </div>
-        <Badge className="space-x-1">
-          <Clock className="h-3.5 w-3.5" />
-          <span>{daysRemaining} days left</span>
-        </Badge>
+        <div className=" p-5  bg-section rounded-xl relative shadow-lg">
+          {timeRemaining.daysRemaining === 0 &&
+          timeRemaining.hoursRemaining === 0 &&
+          timeRemaining.minutesRemaining === 0 ? (
+            <Badge variant="destructive" className="min-h-7 text-sm">
+              Team composition phase close
+            </Badge>
+          ) : (
+            <>
+              <p className="font-bold text-xl text-primary/40 absolute top-0 left-1/2 -translate-x-1/2 text-nowrap z-0">
+                Time left
+              </p>
+              <p className="font-bold text-xl text-primary/40 absolute bottom-0 left-1/2 -translate-x-1/2 text-nowrap z-0">
+                Before closing
+              </p>
+              <Badge className=" rounded-lg text-sm flex gap-2 shadow-lg relative  z-10 ">
+                {timeRemaining.daysRemaining > 0 && (
+                  <p className="flex flex-col items-center">
+                    {timeRemaining.daysRemaining}
+                    <span className="text-xs font-light">Days</span>
+                  </p>
+                )}
+                <p className="flex flex-col items-center">
+                  {timeRemaining.hoursRemaining}
+                  <span className="text-xs font-light">Hours</span>
+                </p>
+                <p className="flex flex-col items-center">
+                  {timeRemaining.minutesRemaining}
+                  <span className="text-xs font-light">Minutes</span>
+                </p>
+              </Badge>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="relative h-10 w-full overflow-hidden rounded-lg bg-blue-200">
@@ -52,7 +119,10 @@ export function TeamCompositionCountdown() {
 
       <div className="flex justify-between">
         <div className="text-sm text-primary">
-          <span className="font-bold">{daysPassed}</span> days completed
+          <span className="font-bold">
+            {totalDays - timeRemaining.daysRemaining}
+          </span>{" "}
+          days passed
         </div>
         <div className="text-sm text-primary">
           <span className="font-bold">{totalDays}</span> total days
