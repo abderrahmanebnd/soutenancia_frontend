@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
-import { editCurrentLeaderTeamOffer } from "../../api/apiStudent";
+import { editCurrentLeaderTeamOffer } from "../../api/apiStudentOffer";
 
 export function useEditCurrentLeaderTeamOffer() {
   const navigate = useNavigate();

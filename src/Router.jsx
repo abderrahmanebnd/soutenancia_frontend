@@ -1,9 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import Login from "./Pages/Login";
 import PageNotFound from "./Pages/PageNotFound";
-
 import Unauthorized from "./Pages/Unauthorized";
-
 import LoginForm from "./features/auth/LoginForm";
 import ForgotPasswordForm from "./features/auth/ForgotPasswordForm";
 import { AuthProvider } from "./context/AuthContext";
@@ -19,12 +17,15 @@ import Admin from "./modules/admin/pages/Admin";
 import Enterprise from "./modules/enterprise/pages/Enterprise";
 import Teacher from "./modules/teacher/pages/Teacher";
 import { SessionProvider } from "./context/SessionContext";
-
 import TeamOffers from "./modules/student/pages/TeamOffers";
 import TeamOfferDetails from "./modules/student/pages/TeamOfferDetails";
 import EditTeamOffer from "./modules/student/pages/EditTeamOffer";
-
 import SubmitOffer from "./modules/student/pages/SubmitOffer";
+import { TeamApplicationsProvider } from "./modules/student/context/TeamApplicationsContext";
+import TeamApplicationsManagement from "./modules/student/pages/TeamApplicationsManagement";
+import TeamDetails from "./modules/student/pages/TeamDetails";
+import TeamCompositionProtectedRoute from "./modules/student/features/team-management/TeamCompositionProtectedRoute";
+import TeamCompositionUnauthorized from "./modules/student/pages/TeamCompositionUnauthorized";
 
 function Router() {
   return (
@@ -87,16 +88,59 @@ function Router() {
                       </IsCompletedRoute>
                     }
                   />
-                  <Route path="team-offers" element={<TeamOffers />} />
+                  <Route
+                    path="team-offers"
+                    element={
+                      <TeamCompositionProtectedRoute>
+                        <TeamOffers />
+                      </TeamCompositionProtectedRoute>
+                    }
+                  />
                   <Route
                     path="team-offers/:idTeamOfferDetails"
-                    element={<TeamOfferDetails />}
+                    element={
+                      <TeamCompositionProtectedRoute>
+                        <TeamOfferDetails />
+                      </TeamCompositionProtectedRoute>
+                    }
                   />
-                  <Route path="edit-team-offer" element={<EditTeamOffer />} />
-                  <Route path="submit-team-offer" element={<SubmitOffer />} />
                   <Route
-                    path="team-management"
-                    element={<div>team management page</div>}
+                    path="edit-team-offer"
+                    element={
+                      <TeamCompositionProtectedRoute>
+                        <EditTeamOffer />
+                      </TeamCompositionProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="submit-team-offer"
+                    element={
+                      <TeamCompositionProtectedRoute>
+                        <SubmitOffer />
+                      </TeamCompositionProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="team-applications"
+                    element={
+                      <TeamCompositionProtectedRoute>
+                        <TeamApplicationsProvider>
+                          <TeamApplicationsManagement />
+                        </TeamApplicationsProvider>
+                      </TeamCompositionProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="team-details"
+                    element={
+                      <TeamCompositionProtectedRoute>
+                        <TeamDetails />
+                      </TeamCompositionProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="team-composition-unauthorized"
+                    element={<TeamCompositionUnauthorized />}
                   />
                 </Route>
               </Route>

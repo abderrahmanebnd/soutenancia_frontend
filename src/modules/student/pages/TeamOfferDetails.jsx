@@ -19,23 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router";
 import { useTeamOffer } from "../features/team-offers/useTeamOffer";
 import Spinner from "@/components/commun/Spinner";
-
-// Sample team data
-/* const teamData = {
-  name: "Web Wizards",
-  description:
-    "A team of full-stack developers specializing in modern web applications with focus on performance and accessibility.",
-  maxNumStudent: 5,
-  year: 2023,
-  speciality: "Web Development",
-  specificSkills: ["React", "Next.js", "Node.js", "TypeScript", "GraphQL"],
-  generalSkills: [
-    "Problem Solving",
-    "Communication",
-    "Project Management",
-    "Agile Methodology",
-  ],
-}; */
+import LeaderAndMembersCard from "../components/LeaderAndMembersCard";
 
 function TeamOfferDetails() {
   const navigate = useNavigate();
@@ -47,12 +31,17 @@ function TeamOfferDetails() {
   if (isError) {
     return <div className="text-red-500">Error loading team offer details</div>;
   }
+
+  const handleClose = () => {
+    navigate(-1);
+  };
+
   return (
     <div>
-      <Dialog open={true}>
+      <Dialog open={true} onOpenChange={handleClose}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] p-0 overflow-hidden flex flex-col">
           <DialogHeader className="px-6 pt-6 pb-2 sticky top-0 z-10 bg-background border-b">
-            <DialogTitle className="text-2xl font-bold text-primary">
+            <DialogTitle className="text-2xl font-semibold text-primary">
               {teamOfferDetails.title}
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -77,19 +66,33 @@ function TeamOfferDetails() {
                 <CardContent>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="text-sm font-medium">Year:</div>
-                    <div className="text-sm">{teamOfferDetails.year} year</div>
+                    <Badge className="w-fit" variant="outline">
+                      {teamOfferDetails.year} year
+                    </Badge>
 
                     <div className="text-sm font-medium">Speciality:</div>
-                    <div className="text-sm">{teamOfferDetails.speciality}</div>
+                    <Badge className="w-fit" variant="outline">
+                      {teamOfferDetails.speciality}
+                    </Badge>
 
                     <div className="text-sm font-medium">Max Students:</div>
-                    <div className="text-sm">
+                    <Badge className="w-fit" variant="outline">
                       {teamOfferDetails.max_members} students
+                    </Badge>
+                    <div className="text-sm font-medium">
+                      Current Team Members :
                     </div>
+                    <Badge className="w-fit" variant="outline">
+                      {teamOfferDetails._count.TeamMembers} out of{" "}
+                      {teamOfferDetails.max_members}
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
-
+              <LeaderAndMembersCard
+                leaderObject={teamOfferDetails?.leader}
+                teamMembersArray={teamOfferDetails?.TeamMembers}
+              />
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg text-primary">
@@ -140,7 +143,7 @@ function TeamOfferDetails() {
               </Card>
             </div>
             <DialogFooter className="p-4 sticky bottom-0 z-10 bg-background border-t">
-              <Button className="w-full" onClick={() => navigate(-1)}>
+              <Button className="w-full" onClick={handleClose}>
                 Continue
               </Button>
             </DialogFooter>

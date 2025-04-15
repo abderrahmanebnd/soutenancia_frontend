@@ -1,4 +1,4 @@
-import { FileCheck2, Users, UserSearch } from "lucide-react";
+import { BookUser, FileCheck2, UserRoundCheck, UserSearch } from "lucide-react";
 
 export function getSessionSidebarData(role) {
   //this function is called in every session layout (student,admin,techer,enterprise) to get dynamic Links for every specefic session
@@ -18,14 +18,23 @@ export function getSessionSidebarData(role) {
               icon: FileCheck2,
               url: "/student/submit-team-offer",
             },
+          ],
+        },
+        {
+          title: "Team Management",
+          items: [
             {
-              title: "Team Management",
-              icon: Users,
-              url: "/student/team-management",
+              title: "Team Applications",
+              icon: UserRoundCheck,
+              url: "/student/team-applications",
+            },
+            {
+              title: "Team Details",
+              icon: BookUser,
+              url: "/student/team-details",
             },
           ],
         },
-        /* here you can add another section of links related to student  */
       ],
     };
   }

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTeamOfferById } from "../../api/apiStudent";
+import { getTeamOfferById } from "../../api/apiStudentOffer";
 import toast from "react-hot-toast";
 
 export function useTeamOffer(idTeamOffer) {

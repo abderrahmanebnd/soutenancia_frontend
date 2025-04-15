@@ -76,6 +76,11 @@ function EditTeamOffer() {
 
   const { editTeamOffer, isEditing } = useEditCurrentLeaderTeamOffer();
   const { deleteTeamOffer, isDeleting } = useDeleteCurrentLeaderTeamOffer();
+
+  const teamMembersSupTwo =
+    dataTeamOffer?.TeamMembers?.length < 2
+      ? 2
+      : dataTeamOffer?.TeamMembers?.length;
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -395,36 +400,43 @@ function EditTeamOffer() {
                   </FormItem>
                 )}
               />
-              <div className="flex items-center gap-4 w-full">
-                <FormField
-                  control={form.control}
-                  name="maxMembers"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel className="text-base text-primary">
-                        Select the team size
-                      </FormLabel>
-                      <FormControl>
+              {/*  <div className="flex items-center gap-4 w-full"> */}
+              <FormField
+                control={form.control}
+                name="maxMembers"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel className="text-base text-primary">
+                      Select the team size
+                    </FormLabel>
+                    <FormControl>
+                      <div className=" flex items-center gap-2">
                         <Slider
-                          min={2}
+                          min={teamMembersSupTwo}
                           max={7}
                           step={1}
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                           value={field.value}
+                          className="w-11/12"
                         />
-                      </FormControl>
-                      <FormDescription>
-                        Move the slider to select a value between 2 and 6
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
-                  {currentValue}
-                </div>
-              </div>
+                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium ">
+                          {currentValue}
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormDescription className="mt-10">
+                      Move the slider to select a value between{" "}
+                      {dataTeamOffer.TeamMembers.length} and 7 (you cannot go
+                      below {dataTeamOffer.TeamMembers.length} because you
+                      already have members in your team)
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* </div> */}
               <div className="flex flex-col sm:flex-row sm:items-center  items-start gap-2">
                 {isEditing ? (
                   <ButtonWithSpinner disabled={isEditing} className="w-1/2" />
