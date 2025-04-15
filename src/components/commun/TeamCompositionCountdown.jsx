@@ -120,12 +120,13 @@ export function TeamCompositionCountdown() {
       <div className="flex justify-between">
         <div className="text-sm text-primary">
           <span className="font-bold">
-            {totalDays - timeRemaining.daysRemaining}
+            {totalDays < 0 ? 0 : totalDays - timeRemaining.daysRemaining}
           </span>{" "}
           days passed
         </div>
         <div className="text-sm text-primary">
-          <span className="font-bold">{totalDays}</span> total days
+          <span className="font-bold">{totalDays < 0 ? 0 : totalDays}</span>
+          total days
         </div>
       </div>
     </div>
