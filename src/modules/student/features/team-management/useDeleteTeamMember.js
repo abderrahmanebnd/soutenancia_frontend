@@ -3,23 +3,23 @@ import toast from "react-hot-toast";
 import { deleteTeamMember } from "../../api/apiDeletemember";
 
 export function useDeleteTeamMember() {
-    const queryClient = useQueryClient();
-    
-    const { mutate: deleteTeamMembers, isLoading: isDeleting } = useMutation({
-      mutationFn: ({ teamOfferId, memberId }) => {
-        if (!teamOfferId || !memberId) {
-          throw new Error("Both teamOfferId and memberId are required");
-        }
-        return deleteTeamMember(teamOfferId, memberId);
-      },
-      onSuccess: (_, { teamOfferId }) => {
-        queryClient.invalidateQueries(["teamOffer", teamOfferId]);
-        toast.success("Member removed successfully");
-      },
-      onError: (error) => {
-        toast.error(error.response?.data?.error || "Failed to remove member");
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteTeamMembers, isPending: isDeleting } = useMutation({
+    mutationFn: ({ teamOfferId, memberId }) => {
+      if (!teamOfferId || !memberId) {
+        throw new Error("Both teamOfferId and memberId are required");
       }
-    });
-  
-    return { deleteTeamMembers, isDeleting };
-  }
+      return deleteTeamMember(teamOfferId, memberId);
+    },
+    onSuccess: (_, { teamOfferId }) => {
+      queryClient.invalidateQueries(["team", teamOfferId]);
+      toast.success("Member removed successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.error || "Failed to remove member");
+    },
+  });
+
+  return { deleteTeamMembers, isDeleting };
+}
