@@ -59,7 +59,7 @@ export function TeamCompositionCountdown() {
     );
   }
   return (
-    <div className="w-full space-y-2 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 shadow-md">
+    <div className="w-full space-y-2 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 shadow-md overflow-x-auto">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
@@ -125,7 +125,7 @@ export function TeamCompositionCountdown() {
           days passed
         </div>
         <div className="text-sm text-primary">
-          <span className="font-bold">{totalDays < 0 ? 0 : totalDays}</span>
+          <span className="font-bold">{totalDays < 0 ? 0 : totalDays} </span>
           total days
         </div>
       </div>
