@@ -4,12 +4,18 @@ import { Outlet } from "react-router";
 function ProjectOffers() {
   return (
     <ReusibleTabs
-      defaultValue={`ThisYear'sProjects`}
-      secondaryValue={`PreviousYear'sProjects`}
-      defaultComponent={<Outlet />}
-      secondaryComponent={<Outlet />}
-      defaultLink="current-projects-offers"
-      secondaryLink="previous-projects-offers"
+      tabs={[
+        {
+          value: "ThisYear'sProjects",
+          link: "current-projects-offers",
+          component: <Outlet />,
+        },
+        {
+          value: "PreviousYear'sProjects",
+          link: "previous-projects-offers",
+          component: <Outlet />,
+        },
+      ]}
     />
   );
 }

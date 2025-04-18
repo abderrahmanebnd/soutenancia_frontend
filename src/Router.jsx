@@ -27,6 +27,8 @@ import TeamDetails from "./modules/student/pages/TeamDetails";
 import TeamCompositionProtectedRoute from "./modules/student/features/team-management/TeamCompositionProtectedRoute";
 import TeamCompositionUnauthorized from "./modules/student/pages/TeamCompositionUnauthorized";
 import ProjectOffers from "./modules/teacher/pages/ProjectOffers";
+import CurrentProjectOffers from "./modules/teacher/pages/CurrentProjectOffers";
+import PreviousProjectOffers from "./modules/teacher/pages/PreviousProjectOffers";
 
 function Router() {
   return (
@@ -168,11 +170,11 @@ function Router() {
                     />
                     <Route
                       path="current-projects-offers"
-                      element={<div>This Year Projects</div>}
+                      element={<CurrentProjectOffers />}
                     />
                     <Route
                       path="previous-projects-offers"
-                      element={<div>Previous Year Projects</div>}
+                      element={<PreviousProjectOffers />}
                     />
                   </Route>
                   <Route

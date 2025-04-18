@@ -9,10 +9,16 @@ export default function TeamApplicationsManagement() {
   if (isLeader) return <TeamApplications />;
   return (
     <ReusibleTabs
-      defaultValue={"TeamApplications"}
-      secondaryValue={"MyApplications"}
-      defaultComponent={<TeamApplications />}
-      secondaryComponent={<MyApplications />}
+      tabs={[
+        {
+          value: "TeamApplications",
+          component: <TeamApplications />,
+        },
+        {
+          value: "MyApplications",
+          component: <MyApplications />,
+        },
+      ]}
     />
   );
 }
