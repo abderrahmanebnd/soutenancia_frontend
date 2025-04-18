@@ -26,6 +26,7 @@ import TeamApplicationsManagement from "./modules/student/pages/TeamApplications
 import TeamDetails from "./modules/student/pages/TeamDetails";
 import TeamCompositionProtectedRoute from "./modules/student/features/team-management/TeamCompositionProtectedRoute";
 import TeamCompositionUnauthorized from "./modules/student/pages/TeamCompositionUnauthorized";
+import ProjectOffers from "./modules/teacher/pages/ProjectOffers";
 
 function Router() {
   return (
@@ -155,10 +156,37 @@ function Router() {
                 <Route path="/teacher" element={<Teacher />}>
                   <Route
                     index
-                    element={<Navigate replace to="add-project" />}
+                    element={<Navigate replace to="project-offers" />}
                   />
 
-                  <Route path="add-project" element={<div>add-project</div>} />
+                  <Route path="project-offers" element={<ProjectOffers />}>
+                    <Route
+                      index
+                      element={
+                        <Navigate replace to="current-projects-offers" />
+                      }
+                    />
+                    <Route
+                      path="current-projects-offers"
+                      element={<div>This Year Projects</div>}
+                    />
+                    <Route
+                      path="previous-projects-offers"
+                      element={<div>Previous Year Projects</div>}
+                    />
+                  </Route>
+                  <Route
+                    path="submit-project-offer"
+                    element={<div>Add/edit project offer</div>}
+                  />
+                  <Route
+                    path="project-applications"
+                    element={<div>Manage applications sent from students</div>}
+                  />
+                  <Route
+                    path="manage-my-teams"
+                    element={<div>manage teams </div>}
+                  />
                 </Route>
               </Route>
 

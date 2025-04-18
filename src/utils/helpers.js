@@ -47,3 +47,7 @@ export function getTotalDays(isoDateStringStart, isoDateStringEnd) {
   const endDate = parseISO(isoDateStringEnd);
   return differenceInCalendarDays(endDate, startDate);
 }
+
+export function addSpacesBeforeCapitals(text) {
+  return text.replace(/(?!^)([A-Z])/g, " $1");
+}
