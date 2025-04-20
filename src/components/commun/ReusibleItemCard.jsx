@@ -10,7 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getAllSkills, viewLessText } from "@/utils/helpers";
 import { Link } from "react-router";
-import { useApplyToTeamOffer } from "@/modules/student/features/team-management/useApplyToTeamOffer";
 import { useAuth } from "@/context/AuthContext";
 import MessageDialog from "@/modules/student/features/team-management/MessageDialog";
 import { useCurrentLeaderTeamOffer } from "@/modules/student/features/team-offers/useCurrentLeaderTeamOffer";
