@@ -29,7 +29,7 @@ import TeamCompositionUnauthorized from "./modules/student/pages/TeamComposition
 import ProjectOffers from "./modules/teacher/pages/ProjectOffers";
 import CurrentProjectOffers from "./modules/teacher/pages/CurrentProjectOffers";
 import PreviousProjectOffers from "./modules/teacher/pages/PreviousProjectOffers";
-
+import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
 function Router() {
   return (
     <>
@@ -179,7 +179,7 @@ function Router() {
                   </Route>
                   <Route
                     path="submit-project-offer"
-                    element={<div>Add/edit project offer</div>}
+                    element={<AddProjectOffer />}
                   />
                   <Route
                     path="project-applications"
