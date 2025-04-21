@@ -6,8 +6,18 @@ import {
 } from "@/components/ui/popover";
 import { ListFilter } from "lucide-react";
 
-function Filter({ children, filterValue = [], maxMembersValue = 0 }) {
-  const filterLength = filterValue.length + (maxMembersValue ? 1 : 0);
+function Filter({
+  children,
+  filterValue = [],
+  maxMembersValue = 0,
+  yearValue = 0,
+  pastYearValue = 0,
+}) {
+  const filterLength =
+    filterValue.length +
+    (maxMembersValue ? 1 : 0) +
+    (yearValue ? 1 : 0) +
+    (pastYearValue ? 1 : 0);
 
   return (
     <Popover>
@@ -25,7 +35,7 @@ function Filter({ children, filterValue = [], maxMembersValue = 0 }) {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="min-w-max pb-0">
+      <PopoverContent className="min-w-max pb-0 ">
         <div>
           <h4 className="text-sm text-muted-foreground border-b  pb-2 mb-2">
             Choose your filter and find exactly what you need!

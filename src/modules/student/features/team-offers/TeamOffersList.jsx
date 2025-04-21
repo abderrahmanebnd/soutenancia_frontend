@@ -2,6 +2,7 @@ import ReusibleItemCard from "@/components/commun/ReusibleItemCard";
 import { useTeamOffers } from "../../context/TeamOffersContext";
 import Spinner from "@/components/commun/Spinner";
 import { useSidebar } from "@/components/ui/sidebar";
+import ItemNotFound from "@/components/commun/ItemNotFound";
 
 function TeamOffersList() {
   const { open } = useSidebar();
@@ -28,16 +29,9 @@ function TeamOffersList() {
           ))}
         </div>
       ) : (
-        <div className="flex  justify-center gap-4 flex-col items-center bg-section rounded-xl shadow-sm py-20">
-          <img
-            src="/assets/team-not-found.svg"
-            alt="team not found"
-            className="w-52 h-52 lg:w-64 lg:h-64"
-          />
-          <h2 className="text-2xl text-muted-foreground text-center">
-            No team found with the provided search or filters.
-          </h2>
-        </div>
+        <ItemNotFound>
+          No team found with the provided filter or search
+        </ItemNotFound>
       )}
     </>
   );

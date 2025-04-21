@@ -42,19 +42,28 @@ function FilterTeamOffers() {
       <div className="flex gap-2">
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={openSkills}
-              disabled={customSkillsIsSelected}
-            >
-              {selectedSkills.length > 0
-                ? `${selectedSkills.length} skill${
-                    selectedSkills.length > 1 ? "s" : ""
-                  } selected`
-                : "Select Skills"}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
+            {selectedSkills.length > 0 ? (
+              <Button
+                variant="comboboxActive"
+                role="combobox"
+                aria-expanded={openSkills}
+                disabled={customSkillsIsSelected}
+              >
+                {selectedSkills.length} skill
+                {selectedSkills.length > 1 ? "s" : ""} selected
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openSkills}
+                disabled={customSkillsIsSelected}
+              >
+                Select skills
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            )}
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
             {isLoading ? (
@@ -86,7 +95,7 @@ function FilterTeamOffers() {
           </PopoverContent>
         </Popover>
         <Button
-          variant={customSkillsIsSelected ? "default" : "outline"}
+          variant={customSkillsIsSelected ? "comboboxActive" : "outline"}
           onClick={handleOtherSkills}
           disabled={generalSkillsIsSelected}
         >
@@ -94,15 +103,25 @@ function FilterTeamOffers() {
         </Button>
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={openMaxMembers}
-            >
-              {maxMembersValue ? `${maxMembersValue} students` : `Team Size`}
-
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
+            {maxMembersValue ? (
+              <Button
+                variant="comboboxActive"
+                role="combobox"
+                aria-expanded={openMaxMembers}
+              >
+                {maxMembersValue} team{maxMembersValue > 1 ? "s" : ""}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openMaxMembers}
+              >
+                Select team size
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            )}
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
             <Command>

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useSearchParams } from "react-router";
-const projects = [
+const previousProjects = [
   {
     title: "AI-Powered Tutor Bot",
     description:
@@ -10,6 +10,7 @@ const projects = [
     maxTeams: 5,
     assignedMethod: "auto-selection",
     toolsRequired: ["Python", "TensorFlow", "Dialogflow", "React"],
+    pastYear: 2024,
   },
   {
     title: "Smart Farming System",
@@ -20,6 +21,7 @@ const projects = [
     maxTeams: 4,
     assignedMethod: "teacher-approval",
     toolsRequired: ["Arduino", "IoT Sensors", "C++", "Node-RED"],
+    pastYear: 2023,
   },
   {
     title: "Blockchain Voting App",
@@ -30,6 +32,7 @@ const projects = [
     maxTeams: 6,
     assignedMethod: "auto-selection",
     toolsRequired: ["Solidity", "Ethereum", "React", "Metamask"],
+    pastYear: 2022,
   },
   {
     title: "Health Tracker Mobile App",
@@ -40,6 +43,7 @@ const projects = [
     maxTeams: 5,
     assignedMethod: "teacher-approval",
     toolsRequired: ["Flutter", "Firebase", "Wearable APIs", "Dart"],
+    pastYear: 2021,
   },
   {
     title: "E-Learning Platform with Gamification",
@@ -50,6 +54,7 @@ const projects = [
     maxTeams: 6,
     assignedMethod: "auto-selection",
     toolsRequired: ["React", "Node.js", "MongoDB", "Gamification APIs"],
+    pastYear: 2020,
   },
   {
     title: "Autonomous Delivery Robot",
@@ -60,18 +65,25 @@ const projects = [
     maxTeams: 3,
     assignedMethod: "teacher-approval",
     toolsRequired: ["Raspberry Pi", "ROS", "Python", "Lidar"],
+    pastYear: 2019,
   },
 ];
-const ProjectOffersContext = createContext();
-function ProjectOffersProvider({ children }) {
+const PreviousProjectOffersContext = createContext();
+function PreviousProjectOffersProvider({ children }) {
+  const lastYear = new Date().getFullYear() - 1;
   const [searchParams, setSearchParams] = useSearchParams();
   const searchValue = searchParams.get("search") || "";
   const yearValue = searchParams.get("year") || 0;
+  const pastYearValue = searchParams.get("pastYear") || lastYear;
   const specialityValue = searchParams.get("speciality")?.split(",") || [];
   const maxTeamsValue = searchParams.get("max_teams") || 0;
   const [selectedSpeciality, setSelectedSpeciality] = useState(specialityValue);
   function handleSelectYear(year) {
     searchParams.set("year", year);
+    setSearchParams(searchParams);
+  }
+  function handleSelectPastYear(pastYear) {
+    searchParams.set("pastYear", pastYear);
     setSearchParams(searchParams);
   }
   function handleSelectSpeciality(currentSpeciality) {
@@ -104,29 +116,35 @@ function ProjectOffersProvider({ children }) {
   function handleClearFilters() {
     setSelectedSpeciality([]);
     searchParams.delete("year");
+    searchParams.delete("pastYear");
     searchParams.delete("speciality");
     searchParams.delete("max_teams");
     setSearchParams(searchParams);
   }
-  let filteredProjects = projects;
+  let filteredPastProjects = previousProjects;
 
   if (searchValue) {
-    filteredProjects = filteredProjects?.filter((team) =>
+    filteredPastProjects = filteredPastProjects?.filter((team) =>
       team.title.toLowerCase().includes(searchValue)
     );
   }
   if (yearValue) {
-    filteredProjects = filteredProjects?.filter((project) => {
+    filteredPastProjects = filteredPastProjects?.filter((project) => {
       return project.year === Number(yearValue);
     });
   }
+  if (pastYearValue) {
+    filteredPastProjects = filteredPastProjects?.filter((project) => {
+      return project.pastYear === Number(pastYearValue);
+    });
+  }
   if (maxTeamsValue) {
-    filteredProjects = filteredProjects?.filter((project) => {
+    filteredPastProjects = filteredPastProjects?.filter((project) => {
       return project.maxTeams === Number(maxTeamsValue);
     });
   }
   if (specialityValue.length > 0) {
-    filteredProjects = filteredProjects?.filter((project) => {
+    filteredPastProjects = filteredPastProjects?.filter((project) => {
       return specialityValue.every((filter) => {
         const lowerCaseSpeciality = project.targetSpecialities.map((spe) =>
           spe.toLowerCase()
@@ -136,9 +154,10 @@ function ProjectOffersProvider({ children }) {
     });
   }
   const value = {
-    filteredProjects,
+    filteredPastProjects,
     searchValue,
     yearValue,
+    pastYearValue,
     specialityValue,
     maxTeamsValue,
     handleSelectYear,
@@ -147,16 +166,17 @@ function ProjectOffersProvider({ children }) {
     handleClearYear,
     handleClearMaxTeams,
     handleClearFilters,
+    handleSelectPastYear,
     selectedSpeciality,
   };
   return (
-    <ProjectOffersContext.Provider value={value}>
+    <PreviousProjectOffersContext.Provider value={value}>
       {children}
-    </ProjectOffersContext.Provider>
+    </PreviousProjectOffersContext.Provider>
   );
 }
-function useProjectOffers() {
-  const context = useContext(ProjectOffersContext);
+function usePreviousProjectOffers() {
+  const context = useContext(PreviousProjectOffersContext);
   if (!context) {
     throw new Error(
       "useProjectOffers must be used within a ProjectOffersProvider"
@@ -164,4 +184,4 @@ function useProjectOffers() {
   }
   return context;
 }
-export { useProjectOffers, ProjectOffersProvider };
+export { usePreviousProjectOffers, PreviousProjectOffersProvider };

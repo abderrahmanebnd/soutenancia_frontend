@@ -67,7 +67,7 @@ export function TeamCompositionCountdown() {
             Team Composition Deadline
           </h3>
         </div>
-        <div className=" p-5  bg-section rounded-xl relative shadow-lg">
+        <div className=" p-3  bg-section rounded-xl shadow-lg">
           {timeRemaining.daysRemaining === 0 &&
           timeRemaining.hoursRemaining === 0 &&
           timeRemaining.minutesRemaining === 0 ? (
@@ -75,30 +75,22 @@ export function TeamCompositionCountdown() {
               Team composition phase close
             </Badge>
           ) : (
-            <>
-              <p className="font-bold text-xl text-primary/40 absolute top-0 left-1/2 -translate-x-1/2 text-nowrap z-0">
-                Time left
-              </p>
-              <p className="font-bold text-xl text-primary/40 absolute bottom-0 left-1/2 -translate-x-1/2 text-nowrap z-0">
-                Before closing
-              </p>
-              <Badge className=" rounded-lg text-sm flex gap-2 shadow-lg relative  z-10 ">
-                {timeRemaining.daysRemaining > 0 && (
-                  <p className="flex flex-col items-center">
-                    {timeRemaining.daysRemaining}
-                    <span className="text-xs font-light">Days</span>
-                  </p>
-                )}
+            <Badge className=" rounded-lg text-sm flex gap-2 shadow-lg  ">
+              {timeRemaining.daysRemaining > 0 && (
                 <p className="flex flex-col items-center">
-                  {timeRemaining.hoursRemaining}
-                  <span className="text-xs font-light">Hours</span>
+                  {timeRemaining.daysRemaining}
+                  <span className="text-xs font-light">Days</span>
                 </p>
-                <p className="flex flex-col items-center">
-                  {timeRemaining.minutesRemaining}
-                  <span className="text-xs font-light">Minutes</span>
-                </p>
-              </Badge>
-            </>
+              )}
+              <p className="flex flex-col items-center">
+                {timeRemaining.hoursRemaining}
+                <span className="text-xs font-light">Hours</span>
+              </p>
+              <p className="flex flex-col items-center">
+                {timeRemaining.minutesRemaining}
+                <span className="text-xs font-light">Minutes</span>
+              </p>
+            </Badge>
           )}
         </div>
       </div>

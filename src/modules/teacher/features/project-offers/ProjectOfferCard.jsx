@@ -9,7 +9,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { viewLessText } from "@/utils/helpers";
-import { Briefcase, Calendar, Cpu, Users } from "lucide-react";
+import { Briefcase, Calendar, Cpu, User, Users } from "lucide-react";
 function ProjectOfferCard({ data }) {
   const {
     title,
@@ -18,6 +18,7 @@ function ProjectOfferCard({ data }) {
     maxTeams,
     toolsRequired,
     year,
+    pastYear,
   } = data;
 
   return (
@@ -58,12 +59,23 @@ function ProjectOfferCard({ data }) {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <h4 className="text-sm font-semibold flex items-center gap-1">
-            <Calendar size={20} />
-            <span>Year :</span>
-          </h4>
-          <p className="text-sm font-semibold">{year}</p>
+        <div className="flex items-center gap-12 flex-wrap">
+          <div className="flex items-center gap-2">
+            <h4 className="text-sm font-semibold flex items-center gap-1">
+              <User size={20} />
+              <span>Grade :</span>
+            </h4>
+            <p className="text-sm font-semibold">{year} year</p>
+          </div>
+          {pastYear && (
+            <div className="flex items-center gap-2">
+              <h4 className="text-sm font-semibold flex items-center gap-1">
+                <Calendar size={20} />
+                <span>Year :</span>
+              </h4>
+              <p className="text-sm font-semibold">{pastYear}</p>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <h4 className="text-sm font-semibold flex items-center gap-1">

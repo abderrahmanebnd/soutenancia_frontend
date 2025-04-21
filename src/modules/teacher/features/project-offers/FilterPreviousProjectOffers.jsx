@@ -14,11 +14,15 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { ChevronsUpDown, UsersRound } from "lucide-react";
-import { useProjectOffers } from "../../context/ProjectOffersContext";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getEsiAllYears, getMaxTeamsApplying } from "@/utils/helpers";
+import {
+  getEsiAllYears,
+  getMaxTeamsApplying,
+  getYearsFromLastYearTo2014,
+} from "@/utils/helpers";
+import { usePreviousProjectOffers } from "../../context/PreviousProjectOffersContext";
 
-function FilterProjectOffers() {
+function FilterPreviousProjectOffers() {
   const {
     yearValue,
     specialityValue,
@@ -30,7 +34,9 @@ function FilterProjectOffers() {
     handleClearMaxTeams,
     handleClearFilters,
     selectedSpeciality,
-  } = useProjectOffers();
+    handleSelectPastYear,
+    pastYearValue,
+  } = usePreviousProjectOffers();
   return (
     <div className="space-y-2">
       <div className="flex flex-col  sm:flex-row sm:items-center gap-2 ">
@@ -50,7 +56,7 @@ function FilterProjectOffers() {
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
             <Command>
-              <CommandInput placeholder="Search year..." />
+              <CommandInput placeholder="Search grade..." />
               <CommandList>
                 <CommandEmpty>No year found.</CommandEmpty>
                 <CommandGroup>
@@ -80,6 +86,11 @@ function FilterProjectOffers() {
         </Popover>
         <Popover>
           <PopoverTrigger asChild>
+            {/* {selectedSkills.length > 0
+              ? `${selectedSkills.length} skill${
+                  selectedSkills.length > 1 ? "s" : ""
+                } selected`
+              : "Select Skills"} */}
             {selectedSpeciality.length > 0 ? (
               <Button variant="comboboxActive" role="combobox">
                 {selectedSpeciality.at(0)}
@@ -136,6 +147,7 @@ function FilterProjectOffers() {
             {/* )} */}
           </PopoverContent>
         </Popover>
+
         <Popover>
           <PopoverTrigger asChild>
             {maxTeamsValue ? (
@@ -178,6 +190,42 @@ function FilterProjectOffers() {
             </Command>
           </PopoverContent>
         </Popover>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            {pastYearValue ? (
+              <Button variant="comboboxActive" role="combobox">
+                {pastYearValue}{" "}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            ) : (
+              <Button variant="outline" role="combobox">
+                Select the year{" "}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            )}
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search the year..." />
+              <CommandList>
+                <CommandEmpty>No year found .</CommandEmpty>
+                <CommandGroup>
+                  {getYearsFromLastYearTo2014().map((year) => (
+                    <CommandItem
+                      key={year}
+                      value={year}
+                      onSelect={() => handleSelectPastYear(year)}
+                      className="flex items-center justify-center text-primary text-sm"
+                    >
+                      {year}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
       <div className="flex justify-center">
         <Button variant="link" onClick={handleClearFilters}>
@@ -188,4 +236,4 @@ function FilterProjectOffers() {
   );
 }
 
-export default FilterProjectOffers;
+export default FilterPreviousProjectOffers;
