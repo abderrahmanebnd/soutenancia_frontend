@@ -1,70 +1,15 @@
 import { createContext, useContext, useState } from "react";
 import { useSearchParams } from "react-router";
-const projects = [
-  {
-    title: "AI-Powered Tutor Bot",
-    description:
-      "An intelligent chatbot that helps students learn through conversation and interactive exercises.",
-    targetSpecialities: ["Computer Science", "AI & Data Science"],
-    year: 5,
-    maxTeams: 5,
-    assignedMethod: "auto-selection",
-    toolsRequired: ["Python", "TensorFlow", "Dialogflow", "React"],
-  },
-  {
-    title: "Smart Farming System",
-    description:
-      "A sensor-based system to monitor soil, weather, and crop conditions for precision agriculture.",
-    targetSpecialities: ["Agricultural Engineering", "Electronics"],
-    year: 3,
-    maxTeams: 4,
-    assignedMethod: "teacher-approval",
-    toolsRequired: ["Arduino", "IoT Sensors", "C++", "Node-RED"],
-  },
-  {
-    title: "Blockchain Voting App",
-    description:
-      "A secure and transparent voting platform using blockchain technology for student elections.",
-    targetSpecialities: ["Cybersecurity", "Software Engineering"],
-    year: 2,
-    maxTeams: 6,
-    assignedMethod: "auto-selection",
-    toolsRequired: ["Solidity", "Ethereum", "React", "Metamask"],
-  },
-  {
-    title: "Health Tracker Mobile App",
-    description:
-      "A mobile application that helps users track fitness activities, calories, and heart rate.",
-    targetSpecialities: ["Health Informatics", "Mobile Development"],
-    year: 4,
-    maxTeams: 5,
-    assignedMethod: "teacher-approval",
-    toolsRequired: ["Flutter", "Firebase", "Wearable APIs", "Dart"],
-  },
-  {
-    title: "E-Learning Platform with Gamification",
-    description:
-      "An online learning platform with gamified quizzes and progress tracking ",
-    targetSpecialities: ["Educational Technology", "Web Development"],
-    year: 5,
-    maxTeams: 6,
-    assignedMethod: "auto-selection",
-    toolsRequired: ["React", "Node.js", "MongoDB", "Gamification APIs"],
-  },
-  {
-    title: "Autonomous Delivery Robot",
-    description:
-      "A robotic system that navigates campuses to deliver items autonomously.",
-    targetSpecialities: ["Robotics", "Embedded Systems"],
-    year: 4,
-    maxTeams: 3,
-    assignedMethod: "teacher-approval",
-    toolsRequired: ["Raspberry Pi", "ROS", "Python", "Lidar"],
-  },
-];
+import { useProjectOffersQuery } from "../features/project-offers/useProjectOffersQuery";
+
 const ProjectOffersContext = createContext();
 function ProjectOffersProvider({ children }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    projectOffersData,
+    isGettingProjectOffers,
+    isErrorGettingProjectOffers,
+  } = useProjectOffersQuery();
   const searchValue = searchParams.get("search") || "";
   const yearValue = searchParams.get("year") || 0;
   const specialityValue = searchParams.get("speciality")?.split(",") || [];
@@ -76,9 +21,9 @@ function ProjectOffersProvider({ children }) {
   }
   function handleSelectSpeciality(currentSpeciality) {
     setSelectedSpeciality((prev) => {
-      const updatedSpeciality = prev.includes(currentSpeciality)
-        ? prev.filter((spe) => spe !== currentSpeciality)
-        : [...prev, currentSpeciality];
+      const updatedSpeciality = prev.includes(currentSpeciality.toLowerCase())
+        ? prev.filter((spe) => spe !== currentSpeciality.toLowerCase())
+        : [...prev, currentSpeciality.toLowerCase()];
 
       if (updatedSpeciality.length > 0) {
         searchParams.set("speciality", updatedSpeciality.join(","));
@@ -108,7 +53,7 @@ function ProjectOffersProvider({ children }) {
     searchParams.delete("max_teams");
     setSearchParams(searchParams);
   }
-  let filteredProjects = projects;
+  let filteredProjects = projectOffersData;
 
   if (searchValue) {
     filteredProjects = filteredProjects?.filter((team) =>
@@ -117,19 +62,21 @@ function ProjectOffersProvider({ children }) {
   }
   if (yearValue) {
     filteredProjects = filteredProjects?.filter((project) => {
-      return project.year === Number(yearValue);
+      return project.specialities.some(
+        (speciality) => speciality.year === Number(yearValue)
+      );
     });
   }
   if (maxTeamsValue) {
     filteredProjects = filteredProjects?.filter((project) => {
-      return project.maxTeams === Number(maxTeamsValue);
+      return project.maxTeamsNumber === Number(maxTeamsValue);
     });
   }
   if (specialityValue.length > 0) {
     filteredProjects = filteredProjects?.filter((project) => {
       return specialityValue.every((filter) => {
-        const lowerCaseSpeciality = project.targetSpecialities.map((spe) =>
-          spe.toLowerCase()
+        const lowerCaseSpeciality = project.specialities.map((spe) =>
+          spe.name.toLowerCase()
         );
         return lowerCaseSpeciality.includes(filter.toLowerCase());
       });
@@ -148,6 +95,8 @@ function ProjectOffersProvider({ children }) {
     handleClearMaxTeams,
     handleClearFilters,
     selectedSpeciality,
+    isGettingProjectOffers,
+    isErrorGettingProjectOffers,
   };
   return (
     <ProjectOffersContext.Provider value={value}>

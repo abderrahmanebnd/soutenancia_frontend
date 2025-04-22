@@ -10,16 +10,18 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { viewLessText } from "@/utils/helpers";
 import { Briefcase, Calendar, Cpu, User, Users } from "lucide-react";
+import { Link } from "react-router";
 function ProjectOfferCard({ data }) {
   const {
     title,
     description,
-    targetSpecialities,
-    maxTeams,
-    toolsRequired,
+    maxTeamsNumber,
+    tools,
+    specialities,
     year,
-    pastYear,
+    id: projectOfferId,
   } = data;
+  const currentYear = new Date().getFullYear();
 
   return (
     <Card className="w-full flex flex-col overflow-hidden transition-all  hover:shadow-md  duration-300">
@@ -41,10 +43,8 @@ function ProjectOfferCard({ data }) {
             <span>Tools Required:</span>
           </h4>
           <div className="flex flex-wrap gap-2">
-            {toolsRequired.map((tool, index) => (
-              <Badge key={index} variant="outline">
-                {tool}
-              </Badge>
+            {tools.map((tool, index) => (
+              <Badge key={index}>{tool}</Badge>
             ))}
           </div>
         </div>
@@ -54,26 +54,32 @@ function ProjectOfferCard({ data }) {
             <span>Tagret Specialities:</span>
           </h4>
           <div className="flex flex-wrap gap-2">
-            {targetSpecialities.map((speciality, index) => (
-              <Badge key={index}>{speciality}</Badge>
+            {specialities.map((speciality, index) => (
+              <Badge key={index}>{speciality.name}</Badge>
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-12 flex-wrap">
+        <div className="flex items-center gap-x-12 gap-y-3 flex-wrap">
           <div className="flex items-center gap-2">
             <h4 className="text-sm font-semibold flex items-center gap-1">
               <User size={20} />
               <span>Grade :</span>
             </h4>
-            <p className="text-sm font-semibold">{year} year</p>
+            <div className="flex flex-wrap gap-1">
+              {specialities.map((speciality, index) => (
+                <Badge key={index} variant="outline">
+                  {speciality.year} year
+                </Badge>
+              ))}
+            </div>
           </div>
-          {pastYear && (
+          {year !== currentYear && (
             <div className="flex items-center gap-2">
               <h4 className="text-sm font-semibold flex items-center gap-1">
                 <Calendar size={20} />
                 <span>Year :</span>
               </h4>
-              <p className="text-sm font-semibold">{pastYear}</p>
+              <Badge variant="outline">{year}</Badge>
             </div>
           )}
         </div>
@@ -82,12 +88,14 @@ function ProjectOfferCard({ data }) {
             <Users size={20} />
             <span>Max Teams :</span>
           </h4>
-          <Badge variant="outline">{maxTeams} teams</Badge>
+          <Badge variant="outline">{maxTeamsNumber} teams</Badge>
         </div>
       </CardContent>
       <CardFooter>
         <Button variant="outline">
-          View Details <span>•••</span>
+          <Link to={`/teacher/project-offers/${projectOfferId}`}>
+            View Details <span>•••</span>
+          </Link>
         </Button>
       </CardFooter>
     </Card>

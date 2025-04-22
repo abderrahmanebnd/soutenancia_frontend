@@ -29,6 +29,7 @@ import TeamCompositionUnauthorized from "./modules/student/pages/TeamComposition
 import ProjectOffers from "./modules/teacher/pages/ProjectOffers";
 import CurrentProjectOffers from "./modules/teacher/pages/CurrentProjectOffers";
 import PreviousProjectOffers from "./modules/teacher/pages/PreviousProjectOffers";
+import ProjectOfferDetails from "./modules/teacher/pages/ProjectOfferDetails";
 
 function Router() {
   return (
@@ -177,6 +178,10 @@ function Router() {
                       element={<PreviousProjectOffers />}
                     />
                   </Route>
+                  <Route
+                    path="project-offers/:idProjectOfferDetails"
+                    element={<ProjectOfferDetails />}
+                  />
                   <Route
                     path="submit-project-offer"
                     element={<div>Add/edit project offer</div>}

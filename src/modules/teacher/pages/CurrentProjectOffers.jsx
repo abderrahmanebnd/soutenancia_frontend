@@ -6,8 +6,14 @@ import FilterProjectOffers from "../features/project-offers/FilterProjectOffers"
 import { useProjectOffers } from "../context/ProjectOffersContext";
 
 function CurrentProjectOffers() {
-  const { selectedSpeciality, maxTeamsValue, yearValue, filteredProjects } =
-    useProjectOffers();
+  const {
+    selectedSpeciality,
+    maxTeamsValue,
+    yearValue,
+    filteredProjects,
+    isGettingProjectOffers,
+    isErrorGettingProjectOffers,
+  } = useProjectOffers();
   return (
     <div className="space-y-4">
       <section className="sm:flex sm:flex-row sm:items-center sm:justify-between grid grid-cols-2 grid-rows-2 gap-4 bg-section rounded-xl px-3 py-4 shadow-sm">
@@ -24,7 +30,11 @@ function CurrentProjectOffers() {
           <FilterProjectOffers />
         </Filter>
       </section>
-      <ProjectOffersList data={filteredProjects} />
+      <ProjectOffersList
+        data={filteredProjects}
+        isGettingProjectOffers={isGettingProjectOffers}
+        isErrorGettingProjectOffers={isErrorGettingProjectOffers}
+      />
     </div>
   );
 }

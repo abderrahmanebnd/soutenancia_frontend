@@ -1,10 +1,14 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { addSpacesBeforeCapitals } from "@/utils/helpers";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 function ReusibleTabs({ tabs }) {
+  const location = useLocation();
+  const activeTab =
+    tabs.find((tab) => location.pathname.includes(tab.link))?.value ||
+    tabs[0].value;
   return (
-    <Tabs defaultValue={tabs.at(0).value} className="w-full">
+    <Tabs defaultValue={activeTab} className="w-full">
       <TabsList className="grid w-full grid-cols-2 bg-white lg:h-14 h-12 rounded-lg shadow-md lg:p-2 p-1.5 mb-4">
         {tabs.map((tab) => (
           <TabsTrigger

@@ -21,6 +21,8 @@ import {
   getYearsFromLastYearTo2014,
 } from "@/utils/helpers";
 import { usePreviousProjectOffers } from "../../context/PreviousProjectOffersContext";
+import { useSpecialities } from "@/features/specialities/useSpecialities";
+import InlineSpinner from "@/components/commun/InlineSpinner";
 
 function FilterPreviousProjectOffers() {
   const {
@@ -37,6 +39,8 @@ function FilterPreviousProjectOffers() {
     handleSelectPastYear,
     pastYearValue,
   } = usePreviousProjectOffers();
+  const { specialities, isGettingSpecialities, isErrorGettingSpecialities } =
+    useSpecialities();
   return (
     <div className="space-y-2">
       <div className="flex flex-col  sm:flex-row sm:items-center gap-2 ">
@@ -104,47 +108,36 @@ function FilterPreviousProjectOffers() {
             )}
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
-            {/* {isLoading ? (
-            <InlineSpinner />
-          ) : ( */}
-            <Command>
-              <CommandInput placeholder="Search speciality..." />
-              <CommandList>
-                <CommandEmpty>No speciality found.</CommandEmpty>
-                <CommandGroup>
-                  {/*  {studentSkills?.map((skill) => ( TODO:fix the commandItem because the data has really changed */}
-
-                  <CommandItem
-                    value="Cybersecurity"
-                    onSelect={() => handleSelectSpeciality("cybersecurity")}
-                    className=" text-primary text-sm"
-                  >
-                    <Checkbox
-                      id="Cybersecurity"
-                      checked={specialityValue.includes("cybersecurity")}
-                    />{" "}
-                    Cybersecurity
-                  </CommandItem>
-
-                  <CommandItem
-                    value="Software Engineering"
-                    onSelect={() =>
-                      handleSelectSpeciality("software engineering")
-                    }
-                    className="text-primary text-sm"
-                  >
-                    <Checkbox
-                      id={"Software Engineering"}
-                      checked={specialityValue.includes("software engineering")}
-                    />{" "}
-                    Software Engineering
-                  </CommandItem>
-
-                  {/*  ))} */}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-            {/* )} */}
+            {isGettingSpecialities && <InlineSpinner />}
+            {isErrorGettingSpecialities && (
+              <div className="text-red-600"> error getting specialities</div>
+            )}
+            {!isErrorGettingSpecialities && !isGettingSpecialities && (
+              <Command>
+                <CommandInput placeholder="Search speciality..." />
+                <CommandList>
+                  <CommandEmpty>No speciality found.</CommandEmpty>
+                  <CommandGroup>
+                    {specialities?.map((speciality) => (
+                      <CommandItem
+                        key={speciality.id}
+                        value={speciality.name}
+                        onSelect={() => handleSelectSpeciality(speciality.name)}
+                        className=" text-primary text-sm"
+                      >
+                        <Checkbox
+                          id={speciality.id}
+                          checked={specialityValue.includes(
+                            speciality.name.toLowerCase()
+                          )}
+                        />{" "}
+                        <label>{speciality.name}</label>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            )}
           </PopoverContent>
         </Popover>
 
