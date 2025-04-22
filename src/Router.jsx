@@ -29,6 +29,7 @@ import TeamCompositionUnauthorized from "./modules/student/pages/TeamComposition
 import ProjectOffers from "./modules/teacher/pages/ProjectOffers";
 import CurrentProjectOffers from "./modules/teacher/pages/CurrentProjectOffers";
 import PreviousProjectOffers from "./modules/teacher/pages/PreviousProjectOffers";
+import SubmitProject from "./modules/teacher/pages/SubmitProject";
 import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
 function Router() {
   return (
@@ -179,7 +180,12 @@ function Router() {
                   </Route>
                   <Route
                     path="submit-project-offer"
-                    element={<AddProjectOffer />}
+                    element={<SubmitProject />}
+                  />
+  
+                  <Route
+                  path="Add-project-offer"
+                  element={<AddProjectOffer />}
                   />
                   <Route
                     path="project-applications"

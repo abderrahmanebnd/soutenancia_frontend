@@ -8,6 +8,10 @@ import { X, Plus, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { UploadCloud } from "lucide-react";
 import { FileUpload } from "@/components/commun/FileUpload";
+import { useGetTeachers } from "@/modules/teacher/features/project-offers/useGetTeachers";
+import { useGetSpecialities } from "@/modules/teacher/features/project-offers/useGetSpecialities";
+import { useAddProjectOffer } from "../features/project-offers/useAddProjectOffer";
+import { useNavigate } from "react-router-dom";
 
 import {
   FormControl,
@@ -44,12 +48,12 @@ const formSchema = z.object({
   usedTools: z
     .array(z.string())
     .min(1, { message: "At least one tool is required." }),
-  destinatedFor: z.string().min(1, { message: "Target audience is required." }),
+  destinatedFor: z.array(z.string()).min(1, { message: "Target audience is required." }),
   teamSize: z
     .array(z.number())
     .length(1, { message: "Team size must be specified." })
-    .refine((val) => val[0] >= 2 && val[0] <= 7, {
-      message: "Team size must be between 2 and 7",
+    .refine((val) => val[0] >= 2 && val[0] <= 9, {
+      message: "Number of Teams  must be between 2 and 9",
     }),
   assignMode: z.string().min(1, { message: "Assignment mode is required." }),
   projectSummary: z
@@ -60,17 +64,17 @@ const formSchema = z.object({
   selectedFramers: z.array(z.string()).optional(),
 });
 
-const teacherOptions = ["Teacher A", "Teacher B", "Teacher C"];
-const destinationOptions = ["Speciality A", "Speciality B", "Speciality C"];
+
 
 export default function SubmitProjectOffer() {
+  const navigate = useNavigate();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       projectTitle: "",
-      usedTechnologies: ["Java", "React", "Express"],
-      usedTools: ["VS Code", "Figma", "Linear"],
-      destinatedFor: "",
+      usedTechnologies: [],
+      usedTools: [],
+      destinatedFor: [],
       teamSize: [1],
       assignMode: "Auto-Selection",
       projectSummary: "",
@@ -79,18 +83,34 @@ export default function SubmitProjectOffer() {
     },
   });
 
-  const [techInput, setTechInput] = useState("");
-  const [toolInput, setToolInput] = useState("");
-  const currentTeamSize = form.watch("teamSize")[0];
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: teachersData } = useGetTeachers();
+  const { data: specialitiesData } = useGetSpecialities();
+  const { mutate: submitProject, isPending } = useAddProjectOffer();
 
-  function onSubmit(data) {
-    setIsSubmitting(true);
-    console.log("Form submitted:", data);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert("Form submitted successfully!");
-    }, 1500);
+  const [techInput, setTechInput] = useState("");
+const [toolInput, setToolInput] = useState("");
+  const currentTeamSize = form.watch("teamSize")[0];
+  const [isSubmitting] = useState(false);
+
+  function onSubmit(formData) {
+    const projectOfferData = {
+      title: formData.projectTitle,
+      description: formData.projectSummary,
+      tools: formData.usedTools,
+      languages: formData.usedTechnologies,
+      maxTeamsNumber: formData.teamSize[0],
+      fileUrl: formData.projectAttachments[0]?.url || null, // Ensure optional fields are handled
+      assignmentType: formData.assignMode === "Auto-Selection" ? "auto" : "teacherApproval",
+      specialities: formData.destinatedFor,
+      year: new Date().getFullYear().toString(),
+    };
+
+    submitProject({ ...projectOfferData }, {
+      onSuccess: () => {
+        form.reset(); // Reset the form after successful submission
+        navigate("/teacher/submit-project-offer");
+      },
+    });
   }
 
   return (
@@ -108,7 +128,6 @@ export default function SubmitProjectOffer() {
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Rest of your form fields remain exactly the same */}
               <FormField
                 control={form.control}
                 name="projectTitle"
@@ -125,97 +144,100 @@ export default function SubmitProjectOffer() {
                 )}
               />
 
-              {/* ... All other form fields remain unchanged ... */}
               
               <FormField
                 control={form.control}
                 name="selectedFramers"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base text-primary">
-                      Select Framers
-                    </FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "w-full justify-between",
-                              !field.value.length && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value.length > 0
-                              ? `${field.value.length} teacher${
-                                  field.value.length > 1 ? "s" : ""
-                                } selected`
-                              : "Select Framers"}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="start">
-                        <Command>
-                          <CommandInput placeholder="Search Framers..." />
-                          <CommandList>
-                            <CommandEmpty>No Framers found.</CommandEmpty>
-                            <CommandGroup>
-                              {teacherOptions.map((teacher) => {
-                                const isSelected = field.value.includes(teacher);
-                                return (
-                                  <CommandItem
-                                    key={teacher}
-                                    onSelect={() => {
-                                      if (isSelected) {
-                                        field.onChange(
-                                          field.value.filter((value) => value !== teacher)
-                                        );
-                                      } else {
-                                        field.onChange([...field.value, teacher]);
-                                      }
-                                    }}
-                                  >
-                                    <div
-                                      className={cn(
-                                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                        isSelected
-                                          ? "bg-primary text-primary-foreground"
-                                          : "opacity-50 [&_svg]:invisible"
-                                      )}
-                                    >
-                                      <Check className="h-3 w-3" />
-                                    </div>
-                                    <span>{teacher}</span>
-                                  </CommandItem>
-                                );
-                              })}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    {field.value.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {field.value.map((teacher) => (
-                          <Badge
-                            key={teacher}
-                            className="flex items-center gap-1 px-3 py-1"
-                          >
-                            {teacher}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                field.onChange(
-                                  field.value.filter((value) => value !== teacher)
-                                );
-                              }}
-                              className="rounded-full p-0.5"
+                    <FormLabel className="text-base text-primary">Select Framers</FormLabel>
+                    <div className="flex space-x-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between",
+                                !field.value.length && "text-muted-foreground"
+                              )}
                             >
-                              <X className="h-3 w-3" />
-                              <span className="sr-only">Remove {teacher}</span>
-                            </button>
-                          </Badge>
-                        ))}
+                              {field.value.length > 0
+                                ? `${field.value.length} teacher${
+                                    field.value.length > 1 ? "s" : ""
+                                  } selected`
+                                : "Select Framers"}
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0" align="start">
+                          <Command>
+                            <CommandInput placeholder="Search Framers..." />
+                            <CommandList>
+                              <CommandEmpty>No Framers found.</CommandEmpty>
+                              <CommandGroup>
+                                {teachersData?.teachers.map((teacher) => {
+                                  const isSelected = field.value.includes(teacher.id);
+                                  return (
+                                    <CommandItem
+                                      key={teacher.id}
+                                      onSelect={() => {
+                                        if (isSelected) {
+                                          field.onChange(
+                                            field.value.filter((value) => value !== teacher.id)
+                                          );
+                                        } else {
+                                          field.onChange([...field.value, teacher.id]);
+                                        }
+                                      }}
+                                    >
+                                      <div
+                                        className={cn(
+                                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                          isSelected
+                                            ? "bg-primary text-primary-foreground"
+                                            : "opacity-50 [&_svg]:invisible"
+                                        )}
+                                      >
+                                        <Check className="h-3 w-3" />
+                                      </div>
+                                      <span>
+                                        {teacher.user.firstName} {teacher.user.lastName}
+                                      </span>
+                                    </CommandItem>
+                                  );
+                                })}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    {field.value.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {field.value.map((id) => {
+                          const teacher = teachersData?.teachers.find((t) => t.id === id);
+                          return (
+                            <Badge
+                              key={id}
+                              className="flex items-center gap-1 px-3 py-1"
+                            >
+                              {teacher?.user.firstName} {teacher?.user.lastName}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  field.onChange(field.value.filter((s) => s !== id));
+                                }}
+                                className="rounded-full p-0.5"
+                              >
+                                <X className="h-3 w-3" />
+                                <span className="sr-only">Remove {teacher?.user.firstName}</span>
+                              </button>
+                            </Badge>
+                          );
+                        })}
                       </div>
                     )}
                     <FormMessage />
@@ -229,40 +251,97 @@ export default function SubmitProjectOffer() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-base text-primary">Destination For</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "w-full justify-between",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value || "Select Specialities"}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="start" sideOffset={4}>
-                        <Command>
-                          <CommandInput placeholder="Search destination..." />
-                          <CommandList>
-                            <CommandEmpty>No destinations found.</CommandEmpty>
-                            <CommandGroup>
-                              {destinationOptions.map((option) => (
-                                <CommandItem
-                                  key={option}
-                                  onSelect={() => field.onChange(option)}
-                                >
-                                  <span>{option}</span>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
+                    <div className="flex space-x-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between",
+                                !field.value.length && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value.length > 0
+                                ? `${field.value.length} specialit${
+                                    field.value.length > 1 ? "ies" : "y"
+                                  } selected`
+                                : "Select Specialities"}
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0" align="start">
+                          <Command>
+                            <CommandInput placeholder="Search specialities..." />
+                            <CommandList>
+                              <CommandEmpty>No specialities found.</CommandEmpty>
+                              <CommandGroup>
+                                {specialitiesData?.specialities.map((speciality) => {
+                                  const isSelected = field.value.includes(speciality.id);
+                                  return (
+                                    <CommandItem
+                                      key={speciality.id}
+                                      onSelect={() => {
+                                        if (isSelected) {
+                                          field.onChange(
+                                            field.value.filter((value) => value !== speciality.id)
+                                          );
+                                        } else {
+                                          field.onChange([...field.value, speciality.id]);
+                                        }
+                                      }}
+                                    >
+                                      <div
+                                        className={cn(
+                                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                          isSelected
+                                            ? "bg-primary text-primary-foreground"
+                                            : "opacity-50 [&_svg]:invisible"
+                                        )}
+                                      >
+                                        <Check className="h-3 w-3" />
+                                      </div>
+                                      <span>
+                                        {speciality.name} (Year {speciality.year})
+                                      </span>
+                                    </CommandItem>
+                                  );
+                                })}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    {field.value.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {field.value.map((id) => {
+                          const speciality = specialitiesData?.specialities.find(
+                            (s) => s.id === id
+                          );
+                          return (
+                            <Badge
+                              key={id}
+                              className="flex items-center gap-1 px-3 py-1"
+                            >
+                              {speciality?.name} (Year {speciality?.year})
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  field.onChange(field.value.filter((s) => s !== id));
+                                }}
+                                className="rounded-full p-0.5"
+                              >
+                                <X className="h-3 w-3" />
+                                <span className="sr-only">Remove {speciality?.name}</span>
+                              </button>
+                            </Badge>
+                          );
+                        })}
+                      </div>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -461,8 +540,8 @@ export default function SubmitProjectOffer() {
                       <FormControl className="flex-1">
                         <Slider
                           min={1}
-                          max={7}
-                          step={9}
+                          max={9}
+                          step={1}
                           onValueChange={field.onChange}
                           value={field.value}
                         />
@@ -489,7 +568,7 @@ export default function SubmitProjectOffer() {
                   <FormControl>
                     <textarea
                       {...field}
-                      placeholder="Describe the project in detail"
+                      placeholder="Full Project Details"
                       className="w-full rounded-md border p-2"
                       rows={5}
                     />
@@ -522,10 +601,11 @@ export default function SubmitProjectOffer() {
               ) : (
                 <Button
                   type="submit"
+                  disabled={isPending}
                   variant="outline" 
                   className="flex items-center px-6 py-3 space-x-2 border border-blue-500 text-blue-600 text-lg font-semibold hover:bg-blue-100"
                 >
-                  Submit Offer
+                  {isPending ? "Submitting..." : "Submit Offer"}
                   <UploadCloud className="w-8 h-8" />
                 </Button>
               )}
