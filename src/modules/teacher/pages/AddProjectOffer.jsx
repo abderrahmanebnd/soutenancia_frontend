@@ -48,7 +48,9 @@ const formSchema = z.object({
   usedTools: z
     .array(z.string())
     .min(1, { message: "At least one tool is required." }),
-  destinatedFor: z.array(z.string()).min(1, { message: "Target audience is required." }),
+  destinatedFor: z
+    .array(z.string())
+    .min(1, { message: "Target audience is required." }),
   teamSize: z
     .array(z.number())
     .length(1, { message: "Team size must be specified." })
@@ -63,8 +65,6 @@ const formSchema = z.object({
   generalSkills: z.array(z.string()).optional(),
   selectedFramers: z.array(z.string()).optional(),
 });
-
-
 
 export default function SubmitProjectOffer() {
   const navigate = useNavigate();
@@ -88,7 +88,7 @@ export default function SubmitProjectOffer() {
   const { mutate: submitProject, isPending } = useAddProjectOffer();
 
   const [techInput, setTechInput] = useState("");
-const [toolInput, setToolInput] = useState("");
+  const [toolInput, setToolInput] = useState("");
   const currentTeamSize = form.watch("teamSize")[0];
   const [isSubmitting] = useState(false);
 
@@ -100,17 +100,21 @@ const [toolInput, setToolInput] = useState("");
       languages: formData.usedTechnologies,
       maxTeamsNumber: formData.teamSize[0],
       fileUrl: formData.projectAttachments[0]?.url || null, // Ensure optional fields are handled
-      assignmentType: formData.assignMode === "Auto-Selection" ? "auto" : "teacherApproval",
+      assignmentType:
+        formData.assignMode === "Auto-Selection" ? "auto" : "teacherApproval",
       specialities: formData.destinatedFor,
-      year: new Date().getFullYear().toString(),
+      year: new Date().getFullYear(),
     };
 
-    submitProject({ ...projectOfferData }, {
-      onSuccess: () => {
-        form.reset(); // Reset the form after successful submission
-        navigate("/teacher/submit-project-offer");
-      },
-    });
+    submitProject(
+      { ...projectOfferData },
+      {
+        onSuccess: () => {
+          form.reset(); // Reset the form after successful submission
+          navigate("/teacher/submit-project-offer");
+        },
+      }
+    );
   }
 
   return (
@@ -144,13 +148,14 @@ const [toolInput, setToolInput] = useState("");
                 )}
               />
 
-              
               <FormField
                 control={form.control}
                 name="selectedFramers"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base text-primary">Select Framers</FormLabel>
+                    <FormLabel className="text-base text-primary">
+                      Select Framers
+                    </FormLabel>
                     <div className="flex space-x-2">
                       <Popover>
                         <PopoverTrigger asChild>
@@ -178,17 +183,24 @@ const [toolInput, setToolInput] = useState("");
                               <CommandEmpty>No Framers found.</CommandEmpty>
                               <CommandGroup>
                                 {teachersData?.teachers.map((teacher) => {
-                                  const isSelected = field.value.includes(teacher.id);
+                                  const isSelected = field.value.includes(
+                                    teacher.id
+                                  );
                                   return (
                                     <CommandItem
                                       key={teacher.id}
                                       onSelect={() => {
                                         if (isSelected) {
                                           field.onChange(
-                                            field.value.filter((value) => value !== teacher.id)
+                                            field.value.filter(
+                                              (value) => value !== teacher.id
+                                            )
                                           );
                                         } else {
-                                          field.onChange([...field.value, teacher.id]);
+                                          field.onChange([
+                                            ...field.value,
+                                            teacher.id,
+                                          ]);
                                         }
                                       }}
                                     >
@@ -203,7 +215,8 @@ const [toolInput, setToolInput] = useState("");
                                         <Check className="h-3 w-3" />
                                       </div>
                                       <span>
-                                        {teacher.user.firstName} {teacher.user.lastName}
+                                        {teacher.user.firstName}{" "}
+                                        {teacher.user.lastName}
                                       </span>
                                     </CommandItem>
                                   );
@@ -218,7 +231,9 @@ const [toolInput, setToolInput] = useState("");
                     {field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {field.value.map((id) => {
-                          const teacher = teachersData?.teachers.find((t) => t.id === id);
+                          const teacher = teachersData?.teachers.find(
+                            (t) => t.id === id
+                          );
                           return (
                             <Badge
                               key={id}
@@ -228,12 +243,16 @@ const [toolInput, setToolInput] = useState("");
                               <button
                                 type="button"
                                 onClick={() => {
-                                  field.onChange(field.value.filter((s) => s !== id));
+                                  field.onChange(
+                                    field.value.filter((s) => s !== id)
+                                  );
                                 }}
                                 className="rounded-full p-0.5"
                               >
                                 <X className="h-3 w-3" />
-                                <span className="sr-only">Remove {teacher?.user.firstName}</span>
+                                <span className="sr-only">
+                                  Remove {teacher?.user.firstName}
+                                </span>
                               </button>
                             </Badge>
                           );
@@ -250,7 +269,9 @@ const [toolInput, setToolInput] = useState("");
                 name="destinatedFor"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base text-primary">Destination For</FormLabel>
+                    <FormLabel className="text-base text-primary">
+                      Destination For
+                    </FormLabel>
                     <div className="flex space-x-2">
                       <Popover>
                         <PopoverTrigger asChild>
@@ -275,39 +296,52 @@ const [toolInput, setToolInput] = useState("");
                           <Command>
                             <CommandInput placeholder="Search specialities..." />
                             <CommandList>
-                              <CommandEmpty>No specialities found.</CommandEmpty>
+                              <CommandEmpty>
+                                No specialities found.
+                              </CommandEmpty>
                               <CommandGroup>
-                                {specialitiesData?.specialities.map((speciality) => {
-                                  const isSelected = field.value.includes(speciality.id);
-                                  return (
-                                    <CommandItem
-                                      key={speciality.id}
-                                      onSelect={() => {
-                                        if (isSelected) {
-                                          field.onChange(
-                                            field.value.filter((value) => value !== speciality.id)
-                                          );
-                                        } else {
-                                          field.onChange([...field.value, speciality.id]);
-                                        }
-                                      }}
-                                    >
-                                      <div
-                                        className={cn(
-                                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                          isSelected
-                                            ? "bg-primary text-primary-foreground"
-                                            : "opacity-50 [&_svg]:invisible"
-                                        )}
+                                {specialitiesData?.specialities.map(
+                                  (speciality) => {
+                                    const isSelected = field.value.includes(
+                                      speciality.id
+                                    );
+                                    return (
+                                      <CommandItem
+                                        key={speciality.id}
+                                        onSelect={() => {
+                                          if (isSelected) {
+                                            field.onChange(
+                                              field.value.filter(
+                                                (value) =>
+                                                  value !== speciality.id
+                                              )
+                                            );
+                                          } else {
+                                            field.onChange([
+                                              ...field.value,
+                                              speciality.id,
+                                            ]);
+                                          }
+                                        }}
                                       >
-                                        <Check className="h-3 w-3" />
-                                      </div>
-                                      <span>
-                                        {speciality.name} (Year {speciality.year})
-                                      </span>
-                                    </CommandItem>
-                                  );
-                                })}
+                                        <div
+                                          className={cn(
+                                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                            isSelected
+                                              ? "bg-primary text-primary-foreground"
+                                              : "opacity-50 [&_svg]:invisible"
+                                          )}
+                                        >
+                                          <Check className="h-3 w-3" />
+                                        </div>
+                                        <span>
+                                          {speciality.name} (Year{" "}
+                                          {speciality.year})
+                                        </span>
+                                      </CommandItem>
+                                    );
+                                  }
+                                )}
                               </CommandGroup>
                             </CommandList>
                           </Command>
@@ -318,9 +352,10 @@ const [toolInput, setToolInput] = useState("");
                     {field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {field.value.map((id) => {
-                          const speciality = specialitiesData?.specialities.find(
-                            (s) => s.id === id
-                          );
+                          const speciality =
+                            specialitiesData?.specialities.find(
+                              (s) => s.id === id
+                            );
                           return (
                             <Badge
                               key={id}
@@ -330,12 +365,16 @@ const [toolInput, setToolInput] = useState("");
                               <button
                                 type="button"
                                 onClick={() => {
-                                  field.onChange(field.value.filter((s) => s !== id));
+                                  field.onChange(
+                                    field.value.filter((s) => s !== id)
+                                  );
                                 }}
                                 className="rounded-full p-0.5"
                               >
                                 <X className="h-3 w-3" />
-                                <span className="sr-only">Remove {speciality?.name}</span>
+                                <span className="sr-only">
+                                  Remove {speciality?.name}
+                                </span>
                               </button>
                             </Badge>
                           );
@@ -364,7 +403,10 @@ const [toolInput, setToolInput] = useState("");
                           if (e.key === "Enter") {
                             e.preventDefault();
                             const trimmedValue = techInput.trim();
-                            if (trimmedValue && !field.value.includes(trimmedValue)) {
+                            if (
+                              trimmedValue &&
+                              !field.value.includes(trimmedValue)
+                            ) {
                               field.onChange([...field.value, trimmedValue]);
                               setTechInput("");
                             }
@@ -377,7 +419,10 @@ const [toolInput, setToolInput] = useState("");
                         size="icon"
                         onClick={() => {
                           const trimmedValue = techInput.trim();
-                          if (trimmedValue && !field.value.includes(trimmedValue)) {
+                          if (
+                            trimmedValue &&
+                            !field.value.includes(trimmedValue)
+                          ) {
                             field.onChange([...field.value, trimmedValue]);
                             setTechInput("");
                           }
@@ -400,7 +445,9 @@ const [toolInput, setToolInput] = useState("");
                             <button
                               type="button"
                               onClick={() => {
-                                field.onChange(field.value.filter((s) => s !== item));
+                                field.onChange(
+                                  field.value.filter((s) => s !== item)
+                                );
                               }}
                               className="rounded-full p-0.5"
                             >
@@ -433,11 +480,15 @@ const [toolInput, setToolInput] = useState("");
                           if (e.key === "Enter") {
                             e.preventDefault();
                             const trimmedValue = toolInput.trim();
-                            if (trimmedValue && !field.value.includes(trimmedValue)) {
+                            if (
+                              trimmedValue &&
+                              !field.value.includes(trimmedValue)
+                            ) {
                               field.onChange([...field.value, trimmedValue]);
                               setToolInput("");
+                            }
                           }
-                        }}}
+                        }}
                         className="flex-1"
                       />
                       <Button
@@ -445,7 +496,10 @@ const [toolInput, setToolInput] = useState("");
                         size="icon"
                         onClick={() => {
                           const trimmedValue = toolInput.trim();
-                          if (trimmedValue && !field.value.includes(trimmedValue)) {
+                          if (
+                            trimmedValue &&
+                            !field.value.includes(trimmedValue)
+                          ) {
                             field.onChange([...field.value, trimmedValue]);
                             setToolInput("");
                           }
@@ -468,7 +522,9 @@ const [toolInput, setToolInput] = useState("");
                             <button
                               type="button"
                               onClick={() => {
-                                field.onChange(field.value.filter((s) => s !== item));
+                                field.onChange(
+                                  field.value.filter((s) => s !== item)
+                                );
                               }}
                               className="rounded-full p-0.5"
                             >
@@ -489,7 +545,9 @@ const [toolInput, setToolInput] = useState("");
                 name="assignMode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base text-primary">Assign Mode</FormLabel>
+                    <FormLabel className="text-base text-primary">
+                      Assign Mode
+                    </FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -510,14 +568,16 @@ const [toolInput, setToolInput] = useState("");
                           <CommandList>
                             <CommandEmpty>No modes found.</CommandEmpty>
                             <CommandGroup>
-                              {["Auto-Selection", "Teacher Approval"].map((mode) => (
-                                <CommandItem
-                                  key={mode}
-                                  onSelect={() => field.onChange(mode)}
-                                >
-                                  <span>{mode}</span>
-                                </CommandItem>
-                              ))}
+                              {["Auto-Selection", "Teacher Approval"].map(
+                                (mode) => (
+                                  <CommandItem
+                                    key={mode}
+                                    onSelect={() => field.onChange(mode)}
+                                  >
+                                    <span>{mode}</span>
+                                  </CommandItem>
+                                )
+                              )}
                             </CommandGroup>
                           </CommandList>
                         </Command>
@@ -551,7 +611,7 @@ const [toolInput, setToolInput] = useState("");
                       </div>
                     </div>
                     <FormDescription>
-                      Select the number of teams  (1-9)
+                      Select the number of teams (1-9)
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -564,7 +624,9 @@ const [toolInput, setToolInput] = useState("");
               name="projectSummary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base text-primary">Project Summary</FormLabel>
+                  <FormLabel className="text-base text-primary">
+                    Project Summary
+                  </FormLabel>
                   <FormControl>
                     <textarea
                       {...field}
@@ -583,9 +645,12 @@ const [toolInput, setToolInput] = useState("");
               name="projectAttachments"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base text-primary">Project Attachment :</FormLabel>
+                  <FormLabel className="text-base text-primary">
+                    Project Attachment :
+                  </FormLabel>
                   <FormDescription>
-                    Project Specifications Book, Work Plan, Work Schedule And Every Thing Related To The Project
+                    Project Specifications Book, Work Plan, Work Schedule And
+                    Every Thing Related To The Project
                   </FormDescription>
                   <FormControl>
                     <FileUpload field={field} />
@@ -602,7 +667,7 @@ const [toolInput, setToolInput] = useState("");
                 <Button
                   type="submit"
                   disabled={isPending}
-                  variant="outline" 
+                  variant="outline"
                   className="flex items-center px-6 py-3 space-x-2 border border-blue-500 text-blue-600 text-lg font-semibold hover:bg-blue-100"
                 >
                   {isPending ? "Submitting..." : "Submit Offer"}
