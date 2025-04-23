@@ -31,7 +31,8 @@ import CurrentProjectOffers from "./modules/teacher/pages/CurrentProjectOffers";
 import PreviousProjectOffers from "./modules/teacher/pages/PreviousProjectOffers";
 import ProjectOfferDetails from "./modules/teacher/pages/ProjectOfferDetails";
 import ProjectsApplications from "./modules/teacher/pages/ProjectsApplications";
-
+import SubmitProject from "./modules/teacher/pages/SubmitProject";
+import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
 function Router() {
   return (
     <>
@@ -185,7 +186,12 @@ function Router() {
                   />
                   <Route
                     path="submit-project-offer"
-                    element={<div>Add/edit project offer</div>}
+                    element={<SubmitProject />}
+                  />
+
+                  <Route
+                    path="Add-project-offer"
+                    element={<AddProjectOffer />}
                   />
                   <Route
                     path="projects-applications"
