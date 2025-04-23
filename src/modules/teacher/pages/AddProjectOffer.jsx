@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { UploadCloud } from "lucide-react";
 import { FileUpload } from "@/components/commun/FileUpload";
 import { useGetTeachers } from "@/modules/teacher/features/project-offers/useGetTeachers";
-import { useGetSpecialities } from "@/modules/teacher/features/project-offers/useGetSpecialities";
+
 import { useAddProjectOffer } from "../features/project-offers/useAddProjectOffer";
 import { useNavigate } from "react-router-dom";
 
@@ -37,6 +37,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { useSpecialities } from "@/features/specialities/useSpecialities";
 
 const formSchema = z.object({
   projectTitle: z.string().min(3, {
@@ -84,7 +85,7 @@ export default function SubmitProjectOffer() {
   });
 
   const { data: teachersData } = useGetTeachers();
-  const { data: specialitiesData } = useGetSpecialities();
+  const { specialities } = useSpecialities();
   const { mutate: submitProject, isPending } = useAddProjectOffer();
 
   const [techInput, setTechInput] = useState("");
@@ -300,48 +301,45 @@ export default function SubmitProjectOffer() {
                                 No specialities found.
                               </CommandEmpty>
                               <CommandGroup>
-                                {specialitiesData?.specialities.map(
-                                  (speciality) => {
-                                    const isSelected = field.value.includes(
-                                      speciality.id
-                                    );
-                                    return (
-                                      <CommandItem
-                                        key={speciality.id}
-                                        onSelect={() => {
-                                          if (isSelected) {
-                                            field.onChange(
-                                              field.value.filter(
-                                                (value) =>
-                                                  value !== speciality.id
-                                              )
-                                            );
-                                          } else {
-                                            field.onChange([
-                                              ...field.value,
-                                              speciality.id,
-                                            ]);
-                                          }
-                                        }}
+                                {specialities?.map((speciality) => {
+                                  const isSelected = field.value.includes(
+                                    speciality.id
+                                  );
+                                  return (
+                                    <CommandItem
+                                      key={speciality.id}
+                                      onSelect={() => {
+                                        if (isSelected) {
+                                          field.onChange(
+                                            field.value.filter(
+                                              (value) => value !== speciality.id
+                                            )
+                                          );
+                                        } else {
+                                          field.onChange([
+                                            ...field.value,
+                                            speciality.id,
+                                          ]);
+                                        }
+                                      }}
+                                    >
+                                      <div
+                                        className={cn(
+                                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                          isSelected
+                                            ? "bg-primary text-primary-foreground"
+                                            : "opacity-50 [&_svg]:invisible"
+                                        )}
                                       >
-                                        <div
-                                          className={cn(
-                                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                            isSelected
-                                              ? "bg-primary text-primary-foreground"
-                                              : "opacity-50 [&_svg]:invisible"
-                                          )}
-                                        >
-                                          <Check className="h-3 w-3" />
-                                        </div>
-                                        <span>
-                                          {speciality.name} (Year{" "}
-                                          {speciality.year})
-                                        </span>
-                                      </CommandItem>
-                                    );
-                                  }
-                                )}
+                                        <Check className="h-3 w-3" />
+                                      </div>
+                                      <span>
+                                        {speciality.name} (Year{" "}
+                                        {speciality.year})
+                                      </span>
+                                    </CommandItem>
+                                  );
+                                })}
                               </CommandGroup>
                             </CommandList>
                           </Command>
@@ -352,10 +350,9 @@ export default function SubmitProjectOffer() {
                     {field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {field.value.map((id) => {
-                          const speciality =
-                            specialitiesData?.specialities.find(
-                              (s) => s.id === id
-                            );
+                          const speciality = specialities?.find(
+                            (s) => s.id === id
+                          );
                           return (
                             <Badge
                               key={id}
