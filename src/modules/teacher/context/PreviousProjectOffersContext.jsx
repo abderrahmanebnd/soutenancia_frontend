@@ -1,50 +1,16 @@
 import { createContext, useContext, useState } from "react";
 import { useSearchParams } from "react-router";
-const previousProjects = [
-  {
-    id: "cm9rfahbu0003v3lwyhkbndpx",
-    title: "AI-Based Attendance System",
-    description:
-      "A system that uses face recognition to automate attendance tracking.",
-    tools: ["TensorFlow", "OpenCV", "React"],
-    languages: ["Python", "JavaScript"],
-    status: "open",
-    maxTeamsNumber: 5,
-    fileUrl: "https://example.com/requirements.pdf",
-    year: 2023,
-    teacherId: "cm9r6h48n0003v30whfjia918",
-    assignmentType: "auto",
-    createdAt: "2025-04-21T18:42:01.146Z",
-    updatedAt: "2025-04-21T18:42:01.146Z",
-    teacher: {
-      id: "cm9r6h48n0003v30whfjia918",
-      userId: "cm9r6h48m0002v30wa97lx0f6",
-      department: null,
-      title: "DR",
-      bio: null,
-      createdAt: "2025-04-21T14:35:12.958Z",
-      updatedAt: "2025-04-21T14:35:12.958Z",
-    },
-    specialities: [
-      {
-        id: "cm9r71odm0000v37sbrxzxegi",
-        name: "Ai",
-        year: 5,
-      },
-      {
-        id: "cm9r71odm0000v37sbrxzxert",
-        name: "Cybersecurity",
-        year: 4,
-      },
-    ],
-    applications: [],
-    assignedTeamsOffers: [],
-  },
-];
+import { useProjectOffersHistory } from "../features/project-offers/useProjectOffersHistory";
+
 const PreviousProjectOffersContext = createContext();
 function PreviousProjectOffersProvider({ children }) {
   const lastYear = new Date().getFullYear() - 1;
   const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    previousProjectOffers,
+    isGettingPreviousProjectOffers,
+    isErrorGettingPreviousProjectOffers,
+  } = useProjectOffersHistory();
   const searchValue = searchParams.get("search") || "";
   const yearValue = searchParams.get("year") || 0;
   const pastYearValue = searchParams.get("pastYear") || lastYear;
@@ -94,7 +60,7 @@ function PreviousProjectOffersProvider({ children }) {
     searchParams.delete("max_teams");
     setSearchParams(searchParams);
   }
-  let filteredPastProjects = previousProjects;
+  let filteredPastProjects = previousProjectOffers;
 
   if (searchValue) {
     filteredPastProjects = filteredPastProjects?.filter((team) =>
@@ -143,6 +109,8 @@ function PreviousProjectOffersProvider({ children }) {
     handleClearFilters,
     handleSelectPastYear,
     selectedSpeciality,
+    isGettingPreviousProjectOffers,
+    isErrorGettingPreviousProjectOffers,
   };
   return (
     <PreviousProjectOffersContext.Provider value={value}>

@@ -78,9 +78,9 @@ export function getSessionSidebarData(role) {
               url: "/teacher/submit-project-offer",
             },
             {
-              title: "Project Applications",
+              title: "Projects Applications",
               icon: UserRoundCheck,
-              url: "/teacher/project-applications",
+              url: "/teacher/projects-applications",
             },
           ],
         },

@@ -12,6 +12,8 @@ function PreviousProjectOffers() {
     yearValue,
     filteredPastProjects,
     pastYearValue,
+    isGettingPreviousProjectOffers,
+    isErrorGettingPreviousProjectOffers,
   } = usePreviousProjectOffers();
 
   return (
@@ -31,7 +33,13 @@ function PreviousProjectOffers() {
           <FilterPreviousProjectOffers />
         </Filter>
       </section>
-      <ProjectOffersList data={filteredPastProjects} />
+      <ProjectOffersList
+        data={filteredPastProjects}
+        isGettingPreviousProjectOffers={isGettingPreviousProjectOffers}
+        isErrorGettingPreviousProjectOffers={
+          isErrorGettingPreviousProjectOffers
+        }
+      />
     </div>
   );
 }

@@ -8,14 +8,17 @@ function ProjectOffersList({
   data,
   isGettingProjectOffers,
   isErrorGettingProjectOffers,
+  isGettingPreviousProjectOffers,
+  isErrorGettingPreviousProjectOffers,
 }) {
   const { open } = useSidebar();
-  if (isGettingProjectOffers) return <Spinner />;
-  if (isErrorGettingProjectOffers)
+  if (isGettingProjectOffers || isGettingPreviousProjectOffers)
+    return <Spinner />;
+  if (isErrorGettingProjectOffers || isErrorGettingPreviousProjectOffers)
     return <div className="text-red-600"> error getting project offers</div>;
   return (
     <>
-      {data.length > 0 ? (
+      {data?.length > 0 ? (
         <div
           className={`grid gap-6 grid-cols-1 ${
             open
@@ -23,7 +26,7 @@ function ProjectOffersList({
               : "   sm:grid-cols-2 lg:grid-cols-3"
           }`}
         >
-          {data.map((project) => (
+          {data?.map((project) => (
             <ProjectOfferCard data={project} key={project.title} />
           ))}
         </div>
