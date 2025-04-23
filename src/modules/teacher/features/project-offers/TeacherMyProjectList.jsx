@@ -1,6 +1,9 @@
 import Spinner from "@/components/commun/Spinner";
 import { useMyProjectOffers } from "./useMyProjectOffers";
 import TeacherMyProjectCard from "./TeacherMyProjectCard";
+import ItemNotFound from "@/components/commun/ItemNotFound";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 function TeacherMyProjectList() {
   const {
@@ -21,7 +24,16 @@ function TeacherMyProjectList() {
           ))}
         </div>
       ) : (
-        <div>you did not create a project yet </div>
+        <ItemNotFound>
+          <p className="text-2xl font-semibold text-primary mb-2">
+            you do not have a project offer yet
+            <br />
+            <span className="font-light text-xl">Do you want to create ?</span>
+          </p>
+          <Button asChild>
+            <Link to="/teacher/Add-project-offer">Add a project</Link>
+          </Button>
+        </ItemNotFound>
       )}
     </>
   );
