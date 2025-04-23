@@ -194,6 +194,12 @@ function Router() {
                     element={<AddProjectOffer />}
                   />
                   <Route
+                    path="submit-project-offer/edit/:idEditProjectOffer"
+                    element={
+                      <div>here you put the edit component based on it id </div>
+                    }
+                  />
+                  <Route
                     path="projects-applications"
                     element={<ProjectsApplications />}
                   />

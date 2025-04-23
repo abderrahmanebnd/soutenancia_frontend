@@ -18,8 +18,19 @@ function TeacherMyProjectCard({ projectData }) {
           </Link>
         </Button>
         {lastPath === "projects-applications" && (
-          <Button className="flex-1 text-white bg-transparent hover:bg-section hover:text-primary border duration-300 transition-all ">
+          <Button
+            className="flex-1 text-white bg-transparent hover:bg-section hover:text-primary border duration-300 transition-all "
+            asChild
+          >
             <Link to={projectOfferId}>Manage Application &rarr;</Link>
+          </Button>
+        )}
+        {lastPath === "submit-project-offer" && (
+          <Button
+            className="flex-1 text-white bg-transparent hover:bg-section hover:text-primary border duration-300 transition-all "
+            asChild
+          >
+            <Link to={`edit/${projectOfferId}`}>Edit Project Offer &rarr;</Link>
           </Button>
         )}
       </div>
