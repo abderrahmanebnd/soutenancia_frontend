@@ -203,7 +203,8 @@ export default function EditProject() {
       toast.error("Cannot delete the project as there are assigned teams.");
       return;
     }
-
+ 
+    
     deleteProjectOffer(idEditProjectOffer);
   };
 
