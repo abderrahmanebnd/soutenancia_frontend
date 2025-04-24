@@ -1,4 +1,3 @@
-// hooks/useGetTeacher.ts
 import { useQuery } from "@tanstack/react-query";
 import { getTeachers } from "../../api/apiTeachers";
 

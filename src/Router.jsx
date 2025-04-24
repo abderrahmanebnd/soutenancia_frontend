@@ -33,6 +33,7 @@ import ProjectOfferDetails from "./modules/teacher/pages/ProjectOfferDetails";
 import ProjectsApplications from "./modules/teacher/pages/ProjectsApplications";
 import SubmitProject from "./modules/teacher/pages/SubmitProject";
 import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
+import EditProject from "./modules/teacher/pages/EditProject";
 function Router() {
   return (
     <>
@@ -196,7 +197,7 @@ function Router() {
                   <Route
                     path="submit-project-offer/edit/:idEditProjectOffer"
                     element={
-                      <div>here you put the edit component based on it id </div>
+                      <EditProject/>
                     }
                   />
                   <Route
