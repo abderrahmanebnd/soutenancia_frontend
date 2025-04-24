@@ -21,7 +21,7 @@ function SearchBar() {
     <div className="relative">
       <Input
         type="search"
-        placeholder="Search teams..."
+        placeholder="Search by title..."
         className="w-full sm:w-[250px] xl:w-[300px]"
         value={searchQuery}
         onChange={handleSearch}

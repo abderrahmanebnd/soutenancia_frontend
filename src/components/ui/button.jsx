@@ -21,6 +21,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         requestJoin:
           "border-2 border-green-600 rounded-full text-green-600 hover:bg-background",
+        comboboxActive:
+          "bg-primary text-primary-foreground shadow hover:bg-primary/90 ring-4",
       },
       size: {
         default: "h-9 px-4 py-2",

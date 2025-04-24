@@ -47,3 +47,23 @@ export function getTotalDays(isoDateStringStart, isoDateStringEnd) {
   const endDate = parseISO(isoDateStringEnd);
   return differenceInCalendarDays(endDate, startDate);
 }
+
+export function addSpacesBeforeCapitals(text) {
+  return text.replace(/(?!^)([A-Z])/g, " $1");
+}
+
+export function getEsiAllYears() {
+  return [2, 3, 4, 5];
+}
+export function getMaxTeamsApplying() {
+  return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+}
+
+export function getYearsFromLastYearTo2014() {
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let year = currentYear - 1; year >= 2014; year--) {
+    years.push(year);
+  }
+  return years;
+}

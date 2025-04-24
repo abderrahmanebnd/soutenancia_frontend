@@ -6,11 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Badge } from "@/components/ui/badge";
 import { getAllSkills, viewLessText } from "@/utils/helpers";
 import { Link } from "react-router";
-import { useApplyToTeamOffer } from "@/modules/student/features/team-management/useApplyToTeamOffer";
 import { useAuth } from "@/context/AuthContext";
 import MessageDialog from "@/modules/student/features/team-management/MessageDialog";
 import { useCurrentLeaderTeamOffer } from "@/modules/student/features/team-offers/useCurrentLeaderTeamOffer";
@@ -18,10 +17,9 @@ import WarningDialog from "./WarningDialog";
 import LeaderApplyDialog from "@/modules/student/features/team-management/LeaderApplyDialog";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
+import { Camera } from "lucide-react";
 
 function ReusibleItemCard({ data }) {
-  //fot the moment the reusibleItemCard is used only for the team offers and not so reusible but in the futur i will make it reusible depending on the cards that we would get
-
   const {
     id: teamOfferId,
     leader_id,
@@ -49,14 +47,29 @@ function ReusibleItemCard({ data }) {
 
   return (
     <Card className="w-full flex flex-col overflow-hidden transition-all hover:shadow-md">
-      <CardHeader className="flex flex-row items-center gap-4 pb-2">
-        <Avatar className="h-20 w-20 border-2 border-muted ">
-          <AvatarImage src={imageUrl} alt="team logo" />
-          <AvatarFallback className="text-lg">logo</AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col">
-          <CardTitle className="text-xl">{title}</CardTitle>
-        </div>
+      <CardHeader>
+        <CardTitle className="text-2xl text-primary mb-1 text-center">
+          {title}
+        </CardTitle>
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt="team offer image"
+            className="w-full max-h-36 object-cover rounded-lg"
+          />
+        ) : (
+          <div className="relative">
+            <img
+              src="/assets/team-offer-image-not-found.webp"
+              alt="team offer image"
+              className="w-full max-h-36 object-cover rounded-lg brightness-50"
+            />
+            <Camera
+              size={40}
+              className="text-section absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
+            />
+          </div>
+        )}
       </CardHeader>
       <CardContent className="pb-4 flex-grow">
         <h4 className="text-sm font-semibold">Description:</h4>

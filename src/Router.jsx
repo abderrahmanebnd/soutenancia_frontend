@@ -26,7 +26,13 @@ import TeamApplicationsManagement from "./modules/student/pages/TeamApplications
 import TeamDetails from "./modules/student/pages/TeamDetails";
 import TeamCompositionProtectedRoute from "./modules/student/features/team-management/TeamCompositionProtectedRoute";
 import TeamCompositionUnauthorized from "./modules/student/pages/TeamCompositionUnauthorized";
-
+import ProjectOffers from "./modules/teacher/pages/ProjectOffers";
+import CurrentProjectOffers from "./modules/teacher/pages/CurrentProjectOffers";
+import PreviousProjectOffers from "./modules/teacher/pages/PreviousProjectOffers";
+import ProjectOfferDetails from "./modules/teacher/pages/ProjectOfferDetails";
+import ProjectsApplications from "./modules/teacher/pages/ProjectsApplications";
+import SubmitProject from "./modules/teacher/pages/SubmitProject";
+import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
 function Router() {
   return (
     <>
@@ -155,10 +161,58 @@ function Router() {
                 <Route path="/teacher" element={<Teacher />}>
                   <Route
                     index
-                    element={<Navigate replace to="add-project" />}
+                    element={<Navigate replace to="project-offers" />}
                   />
 
-                  <Route path="add-project" element={<div>add-project</div>} />
+                  <Route path="project-offers" element={<ProjectOffers />}>
+                    <Route
+                      index
+                      element={
+                        <Navigate replace to="current-projects-offers" />
+                      }
+                    />
+                    <Route
+                      path="current-projects-offers"
+                      element={<CurrentProjectOffers />}
+                    />
+                    <Route
+                      path="previous-projects-offers"
+                      element={<PreviousProjectOffers />}
+                    />
+                  </Route>
+                  <Route
+                    path="project-offers/:idProjectOfferDetails"
+                    element={<ProjectOfferDetails />}
+                  />
+                  <Route
+                    path="submit-project-offer"
+                    element={<SubmitProject />}
+                  />
+
+                  <Route
+                    path="Add-project-offer"
+                    element={<AddProjectOffer />}
+                  />
+                  <Route
+                    path="submit-project-offer/edit/:idEditProjectOffer"
+                    element={
+                      <div>here you put the edit component based on it id </div>
+                    }
+                  />
+                  <Route
+                    path="projects-applications"
+                    element={<ProjectsApplications />}
+                  />
+                  <Route
+                    path="projects-applications/:idProjectApplications"
+                    element={
+                      <div>here we put the project applicatios details</div>
+                    }
+                  />
+                  <Route
+                    path="manage-my-teams"
+                    element={<div>manage teams </div>}
+                  />
                 </Route>
               </Route>
 

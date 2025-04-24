@@ -1,9 +1,15 @@
 import { Outlet } from "react-router";
+import { ProjectOffersProvider } from "../context/ProjectOffersContext";
+import { PreviousProjectOffersProvider } from "../context/PreviousProjectOffersContext";
 
 function Teacher() {
   return (
     <>
-      <Outlet />
+      <PreviousProjectOffersProvider>
+        <ProjectOffersProvider>
+          <Outlet />
+        </ProjectOffersProvider>
+      </PreviousProjectOffersProvider>
     </>
   );
 }
