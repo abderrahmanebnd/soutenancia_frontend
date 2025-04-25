@@ -11,10 +11,23 @@ import React from "react";
 import { useLocation } from "react-router";
 import { splitRouteIntoElements } from "@/utils/helpers";
 import { useAuth } from "@/context/AuthContext";
-import { TeamCompositionCountdown } from "./TeamCompositionCountdown";
+import { TeamAndProjectCompositionCountdown } from "./TeamAndProjectCompositionCountdown";
+
+import { useProjectCompositionCountdown } from "@/modules/teacher/features/project-composition-countdown/useProjectCompositionCountdown";
+import { useTeamCompositionCountdown } from "@/modules/student/features/team-management/useTeamCompositionCountdown";
 function SessionHeader() {
   const location = useLocation();
   const elements = splitRouteIntoElements(location.pathname);
+  const {
+    projectComposition,
+    isLoadingProjectComposition,
+    isErrorGettingProjectCompositionCountdown,
+  } = useProjectCompositionCountdown();
+  const {
+    teamComposition,
+    isLoadingTeamComposition,
+    isErrorGettingTeamCompositionCountdown,
+  } = useTeamCompositionCountdown();
   const { currentUser } = useAuth();
   const name = currentUser?.user?.firstName;
   const isStudent = currentUser?.user?.role === "student";
@@ -49,7 +62,26 @@ function SessionHeader() {
           <span className=" italic font-bold capitalize ">{name} !</span>
         </p>
       </div>
-      {isStudent && <TeamCompositionCountdown />}
+      {isStudent && (
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+          <TeamAndProjectCompositionCountdown
+            dataTeamAndProjectCountdown={teamComposition}
+            isLoadingTeamAndProjectCountdown={isLoadingTeamComposition}
+            isErrorTeamAndProjectCountdown={
+              isErrorGettingTeamCompositionCountdown
+            }
+            title="Team Composition"
+          />
+          <TeamAndProjectCompositionCountdown
+            dataTeamAndProjectCountdown={projectComposition}
+            isLoadingTeamAndProjectCountdown={isLoadingProjectComposition}
+            isErrorTeamAndProjectCountdown={
+              isErrorGettingProjectCompositionCountdown
+            }
+            title="Project Selection"
+          />
+        </div>
+      )}
     </header>
   );
 }

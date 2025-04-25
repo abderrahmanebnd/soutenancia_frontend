@@ -13,8 +13,8 @@ function TeamCompositionUnauthorized() {
           We are sorry ...
         </h2>
         <p className="text-center text-muted-foreground max-w-xl">
-          This page is no longer accessible because the team composition setup
-          phase has ended.
+          This page is not accessible because the team composition setup phase
+          has ended or not started yet .
         </p>
       </div>
       <Button>Go to project selection</Button>

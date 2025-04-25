@@ -33,6 +33,7 @@ import ProjectOfferDetails from "./modules/teacher/pages/ProjectOfferDetails";
 import ProjectsApplications from "./modules/teacher/pages/ProjectsApplications";
 import SubmitProject from "./modules/teacher/pages/SubmitProject";
 import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
+import SingleProjectApplications from "./modules/teacher/pages/SingleProjectApplications";
 function Router() {
   return (
     <>
@@ -205,9 +206,11 @@ function Router() {
                   />
                   <Route
                     path="projects-applications/:idProjectApplications"
-                    element={
-                      <div>here we put the project applicatios details</div>
-                    }
+                    element={<SingleProjectApplications />}
+                  />
+                  <Route
+                    path="team-details/:idTeamOfferDetails"
+                    element={<TeamOfferDetails />}
                   />
                   <Route
                     path="manage-my-teams"

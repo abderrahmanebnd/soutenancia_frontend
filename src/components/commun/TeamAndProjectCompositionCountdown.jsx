@@ -1,25 +1,25 @@
-import { Calendar } from "lucide-react";
+import { AlertCircle, Calendar } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { getTimeRemaining, getTotalDays } from "@/utils/helpers";
 import { useEffect, useState } from "react";
-import { useTeamCompositionCountdown } from "@/modules/student/features/team-management/useTeamCompositionCountdown";
+
 import InlineSpinner from "./InlineSpinner";
 
-export function TeamCompositionCountdown() {
+export function TeamAndProjectCompositionCountdown({
+  dataTeamAndProjectCountdown,
+  isLoadingTeamAndProjectCountdown,
+  isErrorTeamAndProjectCountdown,
+  title,
+}) {
   const [progress, setProgress] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState({
     daysRemaining: 0,
     hoursRemaining: 0,
     minutesRemaining: 0,
   });
-  const {
-    teamComposition,
-    isLoadingTeamComposition,
-    isErrorGettingTeamCompositionCountdown,
-  } = useTeamCompositionCountdown();
 
-  const startDate = teamComposition?.at(0).startDate;
-  const endDate = teamComposition?.at(0)?.endDate;
+  const startDate = dataTeamAndProjectCountdown?.at(0)?.startDate;
+  const endDate = dataTeamAndProjectCountdown?.at(0)?.endDate;
 
   const totalDays = getTotalDays(startDate, endDate);
 
@@ -44,17 +44,46 @@ export function TeamCompositionCountdown() {
     return () => clearInterval(interval);
   }, [endDate, totalDays]);
 
-  if (isLoadingTeamComposition) {
+  if (isLoadingTeamAndProjectCountdown) {
     return (
       <div className="w-full rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 shadow-md">
         <InlineSpinner />
       </div>
     );
   }
-  if (isErrorGettingTeamCompositionCountdown) {
+  if (isErrorTeamAndProjectCountdown) {
     return (
       <div className="w-full rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 shadow-md">
         <p className="text-red-500">Error loading countdown</p>
+      </div>
+    );
+  }
+  if (
+    !isLoadingTeamAndProjectCountdown &&
+    dataTeamAndProjectCountdown.length === 0
+  ) {
+    return (
+      <div className="w-full space-y-2 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 shadow-md overflow-x-auto ">
+        <div className="flex gap-2 justify-between">
+          <div className="flex  gap-2">
+            <Calendar className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-semibold text-primary">
+              {title} Deadline
+            </h3>
+          </div>
+          <div className=" p-4 rounded-2xl border bg-red-50 text-red-700 shadow-sm flex items-start gap-4">
+            <AlertCircle className="w-6 h-6 mt-1 text-destructive" />
+            <div>
+              <h2 className="text-lg font-semibold">
+                {title} Phase Not Started
+              </h2>
+              <p className="text-sm">
+                Please wait until the administration opens this phase for your
+                speciality
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -64,7 +93,7 @@ export function TeamCompositionCountdown() {
         <div className="flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
           <h3 className="text-lg font-semibold text-primary">
-            Team Composition Deadline
+            {title} Deadline
           </h3>
         </div>
         <div className=" p-3  bg-section rounded-xl shadow-lg">
@@ -72,7 +101,7 @@ export function TeamCompositionCountdown() {
           timeRemaining.hoursRemaining === 0 &&
           timeRemaining.minutesRemaining === 0 ? (
             <Badge variant="destructive" className="min-h-7 text-sm">
-              Team composition phase close
+              {title} phase close
             </Badge>
           ) : (
             <Badge className=" rounded-lg text-sm flex gap-2 shadow-lg  ">
