@@ -100,10 +100,10 @@ function ProjectOfferDetails() {
                       {projectOfferDetails.maxTeamsNumber} students
                     </Badge>
                     <div className="text-sm font-medium">
-                      Current Team Members :
+                      Current Team Number :
                     </div>
                     <Badge className="w-fit" variant="outline">
-                      {/*  TODO: add the currentTeamNumber */}0 out of{" "}
+                      {projectOfferDetails.assignedTeams.length} out of{" "}
                       {projectOfferDetails.maxTeamsNumber}
                     </Badge>
                     <div className="text-sm font-medium">Assignment:</div>

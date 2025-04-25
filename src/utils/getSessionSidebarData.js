@@ -12,7 +12,7 @@ export function getSessionSidebarData(role) {
     return {
       navMain: [
         {
-          title: "Project Management",
+          title: "Team Offers",
           items: [
             {
               title: "Team Offers",
