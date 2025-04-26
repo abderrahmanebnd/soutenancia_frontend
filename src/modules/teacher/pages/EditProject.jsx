@@ -73,7 +73,7 @@ export default function EditProject() {
   const { updateProject, isUpdating } = useUpdateProject(); // Ensure this hook is correctly implemented
   const { deleteProjectOffer, isDeleting } = useDeleteProjectOffer();
   const { specialities, isLoading: isLoadingSpecialities } = useSpecialities(); // Add loading state
-  const { data: teachersData } = useGetTeachers();
+  const { teachers: framers } = useGetTeachers(); // Extract teachers directly
 
   const [techInput, setTechInput] = useState("");
   const [toolInput, setToolInput] = useState("");
@@ -535,7 +535,7 @@ export default function EditProject() {
                           <CommandList>
                             <CommandEmpty>No Framers found.</CommandEmpty>
                             <CommandGroup>
-                              {teachersData?.teachers.map((teacher) => {
+                              {framers?.map((teacher) => { // Use framers instead of teachersData?.teachers
                                 const isSelected = field.value.includes(teacher.id);
                                 return (
                                   <CommandItem
@@ -574,7 +574,7 @@ export default function EditProject() {
                     {field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {field.value.map((id) => {
-                          const teacher = teachersData?.teachers.find((t) => t.id === id);
+                          const teacher = framers?.find((t) => t.id === id);
                           return (
                             <Badge key={id} className="flex items-center gap-1 px-3 py-1">
                               {teacher?.user.firstName} {teacher?.user.lastName}
