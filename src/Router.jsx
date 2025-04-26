@@ -30,10 +30,12 @@ import ProjectOffers from "./modules/teacher/pages/ProjectOffers";
 import CurrentProjectOffers from "./modules/teacher/pages/CurrentProjectOffers";
 import PreviousProjectOffers from "./modules/teacher/pages/PreviousProjectOffers";
 import ProjectOfferDetails from "./modules/teacher/pages/ProjectOfferDetails";
-import ProjectsApplications from "./modules/teacher/pages/ProjectsApplications";
 import SubmitProject from "./modules/teacher/pages/SubmitProject";
 import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
 import SingleProjectApplications from "./modules/teacher/pages/SingleProjectApplications";
+import CurrentStudentProjectOffers from "./modules/student/pages/CurrentStudentProjectOffers";
+import ProjectCompositionProtectedRoute from "./modules/student/features/project-composition-countdown/ProjectCompositionProtectedRoute";
+import ProjectDetails from "./modules/student/pages/ProjectDetails";
 function Router() {
   return (
     <>
@@ -149,6 +151,38 @@ function Router() {
                     path="team-composition-unauthorized"
                     element={<TeamCompositionUnauthorized />}
                   />
+                  <Route
+                    path="project-offers"
+                    element={
+                      <ProjectCompositionProtectedRoute>
+                        <CurrentStudentProjectOffers />
+                      </ProjectCompositionProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="project-offers/:idProjectOfferDetails"
+                    element={
+                      <ProjectCompositionProtectedRoute>
+                        <ProjectOfferDetails />
+                      </ProjectCompositionProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="project-applications"
+                    element={
+                      <ProjectCompositionProtectedRoute>
+                        <div>project-applications</div>
+                      </ProjectCompositionProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="project-details"
+                    element={
+                      <ProjectCompositionProtectedRoute>
+                        <ProjectDetails />
+                      </ProjectCompositionProtectedRoute>
+                    }
+                  />
                 </Route>
               </Route>
 
@@ -185,27 +219,20 @@ function Router() {
                     path="project-offers/:idProjectOfferDetails"
                     element={<ProjectOfferDetails />}
                   />
-                  <Route
-                    path="submit-project-offer"
-                    element={<SubmitProject />}
-                  />
+                  <Route path="my-project-offers" element={<SubmitProject />} />
 
                   <Route
                     path="Add-project-offer"
                     element={<AddProjectOffer />}
                   />
                   <Route
-                    path="submit-project-offer/edit/:idEditProjectOffer"
+                    path="my-project-offers/edit/:idEditProjectOffer"
                     element={
                       <div>here you put the edit component based on it id </div>
                     }
                   />
                   <Route
-                    path="projects-applications"
-                    element={<ProjectsApplications />}
-                  />
-                  <Route
-                    path="projects-applications/:idProjectApplications"
+                    path="my-project-offers/project-applications/:idProjectApplications"
                     element={<SingleProjectApplications />}
                   />
                   <Route

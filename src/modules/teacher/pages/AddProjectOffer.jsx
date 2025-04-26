@@ -84,7 +84,7 @@ export default function SubmitProjectOffer() {
     },
   });
 
-  const { data: teachersData } = useGetTeachers();
+  const { teachers } = useGetTeachers();
   const { specialities } = useSpecialities();
   const { mutate: submitProject, isPending } = useAddProjectOffer();
 
@@ -183,7 +183,7 @@ export default function SubmitProjectOffer() {
                             <CommandList>
                               <CommandEmpty>No Framers found.</CommandEmpty>
                               <CommandGroup>
-                                {teachersData?.teachers.map((teacher) => {
+                                {teachers?.map((teacher) => {
                                   const isSelected = field.value.includes(
                                     teacher.id
                                   );
@@ -232,9 +232,7 @@ export default function SubmitProjectOffer() {
                     {field.value.length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {field.value.map((id) => {
-                          const teacher = teachersData?.teachers.find(
-                            (t) => t.id === id
-                          );
+                          const teacher = teachers?.find((t) => t.id === id);
                           return (
                             <Badge
                               key={id}

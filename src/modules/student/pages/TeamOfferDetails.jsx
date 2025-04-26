@@ -67,12 +67,12 @@ function TeamOfferDetails() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="text-sm font-medium">Year:</div>
                     <Badge className="w-fit" variant="outline">
-                      {teamOfferDetails.year} year
+                      {teamOfferDetails.leader.speciality.year} year
                     </Badge>
 
                     <div className="text-sm font-medium">Speciality:</div>
                     <Badge className="w-fit" variant="outline">
-                      {teamOfferDetails.speciality}
+                      {teamOfferDetails.leader.speciality.name}
                     </Badge>
 
                     <div className="text-sm font-medium">Max Students:</div>

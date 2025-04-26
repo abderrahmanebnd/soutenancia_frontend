@@ -3,17 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { getTeachers } from "../../api/apiTeachers";
 
 export const useGetTeachers = () => {
-  return useQuery({
+  const {
+    data: teachers,
+    isLoading: isGettingTeachers,
+    isError: isErrorGettingTeachers,
+  } = useQuery({
     queryKey: ["teachers"],
     queryFn: getTeachers,
-    select: (data) => {
-      return {
-        teachers: data.data.teachers || [],
-        count: data.data.teachers?.length || 0,
-      };
-    },
     onError: (error) => {
-      console.error("Teachers fetch error:", error.message);
+      console.error("Error fetching teachers:", error);
     },
   });
+
+  return { teachers, isGettingTeachers, isErrorGettingTeachers };
 };

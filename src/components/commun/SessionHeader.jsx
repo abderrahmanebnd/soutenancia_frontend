@@ -13,8 +13,8 @@ import { splitRouteIntoElements } from "@/utils/helpers";
 import { useAuth } from "@/context/AuthContext";
 import { TeamAndProjectCompositionCountdown } from "./TeamAndProjectCompositionCountdown";
 
-import { useProjectCompositionCountdown } from "@/modules/teacher/features/project-composition-countdown/useProjectCompositionCountdown";
 import { useTeamCompositionCountdown } from "@/modules/student/features/team-management/useTeamCompositionCountdown";
+import { useProjectCompositionCountdown } from "@/modules/student/features/project-composition-countdown/useProjectCompositionCountdown";
 function SessionHeader() {
   const location = useLocation();
   const elements = splitRouteIntoElements(location.pathname);

@@ -1,5 +1,5 @@
+import { getProjectCompositionCountdown } from "@/modules/teacher/api/apiTeacherProjects";
 import { useQuery } from "@tanstack/react-query";
-import { getProjectCompositionCountdown } from "../../api/apiTeacherProjects";
 
 export function useProjectCompositionCountdown() {
   const {
