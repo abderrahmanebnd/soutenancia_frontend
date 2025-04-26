@@ -100,10 +100,11 @@ export default function SubmitProjectOffer() {
       tools: formData.usedTools,
       languages: formData.usedTechnologies,
       maxTeamsNumber: formData.teamSize[0],
-      fileUrl: formData.projectAttachments[0]?.url || null, // Ensure optional fields are handled
+      fileUrl: formData.projectAttachments[0]?.url || null, 
       assignmentType:
         formData.assignMode === "Auto-Selection" ? "auto" : "teacherApproval",
       specialities: formData.destinatedFor,
+      coSupervisors: formData.selectedFramers, 
       year: new Date().getFullYear(),
     };
 
@@ -111,7 +112,7 @@ export default function SubmitProjectOffer() {
       { ...projectOfferData },
       {
         onSuccess: () => {
-          form.reset(); // Reset the form after successful submission
+          form.reset(); 
           navigate("/teacher/submit-project-offer");
         },
       }
@@ -599,6 +600,7 @@ export default function SubmitProjectOffer() {
                           step={1}
                           onValueChange={field.onChange}
                           value={field.value}
+                          className="w-full md:w-96" 
                         />
                       </FormControl>
                       <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
@@ -655,7 +657,7 @@ export default function SubmitProjectOffer() {
               )}
             />
 
-            <div className="flex justify-center mt-8">
+            <div className="flex flex-col md:flex-row justify-center items-center mt-8 space-y-4 md:space-y-0 md:space-x-4">
               {isSubmitting ? (
                 <ButtonWithSpinner disabled={isSubmitting} />
               ) : (

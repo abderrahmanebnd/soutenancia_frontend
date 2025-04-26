@@ -228,7 +228,7 @@ function Router() {
                   <Route
                     path="my-project-offers/edit/:idEditProjectOffer"
                     element={
-                      <div>here you put the edit component based on it id </div>
+                      <EditProject/>
                     }
                   />
                   <Route
