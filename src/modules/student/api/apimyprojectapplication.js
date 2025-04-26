@@ -5,34 +5,28 @@ export const getMyProjectApplications = async () => {
     const response = await axiosPrivate.get("/my-applications");
     return response.data;
   } catch (error) {
-    if (error.response?.status === 403) {
-      throw new Error("You don't have permission to view applications.");
-    }
-    const errorMessage = error.response?.data?.error || "Failed to fetch applications";
-    throw new Error(errorMessage);
+    throw new Error(error.response?.data?.error || "Failed to fetch applications");
   }
 };
+
 export const cancelApplication = async (applicationId) => {
-    try {
-      const response = await axiosPrivate.patch(
-        `/applications/${applicationId}/cancel`
-      );
-      return response.data;
-    } catch (error) {
-      const errorMessage = error.response?.data?.error || "Failed to cancel application";
-      throw new Error(errorMessage);
-    }
-  };
-  
-  export const joinTeam = async (projectId, teamOfferId, message) => {
-    try {
-      const response = await axiosPrivate.post(
-        `/projects/${projectId}/apply`,
-        { teamOfferId, message }
-      );
-      return response.data;
-    } catch (error) {
-      const errorMessage = error.response?.data?.error || "Failed to join team";
-      throw new Error(errorMessage);
-    }
-  };
+  try {
+    const response = await axiosPrivate.patch(`/applications/${applicationId}/cancel`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || "Failed to cancel application");
+  }
+};
+
+export const applyToProject = async (projectOfferId, teamOfferId, message) => {
+  if (!projectOfferId || !teamOfferId) {
+    throw new Error("projectOfferId and teamOfferId are required.");
+  }
+
+  try {
+    const response = await axiosPrivate.post(`/projects/${projectOfferId}/apply`, { teamOfferId, message });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || "Failed to apply to project");
+  }
+};

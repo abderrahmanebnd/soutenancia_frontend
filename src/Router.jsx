@@ -36,6 +36,8 @@ import SingleProjectApplications from "./modules/teacher/pages/SingleProjectAppl
 import CurrentStudentProjectOffers from "./modules/student/pages/CurrentStudentProjectOffers";
 import ProjectCompositionProtectedRoute from "./modules/student/features/project-composition-countdown/ProjectCompositionProtectedRoute";
 import ProjectDetails from "./modules/student/pages/ProjectDetails";
+import EditProject from "./modules/teacher/pages/EditProject";
+import MyProjectApplications from "./modules/student/pages/MyProjectApplications";
 function Router() {
   return (
     <>
@@ -171,7 +173,7 @@ function Router() {
                     path="project-applications"
                     element={
                       <ProjectCompositionProtectedRoute>
-                        <div>project-applications</div>
+                        <MyProjectApplications/>
                       </ProjectCompositionProtectedRoute>
                     }
                   />
@@ -228,7 +230,7 @@ function Router() {
                   <Route
                     path="my-project-offers/edit/:idEditProjectOffer"
                     element={
-                      <EditProject/>
+                      <EditProject />
                     }
                   />
                   <Route

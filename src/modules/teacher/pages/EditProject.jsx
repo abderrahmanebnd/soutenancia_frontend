@@ -174,7 +174,7 @@ export default function EditProject() {
         { id: idEditProjectOffer, data: updatedDataOnly },
         {
           onSuccess: () => {
-            navigate("/teacher/submit-project-offer"); // Keep only one toast here
+            navigate("/teacher/my-project-offers"); // Keep only one toast here
           },
           onError: (error) => {
             console.error("Update error details:", {

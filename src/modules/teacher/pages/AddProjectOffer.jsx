@@ -113,7 +113,7 @@ export default function SubmitProjectOffer() {
       {
         onSuccess: () => {
           form.reset(); 
-          navigate("/teacher/submit-project-offer");
+          navigate("/teacher/my-project-offers");
         },
       }
     );

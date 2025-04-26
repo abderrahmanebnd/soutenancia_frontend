@@ -1,10 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import { getMyProjectApplications } from "../../api/apiMyProjectApplications";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { cancelApplication, joinTeam } from "../../api/apiTeamApplications"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { 
+  getMyProjectApplications, 
+  cancelApplication, 
+  applyToProject
+} from "../../api/apimyprojectapplication";
 
 export function useMyProjectApplications() {
-  return useQuery({
+  const queryClient = useQueryClient();
+
+  const applicationsQuery = useQuery({
     queryKey: ["myProjectApplications"],
     queryFn: getMyProjectApplications,
     select: (data) => {
@@ -20,38 +24,29 @@ export function useMyProjectApplications() {
           ["rejected", "canceled"].includes(app.status)
         )
       };
-    },
-    retry: (failureCount, error) => {
-      if (error.message.includes("don't have permission")) return false;
-      return failureCount < 2;
-    },
-    staleTime: 5 * 60 * 1000,
-    onError: (error) => {
-      console.error("Error fetching applications:", error);
     }
   });
+
+  const cancelMutation = useMutation({
+    mutationFn: cancelApplication,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["myProjectApplications"]);
+    }
+  });
+
+  const applyMutation = useMutation({
+    mutationFn: ({ projectOfferId, teamOfferId, message }) => 
+      applyToProject(projectOfferId, teamOfferId, message),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["myProjectApplications"]);
+    }
+  });
+
+  return {
+    ...applicationsQuery,
+    cancelApplication: cancelMutation.mutateAsync,
+    applyToProject: applyMutation.mutateAsync,
+    isCanceling: cancelMutation.isLoading,  
+    isApplying: applyMutation.isLoading    
+  };
 }
-export function useUpdateApplication() {
-    const queryClient = useQueryClient();
-  
-    const cancelMutation = useMutation({
-      mutationFn: cancelApplication,
-      onSuccess: () => {
-        queryClient.invalidateQueries(["myProjectApplications"]);
-      },
-    });
-  
-    const joinMutation = useMutation({
-      mutationFn: ({ projectId, teamOfferId, message }) => 
-        joinTeam(projectId, teamOfferId, message),
-      onSuccess: () => {
-        queryClient.invalidateQueries(["myProjectApplications"]);
-      },
-    });
-  
-    return {
-      updateTeamApplication: cancelMutation.mutateAsync,
-      joinTeamApplication: joinMutation.mutateAsync,
-      isUpdating: cancelMutation.isLoading || joinMutation.isLoading,
-    };
-  }
