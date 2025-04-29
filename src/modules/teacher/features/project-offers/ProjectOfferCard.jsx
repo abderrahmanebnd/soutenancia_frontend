@@ -30,7 +30,10 @@ function ProjectOfferCard({ data }) {
   const teamOfferId =
     currentUser?.user?.Student?.TeamMember?.at(0)?.teamOfferId;
 
-  /*TODO: when the problem from the backend would be solved const isInTeam = currentUser?.user?.Student?.isInTeam; */
+  const isInTeam = currentUser?.user?.Student?.isInTeam;
+  const isLeader = currentUser?.user?.Student?.isLeader;
+  const isInProject =
+    currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId !== null;
   return (
     <Card className="w-full flex flex-col overflow-hidden transition-all  hover:shadow-md  duration-300">
       <CardHeader className="p-3">
@@ -105,12 +108,16 @@ function ProjectOfferCard({ data }) {
             View Details <span>•••</span>
           </Link>
         </Button>
-        {assignmentType === "teacherApproval" && userRole === "student" && (
-          <ProjectMessageDialog
-            projectOfferId={projectOfferId}
-            teamOfferId={teamOfferId}
-          />
-        )}
+        {assignmentType === "teacherApproval" &&
+          userRole === "student" &&
+          isInTeam &&
+          isLeader &&
+          !isInProject && (
+            <ProjectMessageDialog
+              projectOfferId={projectOfferId}
+              teamOfferId={teamOfferId}
+            />
+          )}
       </CardFooter>
     </Card>
   );

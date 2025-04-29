@@ -5,17 +5,44 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { CodeXml } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import ItemNotFound from "@/components/commun/ItemNotFound";
+import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
 function ProjectDetails() {
   const {
     projectDetails,
     isLoadingProjectDetails,
     isErrorGettingProjectDetails,
+    error,
   } = useMyProjectDetails();
+
+  const { currentUser } = useAuth();
+  const isInProject =
+    currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId !== null;
   if (isLoadingProjectDetails) {
     return <Spinner />;
   }
-  if (isErrorGettingProjectDetails) {
+  if (isErrorGettingProjectDetails && error.response?.status !== 404) {
     return <p className="text-destructive">Error loading project details</p>;
+  }
+  if (!isInProject || error?.response?.status === 404) {
+    return (
+      <ItemNotFound>
+        <div className="text-center mb-4">
+          <h3 className="text-2xl font-semibold text-primary">
+            Not in a team yet ?
+          </h3>
+          <p className="text-muted-foreground text-lg">
+            You are not in a team yet or your applications status are still
+            <span className="font-semibold text-lg"> Pending</span>
+          </p>
+        </div>
+        <Button asChild>
+          <Link to={"/student/project-offers"}>Apply for a project</Link>
+        </Button>
+      </ItemNotFound>
+    );
   }
   return (
     <div className="space-y-6  ">
@@ -243,21 +270,21 @@ function ProjectDetails() {
           </CardHeader>
           <CardContent className="pt-6 space-y-2">
             {projectDetails?.coSupervisors.length > 0 ? (
-              projectDetails?.coSupervisors?.map((coSupervisor, idx) => (
-                <div className="flex items-center gap-4" key={idx}>
+              projectDetails?.coSupervisors?.map((coSupervisor) => (
+                <div className="flex items-center gap-4" key={coSupervisor.id}>
                   <Avatar className="h-14 w-14 border-2 border-blue-200">
                     <AvatarFallback className="bg-blue-100 text-blue-800">
-                      {coSupervisor?.teacher?.user?.firstName.substring(0, 1)}
-                      {coSupervisor?.teacher?.user?.lastName.substring(0, 1)}
+                      {coSupervisor?.user?.firstName.substring(0, 1)}
+                      {coSupervisor?.user?.lastName.substring(0, 1)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <h4 className="font-semibold text-lg text-gray-800">
-                      {coSupervisor?.teacher?.user?.firstName}{" "}
-                      {coSupervisor?.teacher?.user?.lastName}
+                      {coSupervisor?.user?.firstName}{" "}
+                      {coSupervisor?.user?.lastName}
                     </h4>
                     <p className="text-sm text-gray-600 mb-2">
-                      {coSupervisor?.teacher?.user?.email}
+                      {coSupervisor?.user?.email}
                     </p>
                     <Badge
                       variant="secondary"

@@ -6,6 +6,7 @@ export function useMyProjectDetails() {
     data: projectDetails,
     isLoading: isLoadingProjectDetails,
     isError: isErrorGettingProjectDetails,
+    error,
   } = useQuery({
     queryKey: ["myProjectDetails"],
     queryFn: () => getMyProjectDetails(),
@@ -17,5 +18,6 @@ export function useMyProjectDetails() {
     projectDetails,
     isLoadingProjectDetails,
     isErrorGettingProjectDetails,
+    error,
   };
 }

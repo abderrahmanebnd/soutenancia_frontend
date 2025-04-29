@@ -10,9 +10,10 @@ export function useDeleteProjectOffer() {
   const { mutate: deleteProjectOffer, isPending: isDeleting } = useMutation({
     mutationFn: (id) => deleteTeacherProject(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teacherProjects"] });
+      queryClient.invalidateQueries({ queryKey: ["myProjectOffers"] });
+      queryClient.invalidateQueries({ queryKey: ["projectOffers"] });
       toast.success("Project deleted successfully");
-      navigate("/teacher/submit-project-offer");
+      navigate("/teacher/my-project-offers");
     },
     onError: (error) => {
       console.error("Failed to delete project", error);

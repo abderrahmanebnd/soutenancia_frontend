@@ -13,13 +13,11 @@ import { useApplyToProjectOffer } from "./useApplyToProjectOffer";
 import { CirclePlus, Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useAuth } from "@/context/AuthContext";
 
 function ProjectMessageDialog({ teamOfferId, projectOfferId }) {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
-  const { currentUser } = useAuth();
-  const isLeader = currentUser?.user?.Student?.isLeader;
+
   const { applyToProject, isApplyingToProject, isSuccessApplyToProject } =
     useApplyToProjectOffer();
   useEffect(() => {
@@ -38,7 +36,7 @@ function ProjectMessageDialog({ teamOfferId, projectOfferId }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="requestJoin" className="w-1/2" disabled={!isLeader}>
+        <Button variant="requestJoin" className="w-1/2">
           Apply <CirclePlus className="text-green-600" />
         </Button>
       </DialogTrigger>
