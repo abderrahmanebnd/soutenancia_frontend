@@ -156,7 +156,7 @@ export const columnsMyApplications = [
         applyToProject, 
         isCanceling, 
         isApplying 
-      } = useMyProjectApplications();
+      } = useMyProjectApplications(); // Correctly using the hook
   
       if (application.status === "accepted") {
         return null;
@@ -165,14 +165,12 @@ export const columnsMyApplications = [
       const handleCancel = async () => {
         if (!application?.id) return;
         
-        if (confirm("Do you really want to cancel this application?")) {
-          try {
-            await cancelApplication(application.id);
-            table.options.meta?.refreshData?.();
-          } catch (error) {
-            console.error("Failed to cancel application:", error);
-            alert(error.message || "Failed to cancel application");
-          }
+        try {
+          await cancelApplication(application.id); // Correctly using cancelApplication
+          table.options.meta?.refreshData?.();
+        } catch (error) {
+          console.error("Failed to cancel application:", error);
+          alert(error.message || "Failed to cancel application");
         }
       };
   
@@ -187,7 +185,7 @@ export const columnsMyApplications = [
           return;
         }
       
-        applyToProject({ projectOfferId, teamOfferId, message });
+        applyToProject({ projectOfferId, teamOfferId, message }); // Correctly using applyToProject
       };
   
       if (application.status === "canceled") {

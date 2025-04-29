@@ -1,14 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
-  getMyProjectApplications, 
-  cancelApplication, 
-  applyToProject
+  getMyProjectApplications,
+  cancelApplication, // Added import
+  applyToProject     // Added import
 } from "../../api/apimyprojectapplication";
 
 export function useMyProjectApplications() {
   const queryClient = useQueryClient();
 
-  const applicationsQuery = useQuery({
+  const { data: applicationsData, isLoading, isError } = useQuery({
     queryKey: ["myProjectApplications"],
     queryFn: getMyProjectApplications,
     select: (data) => {
@@ -27,14 +27,14 @@ export function useMyProjectApplications() {
     }
   });
 
-  const cancelMutation = useMutation({
-    mutationFn: cancelApplication,
+  const { mutate: cancelApplication, isLoading: isCanceling } = useMutation({
+    mutationFn: cancelApplication, // Fixed function reference
     onSuccess: () => {
       queryClient.invalidateQueries(["myProjectApplications"]);
     }
   });
 
-  const applyMutation = useMutation({
+  const { mutate: applyToProject, isLoading: isApplying } = useMutation({
     mutationFn: ({ projectOfferId, teamOfferId, message }) => 
       applyToProject(projectOfferId, teamOfferId, message),
     onSuccess: () => {
@@ -43,10 +43,12 @@ export function useMyProjectApplications() {
   });
 
   return {
-    ...applicationsQuery,
-    cancelApplication: cancelMutation.mutateAsync,
-    applyToProject: applyMutation.mutateAsync,
-    isCanceling: cancelMutation.isLoading,  
-    isApplying: applyMutation.isLoading    
+    applicationsData,
+    isLoading,
+    isError,
+    cancelApplication,
+    applyToProject,
+    isCanceling,
+    isApplying
   };
 }

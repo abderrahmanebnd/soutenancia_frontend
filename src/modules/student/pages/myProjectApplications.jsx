@@ -1,7 +1,6 @@
 import { columnsMyApplications } from "../features/project-management/columnmyprojectapplication";
 import { DataTable } from "../../../components/commun/data-table";
 import SectionTitle from "../components/SectionTitle";
-import FilterMyApplications from "../features/team-management/FilterMyApplications";
 import { useMyProjectApplications } from "../features/project-management/usemyprojectapplication";
 import { XCircle } from "lucide-react";
 import InlineSpinner from "@/components/commun/InlineSpinner";
@@ -27,7 +26,6 @@ export default function MyProjectApplications() {
           columns={columnsMyApplications}
           data={applications} // Use applications directly from the hook
           searchWith="projectTitle"
-          filterComponent={<FilterMyApplications />}
           className="mt-6"
         />
       )}
