@@ -8,7 +8,7 @@ function SubmitOffer() {
 
   const isInTeam = currentUser?.user.Student.isInTeam;
 
-  if (isInTeam) {
+  if (isInTeam && !isLeader) {
     return (
       <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm">
         <div className="flex items-center space-x-3">

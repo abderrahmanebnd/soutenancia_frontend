@@ -38,9 +38,9 @@ const formSchema = z.object({
   title: z
     .string()
     .min(3, {
-      message: "Project title is required and must be at least 3 characters .",
+      message: "team title is required and must be at least 3 characters .",
     })
-    .max(10, { message: "Project title must be less than 10 characters." }),
+    .max(10, { message: "team title must be less than 10 characters." }),
   description: z
     .string()
     .min(10, { message: "Description must be at least 10 characters." })
@@ -208,7 +208,7 @@ function AddTeamOffer() {
           Add Team Offer
         </h1>
         <p className="text-gray-600 text-center mb-8">
-          Tell Us About Your Project Details
+          Tell Us About Your Team Offer Details
         </p>
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -218,10 +218,10 @@ function AddTeamOffer() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-base text-primary">
-                    Project Title
+                    Team  Title
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter project title" {...field} />
+                    <Input placeholder="Enter team title" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -238,7 +238,7 @@ function AddTeamOffer() {
                   </FormLabel>
                   <FormControl>
                     <textarea
-                      placeholder="Put All informations Related To The Project"
+                      placeholder="Put All informations Related To The team"
                       {...field}
                       className="w-full p-2 border rounded-md min-h-[100px]"
                     />

@@ -37,3 +37,15 @@ export async function updateTeamApplicationStatus(
     throw error;
   }
 }
+export async function applyToProjectOffer(projectOfferId, offerIdAndMessage) {
+  try {
+    const response = await axiosPrivate.post(
+      `/projects/${projectOfferId}/apply`,
+      offerIdAndMessage
+    );
+    return response.data;
+  } catch (error) {
+    console.error("error while applying to project offer :", error);
+    throw error;
+  }
+}

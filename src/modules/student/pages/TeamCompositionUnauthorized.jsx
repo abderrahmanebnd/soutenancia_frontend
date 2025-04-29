@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-
 function TeamCompositionUnauthorized() {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 lg:p-10 flex flex-col items-center gap-y-4 h-[calc(100vh-)]">
@@ -13,11 +11,10 @@ function TeamCompositionUnauthorized() {
           We are sorry ...
         </h2>
         <p className="text-center text-muted-foreground max-w-xl">
-          This page is not accessible because the team composition setup phase
-          has ended or not started yet .
+          This page is not accessible because the team composition setup or
+          project selection phase has ended or not started yet .
         </p>
       </div>
-      <Button>Go to project selection</Button>
     </div>
   );
 }

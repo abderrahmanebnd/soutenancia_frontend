@@ -12,12 +12,14 @@ function Filter({
   maxMembersValue = 0,
   yearValue = 0,
   pastYearValue = 0,
+  teacherValue = 0,
 }) {
   const filterLength =
     filterValue.length +
     (maxMembersValue ? 1 : 0) +
     (yearValue ? 1 : 0) +
-    (pastYearValue ? 1 : 0);
+    (pastYearValue ? 1 : 0) +
+    (teacherValue ? 1 : 0);
 
   return (
     <Popover>

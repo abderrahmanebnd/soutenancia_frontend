@@ -8,8 +8,8 @@ const SubmitProject = () => {
     <div className="space-y-4">
       <section className="px-3 py-4 bg-section rounded-xl shadow-sm">
         <SectionTitle
-          title="Add & Edit Projects"
-          subtitle="Add,Edit and Manage all your projects here"
+          title="Project Management"
+          subtitle="Manage all your submitted projects here"
         />
       </section>
       <TeacherMyProjectList />

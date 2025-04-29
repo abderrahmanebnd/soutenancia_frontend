@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { viewLessText } from "@/utils/helpers";
 import { Briefcase, Calendar, Cpu, User, Users } from "lucide-react";
 import { Link } from "react-router";
+import { useAuth } from "@/context/AuthContext";
+import ProjectMessageDialog from "@/modules/student/features/project-offers/ProjectMessageDialog";
 function ProjectOfferCard({ data }) {
   const {
     title,
@@ -20,9 +22,18 @@ function ProjectOfferCard({ data }) {
     specialities,
     year,
     id: projectOfferId,
+    assignmentType,
   } = data;
   const currentYear = new Date().getFullYear();
+  const { currentUser } = useAuth();
+  const userRole = currentUser?.user.role;
+  const teamOfferId =
+    currentUser?.user?.Student?.TeamMember?.at(0)?.teamOfferId;
 
+  const isInTeam = currentUser?.user?.Student?.isInTeam;
+  const isLeader = currentUser?.user?.Student?.isLeader;
+  const isInProject =
+    currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId !== null;
   return (
     <Card className="w-full flex flex-col overflow-hidden transition-all  hover:shadow-md  duration-300">
       <CardHeader className="p-3">
@@ -91,12 +102,22 @@ function ProjectOfferCard({ data }) {
           <Badge variant="outline">{maxTeamsNumber} teams</Badge>
         </div>
       </CardContent>
-      <CardFooter>
-        <Button variant="outline">
-          <Link to={`/teacher/project-offers/${projectOfferId}`}>
+      <CardFooter className="flex items-center gap-3 p-3 ">
+        <Button variant="outline" className="w-1/2">
+          <Link to={`/${userRole}/project-offers/${projectOfferId}`}>
             View Details <span>•••</span>
           </Link>
         </Button>
+        {assignmentType === "teacherApproval" &&
+          userRole === "student" &&
+          isInTeam &&
+          isLeader &&
+          !isInProject && (
+            <ProjectMessageDialog
+              projectOfferId={projectOfferId}
+              teamOfferId={teamOfferId}
+            />
+          )}
       </CardFooter>
     </Card>
   );

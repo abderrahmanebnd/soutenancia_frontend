@@ -1,6 +1,8 @@
 import {
   BookUser,
+  FileBox,
   FileCheck2,
+  FileSearch,
   UserRoundCheck,
   Users,
   UserSearch,
@@ -41,6 +43,26 @@ export function getSessionSidebarData(role) {
             },
           ],
         },
+        {
+          title: "Project Management",
+          items: [
+            {
+              title: "Project Offers",
+              icon: FileSearch,
+              url: "/student/project-offers",
+            },
+            {
+              title: "Project Applications",
+              icon: FileCheck2,
+              url: "/student/project-applications",
+            },
+            {
+              title: "Project Details",
+              icon: FileBox,
+              url: "/student/project-details",
+            },
+          ],
+        },
       ],
     };
   }
@@ -73,14 +95,9 @@ export function getSessionSidebarData(role) {
               url: "/teacher/project-offers",
             },
             {
-              title: "Submit Project",
+              title: "My Project",
               icon: FileCheck2,
-              url: "/teacher/submit-project-offer",
-            },
-            {
-              title: "Projects Applications",
-              icon: UserRoundCheck,
-              url: "/teacher/projects-applications",
+              url: "/teacher/my-project-offers",
             },
           ],
         },
