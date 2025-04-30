@@ -73,9 +73,9 @@ export function getSessionSidebarData(role) {
           title: "admin management",
           items: [
             {
-              title: "add users",
+              title: "Manage Users",
               icon: UserSearch,
-              url: "/admin/add-users",
+              url: "/admin/manage-students",
             },
           ],
         },

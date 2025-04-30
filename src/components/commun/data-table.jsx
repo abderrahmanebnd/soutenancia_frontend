@@ -46,7 +46,7 @@ export function DataTable({
     },
     initialState: {
       pagination: {
-        pageSize: 6,
+        pageSize: 10,
       },
     },
   });

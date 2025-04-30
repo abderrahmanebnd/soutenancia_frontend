@@ -49,3 +49,13 @@ export async function resetPassword(passwords) {
     throw error;
   }
 }
+
+export async function signupUser(data) {
+  try {
+    const response = await axiosPrivate.post("/auth/signup", data);
+    return response.data;
+  } catch (error) {
+    console.error("Sign up error:", error);
+    throw error;
+  }
+}

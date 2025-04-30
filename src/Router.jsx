@@ -38,6 +38,9 @@ import ProjectCompositionProtectedRoute from "./modules/student/features/project
 import ProjectDetails from "./modules/student/pages/ProjectDetails";
 import EditProject from "./modules/teacher/pages/EditProject";
 import MyProjectApplications from "./modules/student/pages/MyProjectApplications";
+import ManageUsers from "./modules/admin/pages/ManageUsers";
+import ManageStudents from "./modules/admin/pages/ManageStudents";
+import ManageTeachers from "./modules/admin/pages/ManageTeachers";
 function Router() {
   return (
     <>
@@ -73,9 +76,22 @@ function Router() {
               >
                 {/* this is an exemple route for admin  just for testing */}
                 <Route path="/admin" element={<Admin />}>
-                  <Route index element={<Navigate replace to="add-users" />} />
-
-                  <Route path="add-users" element={<div>add-users</div>} />
+                  <Route
+                    index
+                    element={<Navigate replace to="manage-students" />}
+                  />
+                  <Route element={<ManageUsers />}>
+                    <Route
+                      index
+                      path="manage-students"
+                      element={<ManageStudents />}
+                    />
+                    <Route
+                      index
+                      path="manage-teachers"
+                      element={<ManageTeachers />}
+                    />
+                  </Route>
                 </Route>
               </Route>
 
@@ -173,7 +189,7 @@ function Router() {
                     path="project-applications"
                     element={
                       <ProjectCompositionProtectedRoute>
-                        <MyProjectApplications/>
+                        <MyProjectApplications />
                       </ProjectCompositionProtectedRoute>
                     }
                   />
@@ -229,9 +245,7 @@ function Router() {
                   />
                   <Route
                     path="my-project-offers/edit/:idEditProjectOffer"
-                    element={
-                      <EditProject />
-                    }
+                    element={<EditProject />}
                   />
                   <Route
                     path="my-project-offers/project-applications/:idProjectApplications"
