@@ -1,145 +1,105 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import HeaderCellWithSorting from "../../components/HeaderCellWithSorting";
-import { CheckCircle2, Clock, XCircle, HelpCircle, Trash2, Plus } from "lucide-react";
-import { format } from "date-fns";
+import { Clock, Trash2, Plus, CircleCheck, CircleX } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthContext"; 
+import { useAuth } from "@/context/AuthContext";
 import { useMyProjectApplications } from "./usemyprojectapplication";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
 const columnHelper = createColumnHelper();
 
-const statusBadgeConfig = {
-  pending: {
-    variant: "pending",
-    icon: <Clock className="mr-1 h-4 w-4" />,
-    text: "Pending"
-  },
-  accepted: {
-    variant: "success",
-    icon: <CheckCircle2 className="mr-1 h-4 w-4" />,
-    text: "Accepted"
-  },
-  rejected: {
-    variant: "destructive",
-    icon: <XCircle className="mr-1 h-4 w-4" />,
-    text: "Rejected"
-  },
-  canceled: {
-    variant: "destructive",
-    icon: <XCircle className="mr-1 h-4 w-4" />,
-    text: "Canceled"
-  },
-  default: {
-    variant: "outline",
-    icon: <HelpCircle className="mr-1 h-4 w-4" />,
-    text: "Unknown"
-  }
-};
-
 export const columnsMyApplications = [
-  columnHelper.accessor(row => row.projectOffer?.title || 'N/A', {
-    id: "projectTitle",
+  columnHelper.accessor("projectTitle", {
     header: ({ column }) => (
       <HeaderCellWithSorting
         title="Project Title"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       />
     ),
-    cell: ({ getValue }) => (
-      <p className="font-semibold">{getValue()}</p>
-    ),
-    size: 200,
-    enableSorting: true
+    cell: ({ row }) => {
+      return <p className="font-semibold">{row.original.projectTitle}</p>;
+    },
   }),
 
   columnHelper.accessor("status", {
     header: "Status",
     cell: ({ row }) => {
-      const status = row.original.status || "default";
-      const config = statusBadgeConfig[status] || statusBadgeConfig.default;
-      
-      return (
-        <Badge variant={config.variant} className="gap-1">
-          {config.icon}
-          {config.text}
-        </Badge>
-      );
-    },
-    size: 150,
-    enableSorting: true
-  }),
-
-  columnHelper.accessor(row => row.projectOffer?.teacher?.user?.email || 'N/A', {
-    id: "teacherEmail",
-    header: "Teacher Email",
-    cell: ({ getValue }) => (
-      <p className="text-sm text-gray-600">{getValue()}</p>
-    ),
-    size: 200
-  }),
-
-  columnHelper.accessor(row => row.projectOffer?.tools || [], {
-    id: "tools",
-    header: "Tools",
-    cell: ({ getValue }) => {
-      const tools = getValue();
-      return tools.length > 0 ? (
-        <div className="flex flex-wrap gap-1">
-          {tools.map((tool, index) => (
-            <Badge key={index} variant="outline" className="text-xs">
-              {tool}
+      switch (row.original.status) {
+        case "pending":
+          return (
+            <Badge variant="pending">
+              <Clock size={16} className="mr-1" />
+              Pending
             </Badge>
-          ))}
-        </div>
-      ) : (
-        <span className="text-xs text-gray-400">No tools specified</span>
-      );
-    },
-    size: 200
-  }),
-
-  columnHelper.accessor(row => row.projectOffer?.languages || [], {
-    id: "languages",
-    header: "Languages",
-    cell: ({ getValue }) => {
-      const languages = getValue();
-      return languages.length > 0 ? (
-        <div className="flex flex-wrap gap-1">
-          {languages.map((lang, index) => (
-            <Badge key={index} variant="outline" className="text-xs">
-              {lang}
+          );
+        case "accepted":
+          return (
+            <Badge variant="success">
+              <CircleCheck size={16} className="mr-1" />
+              Accepted
             </Badge>
-          ))}
-        </div>
-      ) : (
-        <span className="text-xs text-gray-400">No languages specified</span>
-      );
+          );
+        case "rejected":
+          return (
+            <Badge variant="destructive">
+              <CircleX size={16} className="mr-1" /> Rejected
+            </Badge>
+          );
+        case "canceled":
+          return (
+            <Badge variant="destructive">
+              <CircleX size={16} className="mr-1" />
+              Canceled
+            </Badge>
+          );
+        default:
+          return null;
+      }
     },
-    size: 200
   }),
 
-  columnHelper.accessor("createdAt", {
-    id: "appliedDate",
+  columnHelper.accessor("teacherEmail", {
     header: ({ column }) => (
       <HeaderCellWithSorting
-        title="Date Applied"
+        title="Teacher Email"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       />
     ),
-    cell: ({ getValue }) => (
-      <div className="flex flex-col">
-        <span className="text-sm font-medium">
-          {format(new Date(getValue()), 'MMM dd, yyyy')}
-        </span>
-        <span className="text-xs text-gray-500">
-          {format(new Date(getValue()), 'h:mm a')}
-        </span>
-      </div>
-    ),
-    size: 150,
-    enableSorting: true
+    cell: ({ row }) => {
+      return <p>{row.original.teacherEmail}</p>;
+    },
+  }),
+
+  columnHelper.accessor("tools", {
+    header: "Tools",
+    cell: ({ row }) => {
+      return (
+        <>
+          {row.original.tools.map((tool, i) => (
+            <Badge key={i} variant="outline" className="text-xs">
+              {tool}
+            </Badge>
+          ))}
+        </>
+      );
+    },
+  }),
+
+  columnHelper.accessor("languages", {
+    header: "Languages",
+    cell: ({ row }) => {
+      return (
+        <>
+          {row.original.languages.map((language, i) => (
+            <Badge key={i} variant="outline" className="text-xs">
+              {language}
+            </Badge>
+          ))}
+        </>
+      );
+    },
   }),
 
   columnHelper.display({
@@ -149,47 +109,29 @@ export const columnsMyApplications = [
       const { currentUser } = useAuth();
       const isLeader = currentUser?.user?.Student?.isLeader;
       if (!isLeader) return null;
-  
+
       const application = row.original;
-      const { 
-        cancelApplication, 
-        applyToProject, 
-        isCanceling, 
-        isApplying 
-      } = useMyProjectApplications();
-  
+      const { cancelApplication, applyToProject, isCanceling, isApplying } =
+        useMyProjectApplications();
+
       if (application.status === "accepted") {
         return null;
       }
-  
-      const handleCancel = async () => {
-        if (!application?.id) return;
-        
-        if (confirm("Do you really want to cancel this application?")) {
-          try {
-            await cancelApplication(application.id);
-            table.options.meta?.refreshData?.();
-          } catch (error) {
-            console.error("Failed to cancel application:", error);
-            alert(error.message || "Failed to cancel application");
-          }
-        }
-      };
-  
+
+      function handleCancel() {
+        const projectOfferId = application.projectOfferId;
+        const teamOfferId = application.teamOfferId;
+        cancelApplication({ projectOfferId, teamOfferId });
+      }
+
       const handleApply = () => {
-        const projectOfferId = application?.projectOffer?.id;
-        const teamOfferId = application?.teamOfferId || application?.teamOffer?.id;
-        const message = application?.message || "";
-      
-        if (!projectOfferId || !teamOfferId) {
-          console.error("Missing required IDs:", { projectOfferId, teamOfferId });
-          alert("Project and Team information is required to apply.");
-          return;
-        }
-      
+        const projectOfferId = application.projectOfferId;
+        const teamOfferId = application.teamOfferId;
+        const message = "";
+
         applyToProject({ projectOfferId, teamOfferId, message });
       };
-  
+
       if (application.status === "canceled") {
         return (
           <div className="flex justify-center">
@@ -214,7 +156,7 @@ export const columnsMyApplications = [
           </div>
         );
       }
-  
+
       if (application.status === "pending") {
         return (
           <div className="flex justify-center">
@@ -239,9 +181,9 @@ export const columnsMyApplications = [
           </div>
         );
       }
-  
+
       return null;
     },
-    size: 120
-  })
+    size: 120,
+  }),
 ];

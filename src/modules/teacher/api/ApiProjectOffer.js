@@ -2,7 +2,11 @@ import { axiosPrivate } from "@/api/axios";
 
 const addProjectOffer = async (data) => {
   try {
-    const response = await axiosPrivate.post("/projectsOffers", data);
+    const response = await axiosPrivate.post("/projectsOffers", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     const errorMessage =

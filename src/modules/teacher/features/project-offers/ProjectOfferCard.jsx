@@ -103,7 +103,7 @@ function ProjectOfferCard({ data }) {
         </div>
       </CardContent>
       <CardFooter className="flex items-center gap-3 p-3 ">
-        <Button variant="outline" className="w-1/2">
+        <Button variant="outline" className="w-1/2" asChild>
           <Link to={`/${userRole}/project-offers/${projectOfferId}`}>
             View Details <span>•••</span>
           </Link>

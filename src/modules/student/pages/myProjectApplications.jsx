@@ -8,12 +8,20 @@ import InlineSpinner from "@/components/commun/InlineSpinner";
 
 export default function MyProjectApplications() {
   const {
-    data: { applications = [] } = {},
+    data: applications,
     isLoading,
     error,
     isError,
   } = useMyProjectApplications();
-
+  const dataProjectApplications = applications?.map((application) => ({
+    teamOfferId: application.teamOfferId,
+    projectOfferId: application.id,
+    projectTitle: application.projectOffer?.title,
+    status: application.status,
+    tools: application.projectOffer?.tools,
+    languages: application.projectOffer?.languages,
+    teacherEmail: application.projectOffer?.teacher?.user?.email,
+  }));
   return (
     <div className="bg-section p-4 rounded-xl shadow-sm">
       <SectionTitle
@@ -25,7 +33,7 @@ export default function MyProjectApplications() {
       {!isError && !isLoading && (
         <DataTable
           columns={columnsMyApplications}
-          data={applications} // Use applications directly from the hook
+          data={dataProjectApplications} // Use applications directly from the hook
           searchWith="projectTitle"
           filterComponent={<FilterMyApplications />}
           className="mt-6"

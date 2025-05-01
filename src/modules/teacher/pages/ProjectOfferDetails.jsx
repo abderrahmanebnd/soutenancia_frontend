@@ -164,12 +164,12 @@ function ProjectOfferDetails() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex items-center gap-2">
-                    <p className="text-sm p-2 bg-background rounded-md border border-muted-foreground flex-1">
+                    <p className="text-sm p-2 bg-background rounded-md border border-muted-foreground flex-1 max-w-full truncate">
                       {projectOfferDetails?.fileUrl}
                     </p>
                     <Button
                       variant="outline"
-                      className="text-xs"
+                      className="text-xs "
                       onClick={(e) => {
                         e.stopPropagation();
                         window.open(projectOfferDetails?.fileUrl, "_blank");

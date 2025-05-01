@@ -76,7 +76,7 @@ const formSchema = z.object({
   teamSize: z
     .array(z.number())
     .length(1, { message: "Team size must be specified." })
-    .refine((val) => val[0] >= 2 && val[0] <= 9, {
+    .refine((val) => val[0] >= 1 && val[0] <= 9, {
       message: "Number of Teams  must be between 2 and 9",
     }),
 
@@ -129,30 +129,44 @@ export default function AddProjectOffer() {
   const [isSubmitting] = useState(false);
 
   function onSubmit(formData) {
-    const projectOfferData = {
-      title: formData.projectTitle,
-      description: formData.projectSummary,
-      tools: formData.usedTools,
-      languages: formData.usedTechnologies,
-      maxTeamsNumber: formData.teamSize[0],
-      fileUrl: formData.projectAttachments[0]?.url || null,
-      specialities: formData.destinatedFor,
-      coSupervisors: formData.selectedFramers,
-      year: new Date().getFullYear(),
-      ...(assignmentMethodePerYear === "amiability" && {
-        chosedTeamsIds: formData.chosedTeams,
-      }),
-    };
+    const formDataToSend = new FormData();
 
-    submitProject(
-      { ...projectOfferData },
-      {
-        onSuccess: () => {
-          form.reset();
-          navigate("/teacher/my-project-offers");
-        },
-      }
+    formDataToSend.append("title", formData.projectTitle);
+    formDataToSend.append("description", formData.projectSummary);
+    formDataToSend.append("tools", JSON.stringify(formData.usedTools));
+    formDataToSend.append(
+      "languages",
+      JSON.stringify(formData.usedTechnologies)
     );
+    formDataToSend.append("maxTeamsNumber", formData.teamSize[0]);
+    formDataToSend.append(
+      "specialities",
+      JSON.stringify(formData.destinatedFor)
+    );
+    formDataToSend.append(
+      "coSupervisors",
+      JSON.stringify(formData.selectedFramers)
+    );
+    formDataToSend.append("year", new Date().getFullYear());
+
+    // Append the real file
+    if (formData.projectAttachments?.length > 0) {
+      formDataToSend.append("file", formData.projectAttachments[0]);
+    }
+
+    if (assignmentMethodePerYear === "amiability") {
+      formDataToSend.append(
+        "chosedTeamsIds",
+        JSON.stringify(formData.chosedTeams)
+      );
+    }
+
+    submitProject(formDataToSend, {
+      onSuccess: () => {
+        form.reset();
+        navigate("/teacher/my-project-offers");
+      },
+    });
   }
 
   return (

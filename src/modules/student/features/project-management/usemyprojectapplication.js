@@ -1,9 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  getMyProjectApplications, 
-  cancelApplication, 
-  applyToProject
+import {
+  getMyProjectApplications,
+  cancelApplication,
+  applyToProject,
 } from "../../api/apimyprojectapplication";
+import toast from "react-hot-toast";
 
 export function useMyProjectApplications() {
   const queryClient = useQueryClient();
@@ -11,42 +12,34 @@ export function useMyProjectApplications() {
   const applicationsQuery = useQuery({
     queryKey: ["myProjectApplications"],
     queryFn: getMyProjectApplications,
-    select: (data) => {
-      const applications = data?.data || [];
-      return {
-        applications,
-        hasPending: applications.some(app => app.status === "pending"),
-        hasAccepted: applications.some(app => app.status === "accepted"),
-        activeApplications: applications.filter(app => 
-          ["pending", "accepted"].includes(app.status)
-        ),
-        completedApplications: applications.filter(app =>
-          ["rejected", "canceled"].includes(app.status)
-        )
-      };
-    }
+    onError: (error) => {
+      console.error("Error fetching project applications:", error);
+    },
   });
 
   const cancelMutation = useMutation({
-    mutationFn: cancelApplication,
+    mutationFn: ({ projectOfferId, teamOfferId }) =>
+      cancelApplication(projectOfferId, teamOfferId),
     onSuccess: () => {
       queryClient.invalidateQueries(["myProjectApplications"]);
-    }
+      toast.success("Application canceled successfully");
+    },
   });
 
   const applyMutation = useMutation({
-    mutationFn: ({ projectOfferId, teamOfferId, message }) => 
+    mutationFn: ({ projectOfferId, teamOfferId, message }) =>
       applyToProject(projectOfferId, teamOfferId, message),
     onSuccess: () => {
       queryClient.invalidateQueries(["myProjectApplications"]);
-    }
+      toast.success("Application sent successfully");
+    },
   });
 
   return {
     ...applicationsQuery,
     cancelApplication: cancelMutation.mutateAsync,
     applyToProject: applyMutation.mutateAsync,
-    isCanceling: cancelMutation.isLoading,  
-    isApplying: applyMutation.isLoading    
+    isCanceling: cancelMutation.isPending,
+    isApplying: applyMutation.isPending,
   };
 }

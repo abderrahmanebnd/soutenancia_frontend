@@ -7,7 +7,9 @@ import { X } from "lucide-react";
 export function FileUpload({ field }) {
   const onDrop = useCallback(
     (acceptedFiles) => {
-      field.onChange([...(field.value || []), ...acceptedFiles]);
+      if (acceptedFiles.length > 0) {
+        field.onChange([acceptedFiles[0]]); // 👈 set only one file
+      }
     },
     [field]
   );
@@ -18,10 +20,11 @@ export function FileUpload({ field }) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    multiple: true,
+    multiple: false,
     accept: {
       "application/pdf": [".pdf"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        [".docx"],
     },
   });
 

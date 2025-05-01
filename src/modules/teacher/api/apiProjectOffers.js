@@ -23,7 +23,7 @@ export async function getProjectOffersHistory() {
 export async function getProjectOfferbyId(id) {
   try {
     const response = await axiosPrivate.get(`/projectsOffers/${id}`);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("error while getting project offer by id :", error);
     throw error;
@@ -33,7 +33,7 @@ export async function getProjectOfferbyId(id) {
 export async function getMyProjectOffers() {
   try {
     const response = await axiosPrivate.get("/projectsOffers/myProjectOffer");
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("error while getting my project offers:", error);
     throw error;
