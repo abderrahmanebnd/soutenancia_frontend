@@ -15,9 +15,11 @@ export default function MyProjectApplications() {
   } = useMyProjectApplications();
   const dataProjectApplications = applications?.map((application) => ({
     teamOfferId: application.teamOfferId,
-    projectOfferId: application.id,
     projectTitle: application.projectOffer?.title,
     status: application.status,
+    projectOfferId: application.status === "pending" 
+      ? application.id 
+      : application.projectOfferId,
     tools: application.projectOffer?.tools,
     languages: application.projectOffer?.languages,
     teacherEmail: application.projectOffer?.teacher?.user?.email,
