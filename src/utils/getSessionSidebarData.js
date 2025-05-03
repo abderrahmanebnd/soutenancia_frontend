@@ -6,6 +6,10 @@ import {
   UserRoundCheck,
   Users,
   UserSearch,
+  BookOpen,
+  Award,
+  Clock,
+  ClipboardList,
 } from "lucide-react";
 
 export function getSessionSidebarData(role) {
@@ -77,6 +81,31 @@ export function getSessionSidebarData(role) {
               icon: UserSearch,
               url: "/admin/manage-students",
             },
+          ],
+        },
+        {
+          title: "System Configuration",
+          items: [
+            {
+              title: "Manage Specialties",
+              icon: BookOpen,
+              url: "/admin/manage-specialties",
+            },
+            {
+              title: "Manage Skills",
+              icon: Award,
+              url: "/admin/manage-skills",
+            },
+            {
+              title: "Assignment Modes",
+              icon: ClipboardList,
+              url: "/admin/assignment-modes",
+            },
+          {
+            title:"Manage Durations",
+            icon:Clock,
+            url:"/admin/team-compositions"
+          }
           ],
         },
         /* here you can add another section of links related to admin  */

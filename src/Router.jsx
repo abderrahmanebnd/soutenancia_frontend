@@ -41,6 +41,12 @@ import MyProjectApplications from "./modules/student/pages/MyProjectApplications
 import ManageUsers from "./modules/admin/pages/ManageUsers";
 import ManageStudents from "./modules/admin/pages/ManageStudents";
 import ManageTeachers from "./modules/admin/pages/ManageTeachers";
+import ManageSkills from "./modules/admin/pages/manage-skills";
+import ManageSpecialties from "./modules/admin/pages/manage-specialties";
+import AssignmentModes from "./modules/admin/pages/AssignementModes";
+import { ManageDurationsTabs } from "./modules/admin/pages/manageDurationTab";
+import { ManageProjectSelections } from "./modules/admin/pages/manageProjetSeletions";
+import { ManageTeamCompositions } from "./modules/admin/pages/manageTeamCompositions";
 function Router() {
   return (
     <>
@@ -92,6 +98,24 @@ function Router() {
                       element={<ManageTeachers />}
                     />
                   </Route>
+                 
+      <Route path="manage-specialties" element={<ManageSpecialties />} />
+      <Route path="manage-skills" element={<ManageSkills />} />
+      <Route path="assignment-modes" element={<AssignmentModes/>} />
+      <Route element={<ManageDurationsTabs />}>
+                    <Route
+                      index
+                      path="project-selections"
+                      element={<ManageProjectSelections />}
+                    />
+                    <Route
+                      index
+                      path="team-Compositions"
+                      element={<ManageTeamCompositions />}
+                    />
+                  </Route>
+     
+   
                 </Route>
               </Route>
 
