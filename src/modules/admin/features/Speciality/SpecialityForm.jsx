@@ -28,7 +28,7 @@ export function SpecialtyForm({
   onClose,
   initialData = { name: '', year: 1 }, 
   onSubmit,
-  isLoading 
+  isLoading
 }) {
   const formSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -44,19 +44,15 @@ export function SpecialtyForm({
     form.reset(initialData);
   }, [initialData, form]);
 
-  const handleClose = () => {
-    onClose();
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="bg-primary px-4 py-6 rounded-md mt-3">
           <DialogTitle className="text-primary-foreground">
-            {initialData._id ? "Edit Specialty" : "Add New Specialty"}
+            {initialData.id ? "Edit Specialty" : "Add New Specialty"}
           </DialogTitle>
           <DialogDescription className="text-section">
-            {initialData._id
+            {initialData.id
               ? "Update the specialty details below"
               : "Fill in the form below to add a new specialty"}
           </DialogDescription>
@@ -107,7 +103,7 @@ export function SpecialtyForm({
                 type="button"
                 variant="outline"
                 className="flex-1"
-                onClick={handleClose}
+                onClick={onClose}
                 disabled={isLoading}
               >
                 Cancel
@@ -116,7 +112,7 @@ export function SpecialtyForm({
                 <ButtonWithSpinner className="flex-1" />
               ) : (
                 <Button type="submit" className="flex-1">
-                  {initialData._id ? "Update Specialty" : "Add Specialty"}
+                  {initialData.id ? "Update Specialty" : "Add Specialty"}
                 </Button>
               )}
             </DialogFooter>

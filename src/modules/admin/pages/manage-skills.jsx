@@ -60,7 +60,6 @@ export default function ManageSkills() {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this skill?")) {
       deleteSkill(id, {
         onSuccess: () => {
           toast.success("Skill deleted successfully");
@@ -69,7 +68,7 @@ export default function ManageSkills() {
           toast.error("Failed to delete skill");
         }
       });
-    }
+    
   };
 
   const resetForm = () => {

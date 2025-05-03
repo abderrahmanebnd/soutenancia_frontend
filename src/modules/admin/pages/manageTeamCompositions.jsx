@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import InlineSpinner from "@/components/commun/InlineSpinner";
 
 export const ManageTeamCompositions = () => {
-  // Use the hooks directly
   const { data: durations = [], isLoading, isError } = useTeamCompositions();
   const { specialities } = useSpecialities();
   const createMutation = useCreateTeamComposition();
@@ -28,11 +27,13 @@ export const ManageTeamCompositions = () => {
   const tableData = durations.map(duration => ({
     ...duration,
     specialityName: specialities.find(s => s.id === duration.specialityId)?.name || "Unknown",
-    onEdit: () => {
-      setEditingId(duration.id);
+    isEditing: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
+    onEdit: (data) => {
+      setEditingId(data.id);
       setIsFormOpen(true);
     },
-    onDelete: () => handleDelete(duration.id)
+    onDelete: (id) => handleDelete(id)
   }));
 
   const handleSubmit = (values) => {
@@ -60,7 +61,6 @@ export const ManageTeamCompositions = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this team composition?")) {
       deleteMutation.mutate(id, {
         onSuccess: () => {
           toast.success("Team composition deleted successfully");
@@ -69,7 +69,7 @@ export const ManageTeamCompositions = () => {
           toast.error("Failed to delete team composition");
         }
       });
-    }
+    
   };
 
   const resetForm = () => {

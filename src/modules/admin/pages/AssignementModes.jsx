@@ -48,9 +48,8 @@ export default function AssignmentModesPage() {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this assignment mode?")) {
       deleteMutation.mutate(id);
-    }
+    
   };
 
   const resetForm = () => {

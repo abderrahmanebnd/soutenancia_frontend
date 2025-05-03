@@ -16,7 +16,6 @@ import InlineSpinner from "@/components/commun/InlineSpinner";
 import { Button } from "@/components/ui/button";
 
 export const ManageProjectSelections = () => {
-  // Use the hooks directly
   const { data: durations = [], isLoading, isError } = useProjectSelections();
   const { specialities } = useSpecialities();
   const createMutation = useCreateProjectSelection();
@@ -28,11 +27,13 @@ export const ManageProjectSelections = () => {
   const tableData = durations.map(duration => ({
     ...duration,
     specialityName: specialities.find(s => s.id === duration.specialityId)?.name || "Unknown",
-    onEdit: () => {
-      setEditingId(duration.id);
+    isEditing: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
+    onEdit: (data) => {
+      setEditingId(data.id);
       setIsFormOpen(true);
     },
-    onDelete: () => handleDelete(duration.id)
+    onDelete: (id) => handleDelete(id)
   }));
 
   const handleSubmit = (values) => {
@@ -60,7 +61,6 @@ export const ManageProjectSelections = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this project selection?")) {
       deleteMutation.mutate(id, {
         onSuccess: () => {
           toast.success("Project selection deleted successfully");
@@ -69,7 +69,7 @@ export const ManageProjectSelections = () => {
           toast.error("Failed to delete project selection");
         }
       });
-    }
+    
   };
 
   const resetForm = () => {

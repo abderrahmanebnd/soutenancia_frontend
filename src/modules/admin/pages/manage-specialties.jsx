@@ -60,7 +60,6 @@ export default function ManageSpecialties() {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this specialty?")) {
       deleteSpecialty(id, {
         onSuccess: () => {
           toast.success("Specialty deleted successfully");
@@ -69,7 +68,7 @@ export default function ManageSpecialties() {
           toast.error("Failed to delete specialty");
         }
       });
-    }
+    
   };
 
   const resetForm = () => {

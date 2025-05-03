@@ -29,7 +29,8 @@ export function DurationForm({
   initialData = { specialityId: '', startDate: '', endDate: '' }, 
   onSubmit,
   isLoading,
-  specialities
+  specialities,
+  title
 }) {
   const formSchema = z.object({
     specialityId: z.string().min(1, "Speciality is required"),
@@ -47,10 +48,23 @@ export function DurationForm({
   });
 
   useEffect(() => {
-    form.reset(initialData);
+    if (initialData) {
+      const formattedData = {
+        ...initialData,
+        startDate: initialData.startDate ? formatForDateTimeInput(initialData.startDate) : '',
+        endDate: initialData.endDate ? formatForDateTimeInput(initialData.endDate) : ''
+      };
+      form.reset(formattedData);
+    }
   }, [initialData, form]);
 
+  function formatForDateTimeInput(dateString) {
+    const date = new Date(dateString);
+    return date.toISOString().slice(0, 16);
+  }
+
   const handleClose = () => {
+    form.reset();
     onClose();
   };
 
@@ -59,10 +73,10 @@ export function DurationForm({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="bg-primary px-4 py-6 rounded-md mt-3">
           <DialogTitle className="text-primary-foreground">
-            {initialData._id ? "Edit Duration" : "Add New Duration"}
+            {title}
           </DialogTitle>
           <DialogDescription className="text-section">
-            {initialData._id
+            {title.startsWith("Edit") 
               ? "Update the duration details below"
               : "Fill in the form below to add a new duration"}
           </DialogDescription>
@@ -104,7 +118,6 @@ export function DurationForm({
                     <Input 
                       type="datetime-local" 
                       {...field}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </FormControl>
                   <FormMessage />
@@ -122,7 +135,6 @@ export function DurationForm({
                     <Input 
                       type="datetime-local" 
                       {...field}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                   </FormControl>
                   <FormMessage />
@@ -144,7 +156,7 @@ export function DurationForm({
                 <ButtonWithSpinner className="flex-1" />
               ) : (
                 <Button type="submit" className="flex-1">
-                  {initialData._id ? "Update Duration" : "Add Duration"}
+                  {title.startsWith("Edit") ? "Update" : "Add"}
                 </Button>
               )}
             </DialogFooter>
