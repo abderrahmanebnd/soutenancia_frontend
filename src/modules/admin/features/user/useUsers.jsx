@@ -31,14 +31,17 @@ export function useUsers(role) {
   });
 
   const updateUser = useMutation({
-    mutationFn: (userData) => userApi.updateUser(userData.id, userData),
+    mutationFn: (userData) => {
+      const { id, ...updateData } = userData;
+      return userApi.updateUser(id, updateData);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["users", role]);
       toast.success(`${role} updated successfully`);
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || `Failed to update ${role}`);
-    },
+    }
   });
 
   const deleteUser = useMutation({

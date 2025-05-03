@@ -39,31 +39,37 @@ import {
 import { useSpecialities } from "@/features/specialities/useSpecialities";
 import InlineSpinner from "@/components/commun/InlineSpinner";
 import { toast } from "react-hot-toast";
+import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
-export function AddUser({ role, editingUser, onSuccess, createUser, updateUser }) {
+export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, isUpdating }) {
   const [open, setIsOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { specialities, isGettingSpecialities, isErrorGettingSpecialities } =
     useSpecialities();
 
-  // Base schema with common fields
+  const passwordValidation = editingUser
+    ? z.string()
+        .min(8, "Password must be at least 8 characters (if changing)")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter (if changing)")
+        .optional()
+        .or(z.literal(''))
+    : z.string()
+        .min(8, "Password must be at least 8 characters")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter");
+
   const baseSchema = z.object({
     firstName: z.string().min(2, "First name must be at least 2 characters"),
     lastName: z.string().min(2, "Last name must be at least 2 characters"),
     email: z.string().email("Please enter a valid email address"),
-    password: z.string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .optional(), // Password is optional for editing
+    password: passwordValidation
   });
 
-  // Role-specific schema extensions
   const formSchema =
     role === "student"
       ? baseSchema.extend({
-          enrollmentNumber: z
-            .string()
-            .length(12, "Enrollment number must be 12 characters"),
+          enrollmentNumber: editingUser 
+            ? z.string().optional()
+            : z.string().length(12, "Enrollment number must be 12 characters"),
           speciality: z.string().min(1, "Please select a speciality"),
         })
       : baseSchema.extend({
@@ -75,15 +81,15 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser }
     resolver: zodResolver(formSchema),
   });
 
-  // Reset form when editingUser changes
   useEffect(() => {
     if (editingUser) {
       form.reset({
         firstName: editingUser.firstName,
         lastName: editingUser.lastName,
         email: editingUser.email,
-        password: "", // Password field is cleared for security
+        password: "",
         ...(role === "student" ? {
+          enrollmentNumber: editingUser.Student?.enrollmentNumber || "",
           speciality: editingUser.Student?.specialityId || "",
         } : {
           department: editingUser.Teacher?.department || "",
@@ -109,13 +115,26 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser }
   }, [editingUser, form, role]);
 
   const onSubmit = async (data) => {
-    try {
-      const userData = {
-        ...data,
-        role: role,
-        ...(editingUser && { id: editingUser.id }), // Include ID if editing
-      };
+    const userData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      role: role,
+      ...(data.password && { password: data.password }),
+      ...(editingUser && { id: editingUser.id }),
+    };
 
+    if (role === "student") {
+      if (data.enrollmentNumber) {
+        userData.enrollmentNumber = data.enrollmentNumber;
+      }
+      userData.specialityId = data.speciality;
+    } else {
+      userData.department = data.department;
+      userData.title = data.title;
+    }
+
+    try {
       if (editingUser) {
         await updateUser(userData);
         toast.success(`${role} updated successfully`);
@@ -123,13 +142,14 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser }
         await createUser(userData);
         toast.success(`${role} created successfully`);
       }
-
+      
       form.reset();
       setIsOpen(false);
       onSuccess();
     } catch (error) {
       toast.error(error.response?.data?.message || 
         `Failed to ${editingUser ? 'update' : 'create'} ${role}`);
+      console.error("Operation error:", error);
     }
   };
 
@@ -210,13 +230,13 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser }
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {editingUser ? "New Password (optional)" : "Password"}
+                    {editingUser ? "New Password (leave blank to keep current)" : "Password"}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder={editingUser ? "Leave blank to keep current" : "••••••••"}
+                        placeholder={editingUser ? "Leave blank to keep current password" : "••••••••"}
                         {...field}
                         value={field.value || ""}
                       />
@@ -235,75 +255,87 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser }
               )}
             />
 
-            {role === "student" ? (
-              <>
-               
+            {role === "student" && !editingUser && (
+              <FormField
+                control={form.control}
+                name="enrollmentNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Enrollment Number</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
-                <FormField
-                  control={form.control}
-                  name="speciality"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Speciality</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className={cn(
-                                "w-full justify-between",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value
-                                ? specialities?.find(s => s.id === field.value)?.name
-                                : "Select speciality"}
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                          <Command>
-                            {isGettingSpecialities && <InlineSpinner />}
-                            {isErrorGettingSpecialities && (
-                              <div className="p-4 text-red-500">
-                                Error loading specialities
-                              </div>
+            {role === "student" ? (
+              <FormField
+                control={form.control}
+                name="speciality"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Speciality</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between",
+                              !field.value && "text-muted-foreground"
                             )}
-                            {!isGettingSpecialities && !isErrorGettingSpecialities && (
-                              <>
-                                <CommandInput placeholder="Search speciality..." />
-                                <CommandList>
-                                  <CommandEmpty>No speciality found</CommandEmpty>
-                                  <CommandGroup>
-                                    {specialities?.map((speciality) => (
-                                      <CommandItem
-                                        key={speciality.id}
-                                        value={speciality.id}
-                                        onSelect={() => form.setValue("speciality", speciality.id)}
-                                      >
-                                        <Check
-                                          className={cn(
-                                            "mr-2 h-4 w-4",
-                                            speciality.id === field.value ? "opacity-100" : "opacity-0"
-                                          )}
-                                        />
-                                        {speciality.name}
-                                      </CommandItem>
-                                    ))}
-                                  </CommandGroup>
-                                </CommandList>
-                              </>
-                            )}
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
+                          >
+                            {field.value
+                              ? specialities?.find(s => s.id === field.value)?.name
+                              : "Select speciality"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          {isGettingSpecialities && <InlineSpinner />}
+                          {isErrorGettingSpecialities && (
+                            <div className="p-4 text-red-500">
+                              Error loading specialities
+                            </div>
+                          )}
+                          {!isGettingSpecialities && !isErrorGettingSpecialities && (
+                            <>
+                              <CommandInput placeholder="Search speciality..." />
+                              <CommandList>
+                                <CommandEmpty>No speciality found</CommandEmpty>
+                                <CommandGroup>
+                                  {specialities?.map((speciality) => (
+                                    <CommandItem
+                                      key={speciality.id}
+                                      value={speciality.id}
+                                      onSelect={() => form.setValue("speciality", speciality.id)}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          speciality.id === field.value ? "opacity-100" : "opacity-0"
+                                        )}
+                                      />
+                                      {speciality.name}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </>
+                          )}
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             ) : (
               <>
                 <FormField
@@ -341,13 +373,21 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser }
                 type="button"
                 variant="outline"
                 className="flex-1"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  form.reset();
+                }}
+                disabled={isUpdating}
               >
                 Cancel
               </Button>
-              <Button type="submit" className="flex-1">
-                {editingUser ? "Save Changes" : "Create"}
-              </Button>
+              {isUpdating ? (
+                <ButtonWithSpinner className="flex-1" />
+              ) : (
+                <Button type="submit" className="flex-1">
+                  {editingUser ? "Save Changes" : "Create"}
+                </Button>
+              )}
             </DialogFooter>
           </form>
         </Form>

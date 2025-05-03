@@ -12,6 +12,7 @@ function ManageStudents() {
 
   const { 
     users, 
+    createUser,
     isGettingUsers, 
     isErrorGettingUsers,
     updateUser,
@@ -24,9 +25,9 @@ function ManageStudents() {
   };
 
   const handleDelete = (userId) => {
-    if (window.confirm("Are you sure you want to delete this student?")) {
+   
       deleteUser(userId);
-    }
+    
   };
 
   const handleSuccess = () => {
@@ -60,6 +61,8 @@ function ManageStudents() {
           editingUser={editingUser} 
           onSuccess={handleSuccess}
           updateUser={updateUser}
+          createUser={createUser}
+
         />
       </section>
 

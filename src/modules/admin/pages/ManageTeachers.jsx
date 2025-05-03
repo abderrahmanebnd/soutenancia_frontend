@@ -12,6 +12,7 @@ function ManageTeachers() {
 
   const { 
     users, 
+    createUser,
     isGettingUsers, 
     isErrorGettingUsers, 
     updateUser,
@@ -56,6 +57,7 @@ function ManageTeachers() {
           editingUser={editingUser} 
           onSuccess={handleSuccess}
           updateUser={updateUser}
+          createUser={createUser}
         />
       </section>
 
