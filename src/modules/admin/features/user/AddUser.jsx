@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Check, ChevronsUpDown, CirclePlus, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,82 +38,123 @@ import {
 } from "@/components/ui/popover";
 import { useSpecialities } from "@/features/specialities/useSpecialities";
 import InlineSpinner from "@/components/commun/InlineSpinner";
-import { useSignup } from "@/features/auth/useSignup";
-import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
+import { toast } from "react-hot-toast";
 
-export function AddUser({ role }) {
+export function AddUser({ role, editingUser, onSuccess, createUser, updateUser }) {
   const [open, setIsOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { specialities, isGettingSpecialities, isErrorGettingSpecialities } =
     useSpecialities();
-  const { signup, isAddingUser, isSuccessSignup } = useSignup();
 
+  // Base schema with common fields
   const baseSchema = z.object({
     firstName: z.string().min(2, "First name must be at least 2 characters"),
     lastName: z.string().min(2, "Last name must be at least 2 characters"),
     email: z.string().email("Please enter a valid email address"),
-    password: z
-      .string()
+    password: z.string()
       .min(8, "Password must be at least 8 characters")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter"),
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .optional(), // Password is optional for editing
   });
 
+  // Role-specific schema extensions
   const formSchema =
     role === "student"
       ? baseSchema.extend({
           enrollmentNumber: z
             .string()
-            .length(12, { message: "Enrollment number must be 12 characters" }),
-          speciality: z.string({
-            required_error: "Please select a speciality",
-          }),
+            .length(12, "Enrollment number must be 12 characters"),
+          speciality: z.string().min(1, "Please select a speciality"),
         })
       : baseSchema.extend({
-          departement: z.string().min(1, "Please enter the teacher department"),
-          title: z.string().min(1, "Please enter the teacher title"),
+          department: z.string().min(1, "Please enter the department"),
+          title: z.string().min(1, "Please enter the title"),
         });
+
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      enrollmentNumber: "",
-      speciality: "",
-      departement: "",
-      title: "",
-    },
   });
+
+  // Reset form when editingUser changes
   useEffect(() => {
-    if (isSuccessSignup) {
+    if (editingUser) {
+      form.reset({
+        firstName: editingUser.firstName,
+        lastName: editingUser.lastName,
+        email: editingUser.email,
+        password: "", // Password field is cleared for security
+        ...(role === "student" ? {
+          speciality: editingUser.Student?.specialityId || "",
+        } : {
+          department: editingUser.Teacher?.department || "",
+          title: editingUser.Teacher?.title || "",
+        })
+      });
+      setIsOpen(true);
+    } else {
+      form.reset({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        ...(role === "student" ? {
+          enrollmentNumber: "",
+          speciality: "",
+        } : {
+          department: "",
+          title: "",
+        })
+      });
+    }
+  }, [editingUser, form, role]);
+
+  const onSubmit = async (data) => {
+    try {
+      const userData = {
+        ...data,
+        role: role,
+        ...(editingUser && { id: editingUser.id }), // Include ID if editing
+      };
+
+      if (editingUser) {
+        await updateUser(userData);
+        toast.success(`${role} updated successfully`);
+      } else {
+        await createUser(userData);
+        toast.success(`${role} created successfully`);
+      }
+
       form.reset();
       setIsOpen(false);
+      onSuccess();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 
+        `Failed to ${editingUser ? 'update' : 'create'} ${role}`);
     }
-  }, [isSuccessSignup, form]);
-  function onSubmit(data) {
-    const userData = {
-      ...data,
-      role: role,
-    };
-
-    signup(userData);
-  }
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setIsOpen}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      setIsOpen(isOpen);
+      if (!isOpen) {
+        form.reset();
+      }
+    }}>
       <DialogTrigger asChild>
         <Button className="capitalize">
-          Add {role} <CirclePlus />{" "}
+          {editingUser ? `Edit ${role}` : `Add ${role}`} 
+          <CirclePlus className="ml-2 h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]" closeButton={true}>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader className="bg-primary px-4 py-6 rounded-md mt-3">
           <DialogTitle className="text-primary-foreground capitalize">
-            add new {role}
+            {editingUser ? `Edit ${role}` : `Add new ${role}`}
           </DialogTitle>
           <DialogDescription className="text-section">
-            Fill in the form below to add a new {role} to the system
+            {editingUser
+              ? `Update the ${role} details below`
+              : `Fill in the form below to add a new ${role}`}
           </DialogDescription>
         </DialogHeader>
 
@@ -128,7 +168,7 @@ export function AddUser({ role }) {
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="first name" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -142,7 +182,7 @@ export function AddUser({ role }) {
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="last name" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -157,11 +197,7 @@ export function AddUser({ role }) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder={`${role}@esi-sba.dz`}
-                      {...field}
-                    />
+                    <Input type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -173,13 +209,16 @@ export function AddUser({ role }) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>
+                    {editingUser ? "New Password (optional)" : "Password"}
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
+                        placeholder={editingUser ? "Leave blank to keep current" : "••••••••"}
                         {...field}
+                        value={field.value || ""}
                       />
                       <button
                         type="button"
@@ -187,11 +226,7 @@ export function AddUser({ role }) {
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
                         tabIndex={-1}
                       >
-                        {showPassword ? (
-                          <EyeOff size={18} />
-                        ) : (
-                          <Eye size={18} />
-                        )}
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
                   </FormControl>
@@ -199,21 +234,10 @@ export function AddUser({ role }) {
                 </FormItem>
               )}
             />
-            {role === "student" && (
+
+            {role === "student" ? (
               <>
-                <FormField
-                  control={form.control}
-                  name="enrollmentNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Enrollment Number</FormLabel>
-                      <FormControl>
-                        <Input placeholder="202238212345" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+               
 
                 <FormField
                   control={form.control}
@@ -233,10 +257,7 @@ export function AddUser({ role }) {
                               )}
                             >
                               {field.value
-                                ? specialities?.find(
-                                    (speciality) =>
-                                      speciality.id === field.value
-                                  )?.name
+                                ? specialities?.find(s => s.id === field.value)?.name
                                 : "Select speciality"}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
@@ -247,44 +268,34 @@ export function AddUser({ role }) {
                             {isGettingSpecialities && <InlineSpinner />}
                             {isErrorGettingSpecialities && (
                               <div className="p-4 text-red-500">
-                                Error getting specialities
+                                Error loading specialities
                               </div>
                             )}
-                            {!isGettingSpecialities &&
-                              !isErrorGettingSpecialities && (
-                                <>
-                                  <CommandInput placeholder="Search speciality..." />
-                                  <CommandList>
-                                    <CommandEmpty>
-                                      No speciality found.
-                                    </CommandEmpty>
-                                    <CommandGroup>
-                                      {specialities?.map((speciality) => (
-                                        <CommandItem
-                                          key={speciality.id}
-                                          value={speciality.id}
-                                          onSelect={() => {
-                                            form.setValue(
-                                              "speciality",
-                                              speciality.id
-                                            );
-                                          }}
-                                        >
-                                          <Check
-                                            className={cn(
-                                              "mr-2 h-4 w-4",
-                                              speciality.id === field.value
-                                                ? "opacity-100"
-                                                : "opacity-0"
-                                            )}
-                                          />
-                                          {speciality.name}
-                                        </CommandItem>
-                                      ))}
-                                    </CommandGroup>
-                                  </CommandList>
-                                </>
-                              )}
+                            {!isGettingSpecialities && !isErrorGettingSpecialities && (
+                              <>
+                                <CommandInput placeholder="Search speciality..." />
+                                <CommandList>
+                                  <CommandEmpty>No speciality found</CommandEmpty>
+                                  <CommandGroup>
+                                    {specialities?.map((speciality) => (
+                                      <CommandItem
+                                        key={speciality.id}
+                                        value={speciality.id}
+                                        onSelect={() => form.setValue("speciality", speciality.id)}
+                                      >
+                                        <Check
+                                          className={cn(
+                                            "mr-2 h-4 w-4",
+                                            speciality.id === field.value ? "opacity-100" : "opacity-0"
+                                          )}
+                                        />
+                                        {speciality.name}
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </>
+                            )}
                           </Command>
                         </PopoverContent>
                       </Popover>
@@ -293,17 +304,16 @@ export function AddUser({ role }) {
                   )}
                 />
               </>
-            )}
-            {role === "teacher" && (
+            ) : (
               <>
                 <FormField
                   control={form.control}
-                  name="departement"
+                  name="department"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Department</FormLabel>
                       <FormControl>
-                        <Input placeholder="Department" {...field} />
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -317,7 +327,7 @@ export function AddUser({ role }) {
                     <FormItem>
                       <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Title" {...field} />
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -325,22 +335,19 @@ export function AddUser({ role }) {
                 />
               </>
             )}
+
             <DialogFooter className="flex gap-2 flex-wrap">
               <Button
                 type="button"
                 variant="outline"
-                className=" flex-1"
+                className="flex-1"
                 onClick={() => setIsOpen(false)}
               >
-                &larr; back
+                Cancel
               </Button>
-              {isAddingUser ? (
-                <ButtonWithSpinner disabled={isAddingUser} className="flex-1" />
-              ) : (
-                <Button type="submit" className="flex-1">
-                  Add {role}
-                </Button>
-              )}
+              <Button type="submit" className="flex-1">
+                {editingUser ? "Save Changes" : "Create"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

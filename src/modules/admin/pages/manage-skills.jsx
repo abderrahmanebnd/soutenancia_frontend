@@ -22,13 +22,28 @@ export default function ManageSkills() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState('');
 
-  const tableData = skills.map(skill => ({
-    id: skill.id,
-    name: skill.name,
-    type: skill.type || "general",
-    onEdit: () => handleEdit(skill),
-    onDelete: () => handleDelete(skill.id)
-  }));
+  const parseSkill = (skillName) => {
+    const match = skillName.match(/^(.+)\((.+)\)$/);
+    return {
+      skill: match ? match[1] : skillName,
+      technology: match ? match[2] : '',
+    };
+  };
+
+  const tableData = skills.map(skill => {
+    const { skill: skillName, technology } = parseSkill(skill.name);
+    return {
+      id: skill.id,
+      skill: skillName,
+      technology,
+      onEdit: () => {
+        setEditingId(skill.id);
+        setIsFormOpen(true);
+      },
+      onDelete: () => handleDelete(skill.id),
+      isDeleting: false,
+    };
+  });
 
   const handleSubmit = (values) => {
     if (editingId) {
@@ -54,21 +69,15 @@ export default function ManageSkills() {
     }
   };
 
-  const handleEdit = (skill) => {
-    setEditingId(skill.id);
-    setIsFormOpen(true);
-  };
-
   const handleDelete = (id) => {
-      deleteSkill(id, {
-        onSuccess: () => {
-          toast.success("Skill deleted successfully");
-        },
-        onError: () => {
-          toast.error("Failed to delete skill");
-        }
-      });
-    
+    deleteSkill(id, {
+      onSuccess: () => {
+        toast.success("Skill deleted successfully");
+      },
+      onError: () => {
+        toast.error("Failed to delete skill");
+      }
+    });
   };
 
   const resetForm = () => {
@@ -107,7 +116,7 @@ export default function ManageSkills() {
           <DataTable
             columns={skillColumns}
             data={tableData}
-            searchWith="name"
+            searchWith="skill"
             emptyMessage="No skills found"
           />
         )}
@@ -118,8 +127,8 @@ export default function ManageSkills() {
         onClose={resetForm}
         initialData={
           editingId 
-            ? skills.find((s) => s.id === editingId) 
-            : { name: '' }
+            ? parseSkill(skills.find((s) => s.id === editingId)?.name || '')
+            : { skill: '', technology: '' }
         }
         onSubmit={handleSubmit}
         isLoading={isCreating || isUpdating}

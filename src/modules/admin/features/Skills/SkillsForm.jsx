@@ -26,12 +26,13 @@ import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 export function SkillsForm({ 
   open,
   onClose,
-  initialData = { name: '' }, 
+  initialData = { skill: '', technology: '' }, 
   onSubmit,
   isLoading 
 }) {
   const formSchema = z.object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
+    skill: z.string().min(2, "Skill must be at least 2 characters"),
+    technology: z.string().min(2, "Technology must be at least 2 characters"),
   });
 
   const form = useForm({
@@ -45,6 +46,12 @@ export function SkillsForm({
 
   const handleClose = () => {
     onClose();
+  };
+
+  const handleFormSubmit = (values) => {
+    // Combine skill and technology into the format "skill(technology)"
+    const combinedValue = `${values.skill}(${values.technology})`;
+    onSubmit({ name: combinedValue });
   };
 
   return (
@@ -62,15 +69,29 @@ export function SkillsForm({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="skill"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Skill Name</FormLabel>
+                  <FormLabel>Skill Category</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter skill name" {...field} />
+                    <Input placeholder="e.g. Frontend, Backend" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="technology"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Technology</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. React, Node.js" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
