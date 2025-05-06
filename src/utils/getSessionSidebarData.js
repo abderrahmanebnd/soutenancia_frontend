@@ -10,13 +10,23 @@ import {
   Award,
   Clock,
   ClipboardList,
+  UserCircle,
 } from "lucide-react";
 
 export function getSessionSidebarData(role) {
-  //this function is called in every session layout (student,admin,techer,enterprise) to get dynamic Links for every specefic session
   if (role === "student") {
     return {
       navMain: [
+        {
+          title: "Settings",
+      items: [
+        {
+          title: "Profile",
+          icon: UserCircle,
+          url: "/student/profile",
+        },
+      ],
+        },
         {
           title: "Team Offers",
           items: [
@@ -68,8 +78,17 @@ export function getSessionSidebarData(role) {
           ],
         },
       ],
+      title: "Settings",
+      items: [
+        {
+          title: "Profile",
+          icon: UserCircle,
+          url: "/student/profile", // Changed from /teacher/profile to /student/profile
+        },
+      ],
     };
   }
+
   if (role === "admin") {
     return {
       navMain: [
@@ -101,21 +120,32 @@ export function getSessionSidebarData(role) {
               icon: ClipboardList,
               url: "/admin/assignment-modes",
             },
-          {
-            title:"Manage Durations",
-            icon:Clock,
-            url:"/admin/team-compositions"
-          }
+            {
+              title: "Manage Durations",
+              icon: Clock,
+              url: "/admin/team-compositions"
+            }
           ],
         },
-        /* here you can add another section of links related to admin  */
       ],
     };
   }
+
   if (role === "teacher") {
     return {
       navMain: [
         {
+          title: "Settings",
+      items: [
+        {
+          title: "Profile",
+          icon: UserCircle,
+          url: "/teacher/profile",
+        },
+      ],
+        },
+        {
+          
           title: "project management",
           items: [
             {
@@ -140,10 +170,11 @@ export function getSessionSidebarData(role) {
             },
           ],
         },
-        /* here you can add another section of links related to teacher  */
       ],
+      
     };
   }
+
   if (role === "enterprise") {
     return {
       navMain: [
@@ -157,7 +188,6 @@ export function getSessionSidebarData(role) {
             },
           ],
         },
-        /* here you can add another section of links related to admin  */
       ],
     };
   }

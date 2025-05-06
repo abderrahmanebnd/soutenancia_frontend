@@ -2,7 +2,7 @@ import { axiosPrivate } from "@/api/axios";
 
 export const userApi = {
   getUsers: async (role, page = 1, limit = 10) => {
-    const response = await axiosPrivate.get(
+    const response = await axiosPrivate.get( 
       `/users?page=${page}&limit=${limit}&sort=-createdAt&role=${role}`
     );
     return response.data;

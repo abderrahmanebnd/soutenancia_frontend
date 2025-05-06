@@ -47,6 +47,7 @@ import AssignmentModes from "./modules/admin/pages/AssignementModes";
 import { ManageDurationsTabs } from "./modules/admin/pages/manageDurationTab";
 import { ManageProjectSelections } from "./modules/admin/pages/manageProjetSeletions";
 import { ManageTeamCompositions } from "./modules/admin/pages/manageTeamCompositions";
+import ProfileCard from "./Pages/ProfileCard";
 function Router() {
   return (
     <>
@@ -99,10 +100,10 @@ function Router() {
                     />
                   </Route>
                  
-      <Route path="manage-specialties" element={<ManageSpecialties />} />
-      <Route path="manage-skills" element={<ManageSkills />} />
-      <Route path="assignment-modes" element={<AssignmentModes/>} />
-      <Route element={<ManageDurationsTabs />}>
+                    <Route path="manage-specialties" element={<ManageSpecialties />} />
+                    <Route path="manage-skills" element={<ManageSkills />} />
+                    <Route path="assignment-modes" element={<AssignmentModes/>} />
+                    <Route element={<ManageDurationsTabs />}>
                     <Route
                       index
                       path="project-selections"
@@ -114,7 +115,6 @@ function Router() {
                       element={<ManageTeamCompositions />}
                     />
                   </Route>
-     
    
                 </Route>
               </Route>
@@ -225,6 +225,8 @@ function Router() {
                       </ProjectCompositionProtectedRoute>
                     }
                   />
+                  <Route path="profile" element={<ProfileCard/>}/>
+
                 </Route>
               </Route>
 
@@ -283,6 +285,8 @@ function Router() {
                     path="manage-my-teams"
                     element={<div>manage teams </div>}
                   />
+                                    <Route path="profile" element={<ProfileCard/>}/>
+
                 </Route>
               </Route>
 

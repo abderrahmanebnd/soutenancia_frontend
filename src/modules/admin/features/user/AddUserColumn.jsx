@@ -61,7 +61,22 @@ export const userColumns = (role, onEdit, onDelete) => [
             <span className="capitalize">{row.original.speciality?.name}</span>
           ),
         }),
-      ]
+        columnHelper.accessor("role", {
+          id: "role",
+          header: ({ column }) => (
+            <HeaderCellWithSorting
+              title="Role"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            />
+          ),
+          cell: ({ row }) => {
+            
+          
+            return <span className="capitalize">{row.original.role}</span>;
+          },
+        })
+        
+        ]
     : [
         columnHelper.accessor("departement", {
           header: ({ column }) => (

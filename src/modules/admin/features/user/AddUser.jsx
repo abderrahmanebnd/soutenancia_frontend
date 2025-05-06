@@ -162,7 +162,7 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
     }}>
       <DialogTrigger asChild>
         <Button className="capitalize">
-          {editingUser ? `Edit ${role}` : `Add ${role}`} 
+          { `Add ${role}`} 
           <CirclePlus className="ml-2 h-4 w-4" />
         </Button>
       </DialogTrigger>
@@ -255,7 +255,7 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
               )}
             />
 
-            {role === "student" && !editingUser && (
+            {role === "student"  && (
               <FormField
                 control={form.control}
                 name="enrollmentNumber"
@@ -322,7 +322,7 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
                                           speciality.id === field.value ? "opacity-100" : "opacity-0"
                                         )}
                                       />
-                                      {speciality.name}
+                                      {speciality.name} ({speciality.year} year)
                                     </CommandItem>
                                   ))}
                                 </CommandGroup>
