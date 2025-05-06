@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "../api/apiUsers";
 import { toast } from "react-hot-toast";
 
+// features/useUsers.ts
 export function useUser() {
   const queryClient = useQueryClient();
 
@@ -20,25 +21,17 @@ export function useUser() {
 
   const updateUser = useMutation({
     mutationFn: async (userData) => {
-      // Transform speciality data if needed
-      const dataToSend = {
+      // Transform data for API
+      const payload = {
         ...userData,
-        speciality: userData.speciality || null, // Ensure null instead of empty string
-        year: userData.year ? parseInt(userData.year) : null
+        year: userData.year ? parseInt(userData.year) : null,
+        specialityId: userData.speciality || null // Using specialityId to match backend
       };
-      return userApi.updateCurrentUser(dataToSend);
+      return userApi.updateCurrentUser(payload);
     },
     onSuccess: (updatedUser) => {
-      // Deep merge with existing data to preserve relationships
-      queryClient.setQueryData(['currentUser'], (oldData) => ({
-        ...oldData,
-        ...updatedUser,
-        Student: {
-          ...oldData?.Student,
-          ...updatedUser.Student,
-          speciality: updatedUser.Student?.speciality || oldData?.Student?.speciality
-        }
-      }));
+      // Update query cache with the returned user data
+      queryClient.setQueryData(['currentUser'], updatedUser);
       toast.success("Profile updated successfully");
     },
     onError: (error) => {

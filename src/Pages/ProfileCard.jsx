@@ -86,16 +86,20 @@ export default function ProfileCard() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setAvatarFile(file);
+      // Create a preview URL for immediate UI feedback
+      const previewUrl = URL.createObjectURL(file);
+      setAvatarFile({
+        file,
+        previewUrl
+      });
     }
   };
-
+  
 
   const handleUpload = async () => {
-    if (!avatarFile) return;
+    if (!avatarFile?.file) return;
     try {
-      await uploadAvatar(avatarFile);
-      toast.success("Profile photo updated");
+      await uploadAvatar(avatarFile.file);
       setAvatarFile(null);
     } catch {
       toast.error("Upload failed");
@@ -121,20 +125,12 @@ export default function ProfileCard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate year-speciality match if both are present
-    if (formData.speciality && formData.year) {
-      const selectedSpeciality = specialities?.find(s => s.id === formData.speciality);
-      if (selectedSpeciality?.year.toString() !== formData.year) {
-        toast.error("Selected speciality doesn't match the year");
-        return;
-      }
-    }
-  
     try {
       await updateUser({
         ...formData,
+        // Ensure these fields are properly sent
         year: formData.year ? parseInt(formData.year) : null,
-        speciality: formData.speciality || null // Ensure this is sent properly
+        speciality: formData.speciality || null
       });
       setEditMode(false);
     } catch (error) {
@@ -220,13 +216,13 @@ export default function ProfileCard() {
           <div className="flex flex-col md:flex-row gap-8 mb-8">
             <div className="w-full md:w-1/3 flex flex-col items-center">
               <div className="relative group mb-4">
-                <Avatar className="w-40 h-40 border-4 border-white shadow-lg hover:shadow-xl transition-shadow">
-                  <AvatarImage 
-                    src={user?.avatarUrl || (isStudent ? "/assets/std1.png" : "/assets/teacher.png")} 
-                    alt="Profile"
-                    className="hover:scale-105 transition-transform"
-                  />
-                </Avatar>
+              <Avatar className="w-40 h-40 border-4 border-white shadow-lg hover:shadow-xl transition-shadow">
+  <AvatarImage 
+    src={avatarFile?.previewUrl || user?.avatarUrl || (isStudent ? "/assets/std1.png" : "/assets/teacher.png")} 
+    alt="Profile"
+    className="hover:scale-105 transition-transform"
+  />
+</Avatar>
                 {editMode && (
                   <div className="absolute inset-0 bg-black bg-opacity-30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button
@@ -252,24 +248,24 @@ export default function ProfileCard() {
               />
               
               {avatarFile && (
-                <div className="flex gap-3 w-full justify-center animate-fade-in">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setAvatarFile(null)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={handleUpload}
-                    disabled={isUploading}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    {isUploading ? "Uploading..." : "Save"}
-                  </Button>
-                </div>
-              )}
+  <div className="flex gap-3 w-full justify-center animate-fade-in">
+    <Button
+      type="button"
+      variant="outline"
+      onClick={() => setAvatarFile(null)}
+    >
+      Cancel
+    </Button>
+    <Button
+      type="button"
+      onClick={handleUpload}
+      disabled={isUploading}
+      className="bg-blue-600 hover:bg-blue-700 text-white"
+    >
+      {isUploading ? "Uploading..." : "Save Photo"}
+    </Button>
+  </div>
+)}
             </div>
 
             <div className="w-full md:w-2/3">
@@ -356,61 +352,54 @@ export default function ProfileCard() {
                   <div className="space-y-2">
                     <Label className="text-gray-600">Speciality</Label>
                     {editMode ? (
-                  <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                      disabled={isGettingSpecialities}
-                    >
-                      {isGettingSpecialities ? (
-                        <span>Loading specialities...</span>
-                      ) : formData.speciality ? (
-                        specialities?.find(s => s.id === formData.speciality)?.name
-                      ) : (
-                        "Select speciality"
-                      )}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0">
-                    <Command>
-                      <CommandInput placeholder="Search speciality..." />
-                      <CommandList>
-                        <CommandEmpty>
-                          {!formData.year 
-                            ? "Please select a year first" 
-                            : `No specialities found for year ${formData.year}`}
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {specialities
-                            ?.filter(speciality => !formData.year || speciality.year.toString() === formData.year)
-                            ?.map((speciality) => (
-                              <CommandItem
-                                key={speciality.id}
-                                value={speciality.name}
-                                onSelect={() => {
-                                  setFormData(prev => ({ 
-                                    ...prev, 
-                                    speciality: speciality.id,
-                                    year: speciality.year.toString() // Update year to match speciality
-                                  }));
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    formData.speciality === speciality.id ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {speciality.name} (Year {speciality.year})
-                              </CommandItem>
-                            ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                 // In your ProfileCard component's speciality Popover:
+<Popover>
+  <PopoverTrigger asChild>
+    <Button
+      variant="outline"
+      className="w-full justify-between"
+      disabled={isGettingSpecialities}
+    >
+      {formData.speciality
+        ? specialities?.find(s => s.id === formData.speciality)?.name
+        : "Select speciality"}
+      <ChevronDown className="h-4 w-4 opacity-50" />
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent className="w-[300px] p-0">
+    <Command>
+      <CommandInput placeholder="Search speciality..." />
+      <CommandList>
+        <CommandEmpty>
+          No specialities found
+        </CommandEmpty>
+        <CommandGroup>
+          {specialities?.map((speciality) => (
+            <CommandItem
+              key={speciality.id}
+              value={speciality.name}
+              onSelect={() => {
+                setFormData(prev => ({
+                  ...prev,
+                  speciality: speciality.id,
+                  year: speciality.year.toString()
+                }));
+              }}
+            >
+              <Check
+                className={cn(
+                  "mr-2 h-4 w-4",
+                  formData.speciality === speciality.id ? "opacity-100" : "opacity-0"
+                )}
+              />
+              {speciality.name} (Year {speciality.year})
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  </PopoverContent>
+</Popover>
                     ) : (
                       <p className="text-gray-800 font-medium">
                         {user?.Student?.speciality?.name || "-"}
