@@ -35,12 +35,16 @@ import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
 import SingleProjectApplications from "./modules/teacher/pages/SingleProjectApplications";
 import CurrentStudentProjectOffers from "./modules/student/pages/CurrentStudentProjectOffers";
 import ProjectCompositionProtectedRoute from "./modules/student/features/project-composition-countdown/ProjectCompositionProtectedRoute";
-import ProjectDetails from "./modules/student/pages/ProjectDetails";
+
 import EditProject from "./modules/teacher/pages/EditProject";
 import MyProjectApplications from "./modules/student/pages/MyProjectApplications";
 import ManageUsers from "./modules/admin/pages/ManageUsers";
 import ManageStudents from "./modules/admin/pages/ManageStudents";
 import ManageTeachers from "./modules/admin/pages/ManageTeachers";
+import ProjectDescription from "./modules/student/pages/ProjectDescription";
+import ProjectDetails from "./modules/student/pages/ProjectDetails";
+import SprintsManagement from "./modules/student/pages/SprintsManagement";
+import SprintDetails from "./modules/student/pages/SprintDetails";
 function Router() {
   return (
     <>
@@ -194,13 +198,20 @@ function Router() {
                     }
                   />
                   <Route
-                    path="project-details"
                     element={
                       <ProjectCompositionProtectedRoute>
                         <ProjectDetails />
                       </ProjectCompositionProtectedRoute>
                     }
-                  />
+                  >
+                    <Route
+                      index
+                      path="project-description"
+                      element={<ProjectDescription />}
+                    />
+                    <Route path="sprints" element={<SprintsManagement />} />
+                  </Route>
+                  <Route path="sprints/:idSprint" element={<SprintDetails />} />
                 </Route>
               </Route>
 

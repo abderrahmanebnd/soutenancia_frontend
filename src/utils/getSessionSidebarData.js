@@ -59,7 +59,7 @@ export function getSessionSidebarData(role) {
             {
               title: "Project Details",
               icon: FileBox,
-              url: "/student/project-details",
+              url: "/student/project-description",
             },
           ],
         },
