@@ -1,12 +1,12 @@
 import { SprintFilesUpload } from "@/components/commun/SprintFilesUpload";
-import SectionTitle from "../components/SectionTitle";
+import SectionTitle from "../../components/SectionTitle";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useCreateDeliverablePerSprint } from "../features/sprints/useCreateDeliverablePerSprint";
+import { useCreateDeliverablePerSprint } from "./useCreateDeliverablePerSprint";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
 function SprintUploads({ idSprint }) {
@@ -14,7 +14,7 @@ function SprintUploads({ idSprint }) {
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState([]);
   const { deliverable, isCreatingDeliverable, isSuccessCreatingDeliverable } =
-    useCreateDeliverablePerSprint();
+    useCreateDeliverablePerSprint(idSprint);
   useEffect(() => {
     if (isSuccessCreatingDeliverable) {
       setTitle("");

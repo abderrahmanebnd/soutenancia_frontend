@@ -1,7 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
-import { useSingleSprintByProject } from "../features/sprints/useSingleSprintByProject";
+import { useSingleSprintByProject } from "./useSingleSprintByProject";
 import InlineSpinner from "@/components/commun/InlineSpinner";
-import SectionTitle from "../components/SectionTitle";
+import SectionTitle from "../../components/SectionTitle";
 
 function SprintDescription({ idSprint }) {
   const { currentUser } = useAuth();
@@ -23,8 +23,8 @@ function SprintDescription({ idSprint }) {
       </div>
     );
   return (
-    <div>
-      <section className="bg-white rounded-xl p-4 shadow-md mb-8">
+    <div className="mt-8 space-y-4">
+      <section className="bg-white rounded-xl p-4 shadow-md">
         <SectionTitle
           title="Sprint description"
           subtitle="See more details about this sprint"

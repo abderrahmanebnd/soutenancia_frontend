@@ -73,11 +73,23 @@ export function SprintFilesUpload({ files, setFiles }) {
             <div className="bg-background p-4 w-fit rounded-xl">
               <Upload className="w-10 h-10 text-primary" />
             </div>
-            <p className="text-primary font-medium text-lg">
-              {files.length === 0
-                ? "Click or drag to upload a file (max 10MB)"
-                : "A file has already been uploaded submit it first and then upload another one"}
-            </p>
+
+            {files.length === 0 ? (
+              <div>
+                <p className="text-base font-medium text-primary">
+                  Drag and drop your files here or click to browse
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Supports multiple files: PDF, Word, PowerPoint, Excel, and
+                  images up to 10MB each
+                </p>
+              </div>
+            ) : (
+              <p className="text-primary">
+                A file has already been uploaded submit it first and then upload
+                another one
+              </p>
+            )}
           </div>
         )}
       </div>

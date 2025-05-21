@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createDeliverablesPerSprint } from "../../api/apiDeliverables";
 import toast from "react-hot-toast";
 
-export function useCreateDeliverablePerSprint() {
+export function useCreateDeliverablePerSprint(sprintIdCacheKey) {
   const queryClient = useQueryClient();
   const {
     mutate: deliverable,
@@ -12,7 +12,10 @@ export function useCreateDeliverablePerSprint() {
     mutationFn: ({ sprintId, data }) =>
       createDeliverablesPerSprint(sprintId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries(["allDeliverablesBySprint"]);
+      queryClient.invalidateQueries([
+        "allDeliverablesBySprint",
+        sprintIdCacheKey,
+      ]);
       toast.success("Deliverable created successfully");
     },
     onError: (error) => {

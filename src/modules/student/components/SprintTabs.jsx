@@ -1,8 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, Folder, Upload } from "lucide-react";
-import SprintDescription from "../pages/SprintDescription";
+import SprintDescription from "../features/sprints/SprintDescription";
 
-import SprintUploads from "../pages/SprintUploads";
+import SprintUploads from "../features/sprints/SprintUploads";
+import SprintDeliverablesAndNotes from "../features/sprints/SprintDeliverablesAndNotes";
 
 function SprintTabs({ idSprint }) {
   return (
@@ -37,7 +38,7 @@ function SprintTabs({ idSprint }) {
         <SprintUploads idSprint={idSprint} />
       </TabsContent>
       <TabsContent value="deliverablesNotes">
-        <SprintUploads idSprint={idSprint} />
+        <SprintDeliverablesAndNotes idSprint={idSprint} />
       </TabsContent>
     </Tabs>
   );
