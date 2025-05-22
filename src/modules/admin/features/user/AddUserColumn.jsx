@@ -7,82 +7,53 @@ const columnHelper = createColumnHelper();
 
 export const userColumns = (role, onEdit, onDelete) => [
   columnHelper.accessor("firstName", {
-    header: ({ column }) => (
-      <HeaderCellWithSorting
-        title="First Name"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      />
-    ),
+    header: () => <h1>First Name</h1>,
     cell: ({ row }) => (
       <span className="font-medium capitalize">{row.original.firstName}</span>
     ),
   }),
   columnHelper.accessor("lastName", {
-    header: ({ column }) => (
-      <HeaderCellWithSorting
-        title="Last Name"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      />
-    ),
+    header: () => <h1>Last Name</h1>,
     cell: ({ row }) => (
       <span className="font-medium capitalize">{row.original.lastName}</span>
     ),
   }),
   columnHelper.accessor("email", {
-    header: ({ column }) => (
-      <HeaderCellWithSorting
-        title="Email"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      />
+    header: () => <h1>Email</h1>,
+    cell: ({ row }) => (
+      <span className="text-primary">{row.original.email}</span>
     ),
-    cell: ({ row }) => <span className="text-primary">{row.original.email}</span>,
   }),
   ...(role === "student"
     ? [
         columnHelper.accessor("enrollmentNumber", {
-          header: ({ column }) => (
-            <HeaderCellWithSorting
-              title="Enrollment"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            />
-          ),
+          header: () => <h1>Enrollement</h1>,
           cell: ({ row }) => (
             <span className="font-mono">{row.original.enrollmentNumber}</span>
           ),
         }),
         columnHelper.accessor("speciality.name", {
-          header: ({ column }) => (
-            <HeaderCellWithSorting
-              title="Speciality"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            />
-          ),
+          header: () => <h1>Speciality</h1>,
           cell: ({ row }) => (
             <span className="capitalize">{row.original.speciality?.name}</span>
           ),
         }),
         columnHelper.accessor("role", {
           id: "role",
-          header: ({ column }) => (
-            <HeaderCellWithSorting
-              title="Role"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            />
-          ),
+          header: () => <h1>Role</h1>,
           cell: ({ row }) => {
-            
-          
             return <span className="capitalize">{row.original.role}</span>;
           },
-        })
-        
-        ]
+        }),
+      ]
     : [
         columnHelper.accessor("departement", {
           header: ({ column }) => (
             <HeaderCellWithSorting
               title="Department"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
             />
           ),
           cell: ({ row }) => (
@@ -93,7 +64,9 @@ export const userColumns = (role, onEdit, onDelete) => [
           header: ({ column }) => (
             <HeaderCellWithSorting
               title="Title"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
             />
           ),
           cell: ({ row }) => (

@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "../../api/apiuser";
 import { toast } from "react-hot-toast";
 
-export function useUsers(role) {
+export function useUsers(role, currentPage) {
   const queryClient = useQueryClient();
 
   const {
@@ -11,9 +11,9 @@ export function useUsers(role) {
     isLoading: isGettingUsers,
     isError: isErrorGettingUsers,
   } = useQuery({
-    queryKey: ["users", role],
-    queryFn: () => userApi.getUsers(role),
-    select: (data) => data.data, // Access the data array from response
+    queryKey: ["users", role, currentPage],
+    queryFn: () => userApi.getUsers(role, currentPage),
+    // Access the data array from response
     onError: (error) => {
       toast.error(error.response?.data?.message || "Failed to fetch users");
     },
@@ -41,7 +41,7 @@ export function useUsers(role) {
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || `Failed to update ${role}`);
-    }
+    },
   });
 
   const deleteUser = useMutation({

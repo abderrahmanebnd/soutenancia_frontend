@@ -1,15 +1,15 @@
 import { axiosPrivate } from "@/api/axios";
 
 export const userApi = {
-  getUsers: async (role, page = 1, limit = 10) => {
-    const response = await axiosPrivate.get( 
-      `/users?page=${page}&limit=${limit}&sort=-createdAt&role=${role}`
+  getUsers: async (role, currentPage, limit = 10) => {
+    const response = await axiosPrivate.get(
+      `/users?page=${currentPage}&limit=${limit}&sort=createdAt&role=${role}`
     );
     return response.data;
   },
 
   createUser: async (userData) => {
-    const response = await axiosPrivate.post("/users", userData);  // Fixed: Added "/users"
+    const response = await axiosPrivate.post("/users", userData); // Fixed: Added "/users"
     return response.data;
   },
 
