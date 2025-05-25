@@ -35,12 +35,18 @@ import AddProjectOffer from "./modules/teacher/pages/AddProjectOffer";
 import SingleProjectApplications from "./modules/teacher/pages/SingleProjectApplications";
 import CurrentStudentProjectOffers from "./modules/student/pages/CurrentStudentProjectOffers";
 import ProjectCompositionProtectedRoute from "./modules/student/features/project-composition-countdown/ProjectCompositionProtectedRoute";
-import ProjectDetails from "./modules/student/pages/ProjectDetails";
+
 import EditProject from "./modules/teacher/pages/EditProject";
 import MyProjectApplications from "./modules/student/pages/MyProjectApplications";
 import ManageUsers from "./modules/admin/pages/ManageUsers";
 import ManageStudents from "./modules/admin/pages/ManageStudents";
 import ManageTeachers from "./modules/admin/pages/ManageTeachers";
+
+import ProjectDescription from "./modules/student/pages/ProjectDescription";
+import ProjectDetails from "./modules/student/pages/ProjectDetails";
+import SprintsManagement from "./modules/student/pages/SprintsManagement";
+import SprintDetails from "./modules/student/pages/SprintDetails";
+
 import ManageSkills from "./modules/admin/pages/manage-skills";
 import ManageSpecialties from "./modules/admin/pages/manage-specialties";
 import AssignmentModes from "./modules/admin/pages/AssignementModes";
@@ -48,6 +54,7 @@ import { ManageDurationsTabs } from "./modules/admin/pages/manageDurationTab";
 import { ManageProjectSelections } from "./modules/admin/pages/manageProjetSeletions";
 import { ManageTeamCompositions } from "./modules/admin/pages/manageTeamCompositions";
 import ProfileCard from "./Pages/ProfileCard";
+
 function Router() {
   return (
     <>
@@ -218,14 +225,25 @@ function Router() {
                     }
                   />
                   <Route
-                    path="project-details"
                     element={
                       <ProjectCompositionProtectedRoute>
                         <ProjectDetails />
                       </ProjectCompositionProtectedRoute>
                     }
+
+                  >
+                    <Route
+                      index
+                      path="project-description"
+                      element={<ProjectDescription />}
+                    />
+                    <Route path="sprints" element={<SprintsManagement />} />
+                  </Route>
+                  <Route path="sprints/:idSprint" element={<SprintDetails />} />
+
                   />
                   <Route path="profile" element={<ProfileCard/>}/>
+
 
                 </Route>
               </Route>
