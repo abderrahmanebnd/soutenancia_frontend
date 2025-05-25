@@ -9,3 +9,17 @@ export async function getAssignmentTypes() {
     throw error;
   }
 }
+export const createAssignmentMode = async (modeData) => {
+  const response = await axiosPrivate.post('/settings/assignmentTypes', modeData);
+  return response.data.data;
+};
+
+export const updateAssignmentMode = async (id, modeData) => {
+  const response = await axiosPrivate.patch(`/settings/assignmentTypes/${id}`, modeData);
+  return response.data.data;
+};
+
+export const deleteAssignmentMode = async (id) => {
+  await axiosPrivate.delete(`/settings/assignmentTypes/${id}`);
+  return id;
+};
