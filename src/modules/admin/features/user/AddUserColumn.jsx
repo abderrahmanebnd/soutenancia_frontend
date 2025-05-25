@@ -1,7 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash } from "lucide-react";
-import HeaderCellWithSorting from "@/modules/student/components/HeaderCellWithSorting";
 
 const columnHelper = createColumnHelper();
 
@@ -48,27 +47,13 @@ export const userColumns = (role, onEdit, onDelete) => [
       ]
     : [
         columnHelper.accessor("departement", {
-          header: ({ column }) => (
-            <HeaderCellWithSorting
-              title="Department"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            />
-          ),
+          header: () => <h1>Departement</h1>,
           cell: ({ row }) => (
             <span className="capitalize">{row.original.departement}</span>
           ),
         }),
         columnHelper.accessor("title", {
-          header: ({ column }) => (
-            <HeaderCellWithSorting
-              title="Title"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            />
-          ),
+          header: () => <h1>Title</h1>,
           cell: ({ row }) => (
             <span className="capitalize">{row.original.title}</span>
           ),

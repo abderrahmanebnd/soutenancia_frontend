@@ -11,7 +11,7 @@ export function useUsers(role, currentPage) {
     isLoading: isGettingUsers,
     isError: isErrorGettingUsers,
   } = useQuery({
-    queryKey: ["users", role, currentPage],
+    queryKey: ["users", role],
     queryFn: () => userApi.getUsers(role, currentPage),
     // Access the data array from response
     onError: (error) => {

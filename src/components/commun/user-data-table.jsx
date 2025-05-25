@@ -24,8 +24,8 @@ import { useSearchParams } from "react-router";
 export function UserDataTable({
   columns,
   data,
-
   totalPages,
+  setFilterCriteria,
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = searchParams.get("page") || 1;
@@ -50,15 +50,33 @@ export function UserDataTable({
     const nextPage = parseInt(currentPage) + 1;
     searchParams.set("page", nextPage);
     setSearchParams(searchParams);
+    setFilterCriteria((prev) => {
+      const withoutPage = prev
+        .split("&")
+        .filter((part) => !part.startsWith("page="))
+        .join("&");
+      return withoutPage
+        ? `${withoutPage}&page=${nextPage}`
+        : `page=${nextPage}`;
+    });
   }
   function previousPage() {
     const previousPage = parseInt(currentPage) - 1;
     searchParams.set("page", previousPage);
     setSearchParams(searchParams);
+    setFilterCriteria((prev) => {
+      const withoutPage = prev
+        .split("&")
+        .filter((part) => !part.startsWith("page="))
+        .join("&");
+      return withoutPage
+        ? `${withoutPage}&page=${previousPage}`
+        : `page=${previousPage}`;
+    });
   }
   return (
     <div>
-      <div className="rounded-md border">
+      <div className="rounded-md border p-0">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

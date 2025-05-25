@@ -52,7 +52,7 @@ export async function resetPassword(passwords) {
 
 export async function signupUser(data) {
   try {
-    const response = await axiosPrivate.post("/auth/signup", data);
+    const response = await axiosPrivate.post("/users", data);
     return response.data;
   } catch (error) {
     console.error("Sign up error:", error);

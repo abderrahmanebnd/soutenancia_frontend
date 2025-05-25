@@ -41,19 +41,31 @@ import InlineSpinner from "@/components/commun/InlineSpinner";
 import { toast } from "react-hot-toast";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 
-export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, isUpdating }) {
+export function AddUser({
+  role,
+  editingUser,
+  onSuccess,
+  createUser,
+  updateUser,
+  isUpdating,
+}) {
   const [open, setIsOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { specialities, isGettingSpecialities, isErrorGettingSpecialities } =
     useSpecialities();
 
   const passwordValidation = editingUser
-    ? z.string()
+    ? z
+        .string()
         .min(8, "Password must be at least 8 characters (if changing)")
-        .regex(/[A-Z]/, "Password must contain at least one uppercase letter (if changing)")
+        .regex(
+          /[A-Z]/,
+          "Password must contain at least one uppercase letter (if changing)"
+        )
         .optional()
-        .or(z.literal(''))
-    : z.string()
+        .or(z.literal(""))
+    : z
+        .string()
         .min(8, "Password must be at least 8 characters")
         .regex(/[A-Z]/, "Password must contain at least one uppercase letter");
 
@@ -61,13 +73,13 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
     firstName: z.string().min(2, "First name must be at least 2 characters"),
     lastName: z.string().min(2, "Last name must be at least 2 characters"),
     email: z.string().email("Please enter a valid email address"),
-    password: passwordValidation
+    password: passwordValidation,
   });
 
   const formSchema =
     role === "student"
       ? baseSchema.extend({
-          enrollmentNumber: editingUser 
+          enrollmentNumber: editingUser
             ? z.string().optional()
             : z.string().length(12, "Enrollment number must be 12 characters"),
           speciality: z.string().min(1, "Please select a speciality"),
@@ -88,13 +100,15 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
         lastName: editingUser.lastName,
         email: editingUser.email,
         password: "",
-        ...(role === "student" ? {
-          enrollmentNumber: editingUser.Student?.enrollmentNumber || "",
-          speciality: editingUser.Student?.specialityId || "",
-        } : {
-          department: editingUser.Teacher?.department || "",
-          title: editingUser.Teacher?.title || "",
-        })
+        ...(role === "student"
+          ? {
+              enrollmentNumber: editingUser.enrollmentNumber || "",
+              speciality: editingUser.speciality.id || "",
+            }
+          : {
+              department: editingUser.department || "",
+              title: editingUser.title || "",
+            }),
       });
       setIsOpen(true);
     } else {
@@ -103,13 +117,15 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
         lastName: "",
         email: "",
         password: "",
-        ...(role === "student" ? {
-          enrollmentNumber: "",
-          speciality: "",
-        } : {
-          department: "",
-          title: "",
-        })
+        ...(role === "student"
+          ? {
+              enrollmentNumber: "",
+              speciality: "",
+            }
+          : {
+              department: "",
+              title: "",
+            }),
       });
     }
   }, [editingUser, form, role]);
@@ -142,27 +158,32 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
         await createUser(userData);
         toast.success(`${role} created successfully`);
       }
-      
+
       form.reset();
       setIsOpen(false);
       onSuccess();
     } catch (error) {
-      toast.error(error.response?.data?.message || 
-        `Failed to ${editingUser ? 'update' : 'create'} ${role}`);
+      toast.error(
+        error.response?.data?.message ||
+          `Failed to ${editingUser ? "update" : "create"} ${role}`
+      );
       console.error("Operation error:", error);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-      setIsOpen(isOpen);
-      if (!isOpen) {
-        form.reset();
-      }
-    }}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setIsOpen(isOpen);
+        if (!isOpen) {
+          form.reset();
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button className="capitalize">
-          { `Add ${role}`} 
+          {`Add ${role}`}
           <CirclePlus className="ml-2 h-4 w-4" />
         </Button>
       </DialogTrigger>
@@ -230,13 +251,19 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {editingUser ? "New Password (leave blank to keep current)" : "Password"}
+                    {editingUser
+                      ? "New Password (leave blank to keep current)"
+                      : "Password"}
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder={editingUser ? "Leave blank to keep current password" : "••••••••"}
+                        placeholder={
+                          editingUser
+                            ? "Leave blank to keep current password"
+                            : "••••••••"
+                        }
                         {...field}
                         value={field.value || ""}
                       />
@@ -246,7 +273,11 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
                         className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
                         tabIndex={-1}
                       >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
                       </button>
                     </div>
                   </FormControl>
@@ -255,7 +286,7 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
               )}
             />
 
-            {role === "student"  && (
+            {role === "student" && (
               <FormField
                 control={form.control}
                 name="enrollmentNumber"
@@ -290,7 +321,8 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
                             )}
                           >
                             {field.value
-                              ? specialities?.find(s => s.id === field.value)?.name
+                              ? specialities?.find((s) => s.id === field.value)
+                                  ?.name
                               : "Select speciality"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
@@ -304,31 +336,42 @@ export function AddUser({ role, editingUser, onSuccess, createUser, updateUser, 
                               Error loading specialities
                             </div>
                           )}
-                          {!isGettingSpecialities && !isErrorGettingSpecialities && (
-                            <>
-                              <CommandInput placeholder="Search speciality..." />
-                              <CommandList>
-                                <CommandEmpty>No speciality found</CommandEmpty>
-                                <CommandGroup>
-                                  {specialities?.map((speciality) => (
-                                    <CommandItem
-                                      key={speciality.id}
-                                      value={speciality.id}
-                                      onSelect={() => form.setValue("speciality", speciality.id)}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          speciality.id === field.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                      />
-                                      {speciality.name} ({speciality.year} year)
-                                    </CommandItem>
-                                  ))}
-                                </CommandGroup>
-                              </CommandList>
-                            </>
-                          )}
+                          {!isGettingSpecialities &&
+                            !isErrorGettingSpecialities && (
+                              <>
+                                <CommandInput placeholder="Search speciality..." />
+                                <CommandList>
+                                  <CommandEmpty>
+                                    No speciality found
+                                  </CommandEmpty>
+                                  <CommandGroup>
+                                    {specialities?.map((speciality) => (
+                                      <CommandItem
+                                        key={speciality.id}
+                                        value={speciality.id}
+                                        onSelect={() =>
+                                          form.setValue(
+                                            "speciality",
+                                            speciality.id
+                                          )
+                                        }
+                                      >
+                                        <Check
+                                          className={cn(
+                                            "mr-2 h-4 w-4",
+                                            speciality.id === field.value
+                                              ? "opacity-100"
+                                              : "opacity-0"
+                                          )}
+                                        />
+                                        {speciality.name} ({speciality.year}{" "}
+                                        year)
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </>
+                            )}
                         </Command>
                       </PopoverContent>
                     </Popover>

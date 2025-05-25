@@ -11,21 +11,23 @@ import { useSearchParams } from "react-router";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getEsiAllYears } from "@/utils/helpers";
 
+import { Input } from "@/components/ui/input";
+
+import { useAllTeachers } from "../features/user/useAllTeachers";
+
 function ManageTeachers() {
   const [editingUser, setEditingUser] = useState(null);
   const [searchParams] = useSearchParams();
+  const [filterCriteria, setFilterCriteria] = useState("");
   const currentPage = searchParams.get("page") || 1;
   const role = "teacher";
 
-  const {
-    users,
-    createUser,
-    isGettingUsers,
-    isErrorGettingUsers,
-    updateUser,
-    deleteUser,
-    isDeleting,
-  } = useUsers(role, currentPage);
+  const { createUser, updateUser, deleteUser, isDeleting } = useUsers(
+    role,
+    currentPage
+  );
+  const { allTeachers, isLoadingAllTeachers, isErrorGettingAllTeachers } =
+    useAllTeachers(filterCriteria);
 
   const handleEdit = (user) => {
     setEditingUser(user);
@@ -39,16 +41,16 @@ function ManageTeachers() {
     setEditingUser(null);
   };
 
-  const formattedData = users?.data?.map((user) => ({
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    departement: user.Teacher?.department || "N/A",
-    title: user.Teacher?.title || "N/A",
+  const formattedData = allTeachers?.data?.map((user) => ({
+    id: user.user.id,
+    firstName: user.user.firstName,
+    lastName: user.user.lastName,
+    email: user.user.email,
+    departement: user?.department || "N/A",
+    title: user?.title || "N/A",
     isDeleting,
     onEdit: () => handleEdit(user),
-    onDelete: () => handleDelete(user.id),
+    onDelete: () => handleDelete(user.user.id),
   }));
 
   return (
@@ -66,33 +68,48 @@ function ManageTeachers() {
           createUser={createUser}
         />
       </section>
-
-      <div className="bg-section p-4 rounded-xl shadow-sm">
-        {isGettingUsers && (
-          <div className="space-y-4">
-            {getEsiAllYears().map((year) => (
-              <div className="flex items-center space-x-4" key={year}>
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[250px]" />
-                  <Skeleton className="h-4 w-[200px]" />
-                </div>
-              </div>
-            ))}
+      <div className="bg-section  rounded-xl shadow-sm p-4">
+        <div className="flex justify-between items-center px-4 flex-wrap gap-2 ">
+          <div className="flex items-center gap-4 ">
+            <Input
+              placeholder={`Search by first name`}
+              type="text"
+              onChange={(e) => setFilterCriteria(`search=${e.target.value}`)}
+              className="min-w-[250px] max-w-[400px] bg-secondary"
+            />
           </div>
-        )}
-        {isErrorGettingUsers && (
-          <p className="text-destructive">Error fetching students</p>
-        )}
-        {!isErrorGettingUsers && !isGettingUsers && (
-          <UserDataTable
-            columns={userColumns(role, handleEdit, handleDelete)}
-            data={formattedData}
-            isLoading={isGettingUsers}
-            emptyMessage="No students found"
-            totalPages={users?.pagination?.totalPages}
-          />
-        )}
+        </div>
+        <div className="bg-section p-4 rounded-xl shadow-sm">
+          {isLoadingAllTeachers && (
+            <div className="space-y-4">
+              {getEsiAllYears().map((year) => (
+                <div className="flex items-center space-x-4" key={year}>
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[250px]" />
+                    <Skeleton className="h-4 w-[200px]" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {isErrorGettingAllTeachers && (
+            <p className="text-destructive">Error fetching students</p>
+          )}
+
+          {!isLoadingAllTeachers && !isErrorGettingAllTeachers && (
+            <UserDataTable
+              columns={userColumns(role, handleEdit, handleDelete)}
+              data={formattedData || []}
+              isLoading={isLoadingAllTeachers}
+              emptyMessage="No teachers found"
+              totalPages={allTeachers?.pagination?.totalPages}
+              filterCriteria={filterCriteria}
+              setFilterCriteria={setFilterCriteria}
+              searchWith="firstName"
+            />
+          )}
+        </div>
       </div>
     </div>
   );

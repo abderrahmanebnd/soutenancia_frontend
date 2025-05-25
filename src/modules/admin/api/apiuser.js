@@ -23,3 +23,12 @@ export const userApi = {
     return response.data;
   },
 };
+
+export async function getAllStudents(filterCriteria = "") {
+  const response = await axiosPrivate.get(`/students?${filterCriteria}`);
+  return response.data;
+}
+export async function getAllTeachers(filterCriteria = "") {
+  const response = await axiosPrivate.get(`/teachers?${filterCriteria}`);
+  return response.data;
+}
