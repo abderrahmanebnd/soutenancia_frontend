@@ -40,7 +40,7 @@ import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import { useCreateSprintByProject } from "../features/sprints/useCreateSprintByProject";
-import { useAuth } from "@/context/AuthContext";
+
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
 const formSchema = z
   .object({
@@ -64,13 +64,13 @@ const formSchema = z
     message: "End date must be after start date",
     path: ["endDate"],
   });
-function CreateSprintDialog() {
+function CreateSprintDialog({ projectId, teamId }) {
   const { createSprint, isCreatingSprint, isSuccessCreatingSprint } =
     useCreateSprintByProject();
-  const { currentUser } = useAuth();
+  /* const { currentUser } = useAuth();
   const teamId = currentUser?.user?.Student?.TeamOffer?.at(0)?.id;
   const projectId =
-    currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId;
+    currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId; */
   const [open, setIsOpen] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),

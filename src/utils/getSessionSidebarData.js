@@ -4,7 +4,6 @@ import {
   FileCheck2,
   FileSearch,
   UserRoundCheck,
-  Users,
   UserSearch,
   BookOpen,
   Award,
@@ -19,13 +18,13 @@ export function getSessionSidebarData(role) {
       navMain: [
         {
           title: "Settings",
-      items: [
-        {
-          title: "Profile",
-          icon: UserCircle,
-          url: "/student/profile",
-        },
-      ],
+          items: [
+            {
+              title: "Profile",
+              icon: UserCircle,
+              url: "/student/profile",
+            },
+          ],
         },
         {
           title: "Team Offers",
@@ -123,8 +122,8 @@ export function getSessionSidebarData(role) {
             {
               title: "Manage Durations",
               icon: Clock,
-              url: "/admin/team-compositions"
-            }
+              url: "/admin/team-compositions",
+            },
           ],
         },
       ],
@@ -136,16 +135,15 @@ export function getSessionSidebarData(role) {
       navMain: [
         {
           title: "Settings",
-      items: [
-        {
-          title: "Profile",
-          icon: UserCircle,
-          url: "/teacher/profile",
+          items: [
+            {
+              title: "Profile",
+              icon: UserCircle,
+              url: "/teacher/profile",
+            },
+          ],
         },
-      ],
-        },
         {
-          
           title: "project management",
           items: [
             {
@@ -160,18 +158,7 @@ export function getSessionSidebarData(role) {
             },
           ],
         },
-        {
-          title: "Team Management",
-          items: [
-            {
-              title: "Manage My Teams",
-              icon: Users,
-              url: "/teacher/manage-my-teams",
-            },
-          ],
-        },
       ],
-      
     };
   }
 

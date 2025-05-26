@@ -2,8 +2,11 @@ import SectionTitle from "../components/SectionTitle";
 
 import AllProjectSprintsList from "../features/sprints/AllProjectSprintsList";
 import CreateSprintDialog from "../components/CreateSprintDialog";
+import { useAuth } from "@/context/AuthContext";
 
-function SprintsManagement() {
+function SprintsManagement({ teacherProjectId = "", teacherTeamId = "" }) {
+  const { currentUser } = useAuth();
+  const role = currentUser?.user.role;
   return (
     <div className="space-y-6  ">
       <section className="bg-white rounded-xl px-6 py-5 shadow-sm">
@@ -15,9 +18,34 @@ function SprintsManagement() {
       <section className=" w-full px-6 py-5 bg-section rounded-xl space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="font-semibold text-primary">Sprints Management</h1>
-          <CreateSprintDialog />
+          {role === "student" && (
+            <CreateSprintDialog
+              projectId={
+                currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId
+              }
+              teamId={currentUser?.user?.Student?.TeamOffer?.at(0)?.id}
+            />
+          )}
+          {role === "teacher" && (
+            <CreateSprintDialog
+              projectId={teacherProjectId}
+              teamId={teacherTeamId}
+            />
+          )}
         </div>
-        <AllProjectSprintsList />
+        {role === "student" && (
+          <AllProjectSprintsList
+            projectId={
+              currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId
+            }
+          />
+        )}
+        {role === "teacher" && (
+          <AllProjectSprintsList
+            projectId={teacherProjectId}
+            teamId={teacherTeamId}
+          />
+        )}
       </section>
     </div>
   );

@@ -54,6 +54,9 @@ import { ManageDurationsTabs } from "./modules/admin/pages/manageDurationTab";
 import { ManageProjectSelections } from "./modules/admin/pages/manageProjetSeletions";
 import { ManageTeamCompositions } from "./modules/admin/pages/manageTeamCompositions";
 import ProfileCard from "./Pages/ProfileCard";
+import ManageMyTeams from "./modules/teacher/pages/ManageMyTeams";
+import { TeamManagementProvider } from "./modules/teacher/context/TeamManagementContext";
+import TeacherProjectDetails from "./modules/teacher/pages/TeacherProjectDetails";
 
 function Router() {
   return (
@@ -106,11 +109,17 @@ function Router() {
                       element={<ManageTeachers />}
                     />
                   </Route>
-                 
-                    <Route path="manage-specialties" element={<ManageSpecialties />} />
-                    <Route path="manage-skills" element={<ManageSkills />} />
-                    <Route path="assignment-modes" element={<AssignmentModes/>} />
-                    <Route element={<ManageDurationsTabs />}>
+
+                  <Route
+                    path="manage-specialties"
+                    element={<ManageSpecialties />}
+                  />
+                  <Route path="manage-skills" element={<ManageSkills />} />
+                  <Route
+                    path="assignment-modes"
+                    element={<AssignmentModes />}
+                  />
+                  <Route element={<ManageDurationsTabs />}>
                     <Route
                       index
                       path="project-selections"
@@ -122,7 +131,6 @@ function Router() {
                       element={<ManageTeamCompositions />}
                     />
                   </Route>
-   
                 </Route>
               </Route>
 
@@ -230,7 +238,6 @@ function Router() {
                         <ProjectDetails />
                       </ProjectCompositionProtectedRoute>
                     }
-
                   >
                     <Route
                       index
@@ -241,10 +248,7 @@ function Router() {
                   </Route>
                   <Route path="sprints/:idSprint" element={<SprintDetails />} />
 
-                  />
-                  <Route path="profile" element={<ProfileCard/>}/>
-
-
+                  <Route path="profile" element={<ProfileCard />} />
                 </Route>
               </Route>
 
@@ -255,7 +259,14 @@ function Router() {
                   </ProtectedRoute>
                 }
               >
-                <Route path="/teacher" element={<Teacher />}>
+                <Route
+                  path="/teacher"
+                  element={
+                    <TeamManagementProvider>
+                      <Teacher />
+                    </TeamManagementProvider>
+                  }
+                >
                   <Route
                     index
                     element={<Navigate replace to="project-offers" />}
@@ -296,15 +307,22 @@ function Router() {
                     element={<SingleProjectApplications />}
                   />
                   <Route
+                    path="my-project-offers/:idProjectOffer/manage-my-teams"
+                    element={<ManageMyTeams />}
+                  />
+                  <Route
                     path="team-details/:idTeamOfferDetails"
                     element={<TeamOfferDetails />}
                   />
                   <Route
-                    path="manage-my-teams"
-                    element={<div>manage teams </div>}
+                    path={`manage-team/:teamId/project/:projectId`}
+                    element={<TeacherProjectDetails />}
                   />
-                                    <Route path="profile" element={<ProfileCard/>}/>
-
+                  <Route
+                    path="manage-team/:teamId/project/:projectId/sprint/:idSprint"
+                    element={<SprintDetails />}
+                  />
+                  <Route path="profile" element={<ProfileCard />} />
                 </Route>
               </Route>
 

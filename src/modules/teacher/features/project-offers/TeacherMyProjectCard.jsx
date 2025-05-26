@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Link } from "react-router";
+import { useTeamManagementContext } from "../../context/TeamManagementContext";
 
 function TeacherMyProjectCard({ projectData }) {
   const {
@@ -15,7 +16,9 @@ function TeacherMyProjectCard({ projectData }) {
     description,
     id: projectOfferId,
     assignmentType,
+    assignedTeams,
   } = projectData;
+  const { setMyAssignedTeams } = useTeamManagementContext();
   return (
     <div className="min-h-64 bg-[url('/assets/header-background2.jpg')]  bg-cover bg-no-repeat bg-center rounded-xl shadow-sm p-5 flex flex-col">
       <div className="flex-1">
@@ -48,6 +51,14 @@ function TeacherMyProjectCard({ projectData }) {
             )}
             <DropdownMenuItem asChild className="text-primary">
               <Link to={`edit/${projectOfferId}`}>Edit Project Offer</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className="text-primary">
+              <Link
+                to={`${projectOfferId}/manage-my-teams`}
+                onClick={() => setMyAssignedTeams(assignedTeams)}
+              >
+                Manage My Teams
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

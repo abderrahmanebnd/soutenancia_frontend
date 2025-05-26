@@ -1,12 +1,9 @@
 import InlineSpinner from "@/components/commun/InlineSpinner";
 import { useAllSprintsByProject } from "./useAllSprintsByProject";
-import { useAuth } from "@/context/AuthContext";
+
 import AllProjectSprintsItem from "./AllProjectSprintsItem";
 
-function AllProjectSprintsList() {
-  const { currentUser } = useAuth();
-  const projectId =
-    currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId;
+function AllProjectSprintsList({ projectId, teamId }) {
   const { allSprintsData, isGettingAllSprints, isErrorGettingAllSprints } =
     useAllSprintsByProject(projectId);
   if (isGettingAllSprints) return <InlineSpinner />;
@@ -25,7 +22,12 @@ function AllProjectSprintsList() {
   return (
     <ul className="flex flex-col gap-4">
       {allSprintsData?.map((sprint) => (
-        <AllProjectSprintsItem key={sprint.id} sprintData={sprint} />
+        <AllProjectSprintsItem
+          key={sprint.id}
+          sprintData={sprint}
+          projectId={projectId}
+          teamId={teamId}
+        />
       ))}
     </ul>
   );

@@ -5,9 +5,12 @@ import DeleteSprintDialog from "../../components/DeleteSprintDialog";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { CircleEllipsis } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
-function AllProjectSprintsItem({ sprintData }) {
+function AllProjectSprintsItem({ sprintData, projectId, teamId }) {
   const { id: sprintId, title, startDate, endDate, status } = sprintData;
+  const { currentUser } = useAuth();
+  const role = currentUser?.user?.role;
   const colorStatus =
     status === "active"
       ? "bg-pending"
@@ -34,12 +37,24 @@ function AllProjectSprintsItem({ sprintData }) {
       <div className="grid grid-cols-2 gap-2">
         <EditSprintDialog sprintId={sprintId} />
         <DeleteSprintDialog sprintId={sprintId} />
-        <Button asChild className="col-span-2 self-end">
-          <Link to={`/student/sprints/${sprintId}`}>
-            View and manage
-            <CircleEllipsis />
-          </Link>
-        </Button>
+        {role === "teacher" && (
+          <Button asChild className="col-span-2 self-end">
+            <Link
+              to={`/teacher/manage-team/${teamId}/project/${projectId}/sprint/${sprintId}`}
+            >
+              View and manage
+              <CircleEllipsis />
+            </Link>
+          </Button>
+        )}
+        {role === "student" && (
+          <Button asChild className="col-span-2 self-end">
+            <Link to={`/student/sprints/${sprintId}`}>
+              View and manage
+              <CircleEllipsis />
+            </Link>
+          </Button>
+        )}
       </div>
     </li>
   );
