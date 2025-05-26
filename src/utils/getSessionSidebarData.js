@@ -17,16 +17,6 @@ export function getSessionSidebarData(role) {
     return {
       navMain: [
         {
-          title: "Settings",
-          items: [
-            {
-              title: "Profile",
-              icon: UserCircle,
-              url: "/student/profile",
-            },
-          ],
-        },
-        {
           title: "Team Offers",
           items: [
             {
@@ -133,16 +123,6 @@ export function getSessionSidebarData(role) {
   if (role === "teacher") {
     return {
       navMain: [
-        {
-          title: "Settings",
-          items: [
-            {
-              title: "Profile",
-              icon: UserCircle,
-              url: "/teacher/profile",
-            },
-          ],
-        },
         {
           title: "project management",
           items: [

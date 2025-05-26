@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Router from "./Router";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+/* import { ReactQueryDevtools } from "@tanstack/react-query-devtools"; */
 import { Toaster } from "react-hot-toast";
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,10 +15,10 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools
+        {/*  <ReactQueryDevtools
           initialIsOpen={false}
           buttonPosition="bottom-left"
-        />
+        /> */}
         <Router />
       </QueryClientProvider>
       <Toaster
