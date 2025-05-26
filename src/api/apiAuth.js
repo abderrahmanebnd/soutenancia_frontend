@@ -59,3 +59,12 @@ export async function signupUser(data) {
     throw error;
   }
 }
+export async function logoutUser() {
+  try {
+    const response = await axiosPrivate.post("/auth/logout");
+    return response.data;
+  } catch (error) {
+    console.error("Logout error:", error);
+    throw error;
+  }
+}

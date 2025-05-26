@@ -32,3 +32,22 @@ export async function getAllTeachers(filterCriteria = "") {
   const response = await axiosPrivate.get(`/teachers?${filterCriteria}`);
   return response.data;
 }
+
+export async function addExcelFileStudent(file) {
+  const response = await axiosPrivate.post("/import/students", file, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+}
+export async function addExcelFileTeacher(file) {
+  const formData = new FormData();
+  formData.append("excelFile", file);
+  const response = await axiosPrivate.post("/import/teachers", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+}

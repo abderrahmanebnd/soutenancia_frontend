@@ -43,6 +43,8 @@ function SprintDeliverablesAndNotes({ idSprint }) {
                 uploadDate={deliverable.createdAt}
                 deliverableId={deliverable.id}
                 sprintId={idSprint}
+                firstName={deliverable.sender.firstName}
+                lastName={deliverable.sender.lastName}
               />
             ))}
           </div>

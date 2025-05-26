@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Check, ChevronDown, FilterIcon } from "lucide-react";
 import { useSpecialities } from "@/features/specialities/useSpecialities";
 import InlineSpinner from "@/components/commun/InlineSpinner";
+import { FileUploadDialog } from "@/components/commun/FileUploadDialog";
 
 function ManageStudents() {
   const [editingUser, setEditingUser] = useState(null);
@@ -95,21 +96,28 @@ function ManageStudents() {
           title="Manage Students"
           subtitle="Browse and manage all students"
         />
-        <AddUser
-          role={role}
-          editingUser={editingUser}
-          onSuccess={handleSuccess}
-          updateUser={updateUser}
-          createUser={createUser}
-        />
+        <div className="flex items-center gap-2">
+          <AddUser
+            role={role}
+            editingUser={editingUser}
+            onSuccess={handleSuccess}
+            updateUser={updateUser}
+            createUser={createUser}
+          />
+          <FileUploadDialog role={role} />
+        </div>
       </section>
       <div className="bg-section  rounded-xl shadow-sm p-4">
         <div className="flex justify-between items-center px-4 flex-wrap gap-2 ">
           <div className="flex items-center gap-4 ">
             <Input
-              placeholder={`Search by first name`}
+              placeholder={`Search by any field`}
               type="text"
-              onChange={(e) => setFilterCriteria(`search=${e.target.value}`)}
+              onChange={(e) =>
+                setFilterCriteria(
+                  `search=${e.target.value}&searchFields=user.firstName,user.lastName`
+                )
+              }
               className="min-w-[250px] max-w-[400px] bg-secondary"
             />
           </div>

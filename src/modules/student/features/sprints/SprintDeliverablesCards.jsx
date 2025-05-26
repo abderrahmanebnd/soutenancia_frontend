@@ -38,6 +38,8 @@ function SprintDeliverablesCards({
   uploadDate,
   deliverableId,
   sprintId,
+  firstName,
+  lastName,
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const { deleteDeliverable, isDeletingDeliverable } =
@@ -122,11 +124,20 @@ function SprintDeliverablesCards({
       </CardContent>
       <CardFooter className="p-4 pt-0 flex items-center justify-between">
         <div className="flex items-center">
-          <Avatar className="h-14 w-14 mr-2">
-            <AvatarFallback>ST</AvatarFallback>
+          <Avatar className="h-14 w-14 mr-2 uppercase">
+            <AvatarFallback>
+              {firstName.at(0)}
+              {lastName.at(0)}
+            </AvatarFallback>
           </Avatar>
-          <div className="text-xs text-slate-500">
-            <span>{format(parseISO(uploadDate), "PPP")}</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-slate-800">
+              {firstName} {lastName}
+            </span>
+
+            <div className="text-xs text-slate-500">
+              <span>{format(parseISO(uploadDate), "PPP")}</span>
+            </div>
           </div>
         </div>
         <Button
