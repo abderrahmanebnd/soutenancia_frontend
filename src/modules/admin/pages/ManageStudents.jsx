@@ -78,7 +78,11 @@ function ManageStudents() {
       name: user?.speciality?.name || "N/A",
       id: user.specialityId || "N/A",
     },
-    role: user?.isLeader ? "Leader" : "Member",
+    role: user?.isLeader
+      ? "Leader"
+      : user?.isInTeam
+      ? "Member"
+      : "Not in Team",
     isDeleting,
     onEdit: () => handleEdit(user),
     onDelete: () => handleDelete(user.user.id),
@@ -202,7 +206,7 @@ function ManageStudents() {
                         <CommandItem
                           value="Member"
                           onSelect={() => {
-                            setFilterCriteria(`isLeader=false`);
+                            setFilterCriteria(`isLeader=false&isInTeam=true`);
                             setSelectedRole("Member");
                           }}
                         >
@@ -214,6 +218,22 @@ function ManageStudents() {
                             }`}
                           />
                           Member
+                        </CommandItem>
+                        <CommandItem
+                          value="Not in Team"
+                          onSelect={() => {
+                            setFilterCriteria(`isLeader=false&isInTeam=false`);
+                            setSelectedRole("Not in Team");
+                          }}
+                        >
+                          <Check
+                            className={`mr-2 h-4 w-4 ${
+                              selectedRole === "Not in Team"
+                                ? "opacity-100"
+                                : "opacity-0"
+                            }`}
+                          />
+                          Not in Team
                         </CommandItem>
                       </CommandGroup>
                     </CommandList>

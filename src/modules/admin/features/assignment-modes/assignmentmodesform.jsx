@@ -20,8 +20,27 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import ButtonWithSpinner from "@/components/commun/ButtonWithSpinner";
+
+const assignmentTypes = [
+  { value: "auto", label: "Auto Assignment" },
+  { value: "teacherApproval", label: "Teacher Approval" },
+  { value: "amiability", label: "Amiability " },
+];
 
 export function AssignmentModeForm({ 
   open,
@@ -32,7 +51,7 @@ export function AssignmentModeForm({
 }) {
   const formSchema = z.object({
     year: z.number().min(1).max(5),
-    assignmentType: z.string().min(2, "Type must be at least 2 characters"),
+    assignmentType: z.enum(["auto", "teacherApproval", "amiability"]),
   });
 
   const form = useForm({
@@ -88,11 +107,57 @@ export function AssignmentModeForm({
               control={form.control}
               name="assignmentType"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Assignment Type</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter assignment type" {...field} />
-                  </FormControl>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value
+                            ? assignmentTypes.find(
+                                (type) => type.value === field.value
+                              )?.label
+                            : "Select assignment type"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandList>
+                          <CommandEmpty>No type found.</CommandEmpty>
+                          <CommandGroup>
+                            {assignmentTypes.map((type) => (
+                              <CommandItem
+                                value={type.value}
+                                key={type.value}
+                                onSelect={() => {
+                                  form.setValue("assignmentType", type.value);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    type.value === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {type.label}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
