@@ -89,7 +89,7 @@ const formSchema = z.object({
 });
 
 export default function AddProjectOffer() {
-  const { assignmentTypes } = useAssignmentTypes();
+  const { assignmentModes } = useAssignmentTypes();
   const {
     teamsCompleted,
     isGettingTeamsCompleted,
@@ -122,7 +122,7 @@ export default function AddProjectOffer() {
   const currentTeamSize = form.watch("teamSize")[0];
   const watchedGrade = form.watch("grade");
   const watchedSpeciality = form.watch("destinatedFor");
-  const assignmentMethodePerYear = assignmentTypes?.find(
+  const assignmentMethodePerYear = assignmentModes?.find(
     (assignmentmethode) => assignmentmethode.year === watchedGrade
   )?.assignmentType;
 
@@ -160,6 +160,10 @@ export default function AddProjectOffer() {
         JSON.stringify(formData.chosedTeams)
       );
     }
+    console.log("FormData contents:");
+    formDataToSend.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
 
     submitProject(formDataToSend, {
       onSuccess: () => {
