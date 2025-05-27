@@ -31,10 +31,10 @@ function ProjectDescription() {
       <ItemNotFound>
         <div className="text-center mb-4">
           <h3 className="text-2xl font-semibold text-primary">
-            Not in a team yet ?
+            Not in a project yet ?
           </h3>
           <p className="text-muted-foreground text-lg">
-            You are not in a team yet or your applications status are still
+            You are not in a project yet or your applications status are still
             <span className="font-semibold text-lg"> Pending</span>
           </p>
         </div>

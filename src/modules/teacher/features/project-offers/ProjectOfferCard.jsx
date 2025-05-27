@@ -108,7 +108,7 @@ function ProjectOfferCard({ data }) {
             View Details <span>•••</span>
           </Link>
         </Button>
-        {assignmentType === "teacherApproval" &&
+        {(assignmentType === "teacherApproval" || assignmentType === "auto") &&
           userRole === "student" &&
           isInTeam &&
           isLeader &&

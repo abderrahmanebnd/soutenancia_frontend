@@ -7,12 +7,15 @@ export const getTeamCompositions = async () => {
 };
 
 export const createTeamComposition = async (data) => {
-  const response = await axiosPrivate.post('/settings/teamComposition', data);
+  const response = await axiosPrivate.post("/settings/teamComposition", data);
   return response.data.data;
 };
 
 export const updateTeamComposition = async (id, data) => {
-  const response = await axiosPrivate.patch(`/settings/teamComposition/${id}`, data);
+  const response = await axiosPrivate.patch(
+    `/settings/teamComposition/${id}`,
+    data
+  );
   return response.data.data;
 };
 
@@ -28,12 +31,15 @@ export const getProjectSelections = async () => {
 };
 
 export const createProjectSelection = async (data) => {
-  const response = await axiosPrivate.post('/settings/projectSelection', data);
+  const response = await axiosPrivate.post("/settings/projectSelection", data);
   return response.data.data;
 };
 
 export const updateProjectSelection = async (id, data) => {
-  const response = await axiosPrivate.patch(`/settings/projectSelection/${id}`, data);
+  const response = await axiosPrivate.put(
+    `/settings/projectSelection/${id}`,
+    data
+  );
   return response.data.data;
 };
 
