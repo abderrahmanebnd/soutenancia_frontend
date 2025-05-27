@@ -3,7 +3,7 @@ import { axiosPrivate } from "@/api/axios";
 export const getTeachers = async () => {
   try {
     const response = await axiosPrivate.get("/teachers");
-    return response.data.data.teachers;
+    return response.data.data;
   } catch (error) {
     if (error.response?.status === 403) {
       throw new Error(
