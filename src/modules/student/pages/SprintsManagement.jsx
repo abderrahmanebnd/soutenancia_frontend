@@ -21,9 +21,15 @@ function SprintsManagement({ teacherProjectId = "", teacherTeamId = "" }) {
           {role === "student" && (
             <CreateSprintDialog
               projectId={
-                currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId
+                currentUser?.user?.Student?.TeamOffer?.at(0)
+                  ?.assignedProjectId ||
+                currentUser?.user?.Student?.TeamMember?.at(0)?.teamOffer
+                  ?.assignedProjectId
               }
-              teamId={currentUser?.user?.Student?.TeamOffer?.at(0)?.id}
+              teamId={
+                currentUser?.user?.Student?.TeamOffer?.at(0)?.id ||
+                currentUser?.user?.Student?.TeamMember?.at(0)?.teamOffer?.id
+              }
             />
           )}
           {role === "teacher" && (
@@ -36,7 +42,9 @@ function SprintsManagement({ teacherProjectId = "", teacherTeamId = "" }) {
         {role === "student" && (
           <AllProjectSprintsList
             projectId={
-              currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId
+              currentUser?.user?.Student?.TeamOffer?.at(0)?.assignedProjectId ||
+              currentUser?.user?.Student?.TeamMember?.at(0)?.teamOffer
+                ?.assignedProjectId
             }
           />
         )}
