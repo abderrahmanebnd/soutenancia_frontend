@@ -28,6 +28,7 @@ const TeamDetails = () => {
   const isLeader = currentUser?.user?.Student?.isLeader;
   const isInTeam = currentUser?.user?.Student?.isInTeam;
 
+  console.log("Team Offer ID:", teamOfferId);
   const { teamOfferDetails, isLoading, isError } = useTeamOffer(teamOfferId);
   const { deleteTeamMembers, isDeleting } = useDeleteTeamMember();
 

@@ -46,42 +46,22 @@ export const columnsManageMyTeams = [
   columnHelper.accessor("status", {
     header: "Status",
     cell: ({ row }) => {
+      console.log("Row data:", row.original.status);
       switch (row.original.status) {
-        case "pending":
-          return (
-            <Badge variant="pending">
-              <Clock size={16} className="mr-1" />
-              Pending
-            </Badge>
-          );
-
-        case "accepted":
-          return (
-            <Badge variant="success">
-              <CircleCheck size={16} className="mr-1" />
-              Accepted
-            </Badge>
-          );
-        case "rejected":
+        case "open":
           return (
             <Badge variant="destructive">
-              <CircleX size={16} className="mr-1" /> Rejected
-            </Badge>
-          );
-        case "canceled":
-          return (
-            <Badge variant="destructive">
-              <CircleX size={16} className="mr-1" />
-              Canceled
+              <CircleX size={16} className="mr-1" /> open
             </Badge>
           );
         case "closed":
           return (
-            <Badge variant="success">
-              <CircleCheck size={16} className="mr-1" />
-              Closed
+            <Badge variant="destructive">
+              <CircleX size={16} className="mr-1" />
+              closed
             </Badge>
           );
+
         default:
           return null;
       }
