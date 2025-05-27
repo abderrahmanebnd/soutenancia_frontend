@@ -84,7 +84,7 @@ function SprintNotes({ sprintId }) {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3 ">
-                      <Avatar className="h-12 w-12">
+                      <Avatar className="h-12 w-12 uppercase">
                         <AvatarFallback>
                           {note?.sender?.firstName[0]}
                           {note?.sender?.lastName[0]}
