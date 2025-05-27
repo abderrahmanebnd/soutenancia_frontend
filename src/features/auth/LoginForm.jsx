@@ -119,7 +119,7 @@ function LoginForm() {
                 </div>
                 <Link
                   className="underline text-primary text-sm "
-                  to="/forgot-password"
+                  to="/auth/forgot-password"
                 >
                   Forgot Password ?
                 </Link>

@@ -12,7 +12,7 @@ export function useResetPassword() {
   } = useMutation({
     mutationFn: (passwords) => resetPassword(passwords),
     onSuccess: () => {
-      navigate("/login", { replace: true });
+      navigate("/auth/login", { replace: true });
       toast.success("Password reset successfully , Now log in to your account");
     },
     onError: (error) => {

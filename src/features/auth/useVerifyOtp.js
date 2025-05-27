@@ -12,7 +12,7 @@ export function useVerifyOtp() {
   } = useMutation({
     mutationFn: (credentials) => verifyOneTimePassword(credentials),
     onSuccess: () => {
-      navigate("/reset-password", { replace: true });
+      navigate("/auth/reset-password", { replace: true });
     },
     onError: (error) => {
       console.error("Verify OTP failed:", error);

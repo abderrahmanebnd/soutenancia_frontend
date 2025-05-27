@@ -8,7 +8,7 @@ function ProtectedRoute({ allowedRoles, children }) {
 
   if (isLoading) return <Spinner />;
 
-  if (!currentUser && !isLoading) return <Navigate replace to="/login" />;
+  if (!currentUser && !isLoading) return <Navigate replace to=".auth/login" />;
 
   if (currentUser && !allowedRoles.includes(currentUser.user.role))
     return <Navigate replace to="/unauthorized" />;

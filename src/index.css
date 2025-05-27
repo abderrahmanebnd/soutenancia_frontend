@@ -79,6 +79,9 @@
   }
 }
 
+body {
+  font-family: "Inter", sans-serif;
+}
 @layer base {
   * {
     @apply border-border;

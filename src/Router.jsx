@@ -27,6 +27,7 @@ import EditTeamOffer from "./modules/student/pages/EditTeamOffer";
 import SubmitOffer from "./modules/student/pages/SubmitOffer";
 import TeamApplications from "./modules/student/pages/TeamApplications";
 import { TeamApplicationsProvider } from "./modules/student/context/TeamApplicationsContext";
+import Index from "./Pages/Index";
 
 function Router() {
   return (
@@ -35,8 +36,10 @@ function Router() {
         <AuthProvider>
           <SessionProvider>
             <Routes>
+              <Route path="/" element={<Index />} />
+
               <Route
-                path="/"
+                path="/auth"
                 element={
                   <PublicRoute>
                     <Login />
