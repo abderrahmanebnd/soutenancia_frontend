@@ -78,7 +78,11 @@ function ManageStudents() {
       name: user?.speciality?.name || "N/A",
       id: user.specialityId || "N/A",
     },
-    role: user?.isLeader ? "Leader" : "Member",
+    role: user?.isLeader
+      ? "Leader"
+      : user?.isInTeam
+      ? "Member"
+      : "Not in Team",
     isDeleting,
     onEdit: () => handleEdit(user),
     onDelete: () => handleDelete(user.user.id),
