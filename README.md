@@ -82,12 +82,20 @@ Role-Based Access: Ensures secure and appropriate access for students, teachers,
 
 - ### Frontend
 **ReactJS**: A JavaScript library for building dynamic and interactive user interfaces.
+
 **Axios**: For making HTTP requests to the backend API.
+
 **React Query**: For efficient data fetching, caching..
+
 **Tailwind CSS**: A utility-first CSS framework for rapid and responsive styling.
+
 **Shadcn UI**: A collection of reusable, customizable UI components built with Tailwind CSS.
+
 - ### Backend
 **Node.js**: A JavaScript runtime for building scalable server-side applications.
+
 **Express.js**: A framework for Node.js .
+
 **Prisma**: An ORM for simplified database interactions and schema management.
+
 **PostgreSQL**: A powerful, open-source relational database for storing and managing data.
